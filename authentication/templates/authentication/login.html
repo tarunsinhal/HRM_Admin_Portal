@@ -1,0 +1,47 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Login Form</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'css/login.css' %}">
+</head>
+
+<body>
+    <h2>Login Page</h2><br>
+
+
+
+    <div class="login">
+        {% if messages %}
+        <ul class="messages" role="alert">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
+        </ul>
+        {% endif %}
+        <form id="login" method="POST" action="#">
+            {% csrf_token %}
+
+            <label for="{{ user_form.email.id_for_label }}"><b>Email:</b></label>
+            <br>
+            {{ user_form.email }}
+            <!-- <input type="text" name="Uname" id="Uname" placeholder="Username">     -->
+            <br><br>
+            <label for="{{ user_form.password.id_for_label }}"><b>Password:</b></label>
+            <br>
+            {{ user_form.password }}
+            <!-- <input type="Password" name="Pass" id="Pass" placeholder="Password">     -->
+            <br><br>
+            <input type="submit" name="log" id="log" value="Log In Here">
+            <br><br>
+            <!-- <input type="checkbox" id="check">    
+        <span>Remember me</span>     -->
+            <!-- <br><br>
+            <a href="password-reset/">Forgot Password</a> -->
+        </form>
+    </div>
+</body>
+
+</html>

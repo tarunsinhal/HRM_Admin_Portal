@@ -1,0 +1,101 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+
+{% block title %}
+Home
+{% endblock title %}
+
+{% block navbar_content %}
+
+<ul class="nav nav-pills flex-column mb-auto">
+  <li class="nav-item">
+    <a href="#" class="nav-link active" aria-current="page">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+      Home
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+      Employee Details
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+      Products
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+      Profile
+    </a>
+  </li>
+</ul>
+
+{% endblock navbar_content %}
+
+{% block content %}
+  <div class="row row-cols-1 row-cols-md-3 g-5 mt-3">
+
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/inventory.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'operations:operations_view' %}" class="card-title">Operations</a></h5>
+          <p class="card-text">Manage your Food inventory, Maintenance, and operations related Items</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/calendar.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Daily Stuff</a></h5>
+          <p class="card-text">Section for the items needs to be bought daily</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/party.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Office Events</a></h5>
+          <p class="card-text">Section to manage items used in office parties, celebrations, and festivities.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/invoice.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Bills-Reimbursement</a></h5>
+          <p class="card-text">Manage your Bills and Reimbursement</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/suggestion.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Suggestions</a></h5>
+          <p class="card-text">Manage Suggestions from all over the company</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/seller.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Business Vendors</a></h5>
+          <p class="card-text">Manage business vendors for the company</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}
+
+

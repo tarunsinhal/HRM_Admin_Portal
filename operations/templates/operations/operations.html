@@ -1,0 +1,72 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations {% endblock title %}
+
+
+{% block navbar_content %}
+
+<ul class="nav nav-pills flex-column mb-auto">
+  <li class="nav-item">
+    <a href="{% url 'home:home_view' %}" class="nav-link text-white" aria-current="page">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"/></svg>
+      Home
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white active">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+      Operations
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+      Daily Stuff
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white">
+      <svg class="bi me-2" width="16" height="16"><use xlink:href="#people-circle"/></svg>
+      Office Events
+    </a>
+  </li>
+</ul>
+
+{% endblock navbar_content %}
+
+
+{% block content %}
+
+<div class="row row-cols-1 row-cols-md-2 g-5 mt-3">
+
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/snack.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'operations:food' %}" class="card-title">Food Inventory</a></h5>
+          <p class="card-text">Manage food Inventory, find tables and data for the available stock and requirements.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/stationary.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Maintenance</a></h5>
+          <p class="card-text">Manage Maintenance stuff consisting certificates, trophies, stationary, etc.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'media/worker.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Joining kit</Inp></a></h5>
+          <p class="card-text">Manage Inventory for the new employee joining kit, consisting T-shirts, systems, ID cards, etc.</p>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock content %}

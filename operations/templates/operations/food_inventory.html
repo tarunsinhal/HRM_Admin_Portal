@@ -1,0 +1,246 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations-Food Inventory {% endblock title %}
+
+
+
+{% block navbar_content %}
+
+<ul class="nav nav-pills flex-column mb-auto">
+  <li class="nav-item">
+    <a href="{% url 'home:home_view' %}" class="nav-link text-white" aria-current="page">
+      <svg class="bi me-2" width="16" height="16">
+        <use xlink:href="#home" />
+      </svg>
+      Home
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white active">
+      <svg class="bi me-2" width="16" height="16">
+        <use xlink:href="#table" />
+      </svg>
+      Operations
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white">
+      <svg class="bi me-2" width="16" height="16">
+        <use xlink:href="#grid" />
+      </svg>
+      Daily Stuff
+    </a>
+  </li>
+  <li>
+    <a href="#" class="nav-link text-white">
+      <svg class="bi me-2" width="16" height="16">
+        <use xlink:href="#people-circle" />
+      </svg>
+      Logout
+    </a>
+  </li>
+</ul>
+
+{% endblock navbar_content %}
+
+
+{% block content %}
+
+<!-- <div>
+<button onclick="formPopup()" style="height: 30px; width: 500px;" >Add Products</button>
+</div> -->
+
+<!-- <div class="form-popup" id="myForm">
+<form method="POST" class="form-popup">
+    <input type="text" name="input1">
+    <input type="text" name="input2">
+</form>
+</div> -->
+
+<!-- <div class="row g-3" >
+    <div class="col-sm">
+        <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+        <select class="form-select" id="inlineFormSelectPref">
+          <option selected>Choose...</option>
+          <option value="1">One</option>
+          <option value="2">Two</option>
+          <option value="3">Three</option>
+        </select>
+      </div>
+    <div class="col-sm">
+      <input type="text" class="form-control" placeholder="State" aria-label="State">
+    </div>
+    <div class="col-sm">
+      <input type="text" class="form-control" placeholder="Zip" aria-label="Zip">
+    </div>
+  </div> -->
+
+
+
+<div>
+
+<!-- Button trigger modal -->
+<button type="button" style="height: 40px;" class="btn btn-primary" data-bs-toggle="modal"
+  data-bs-target="#staticBackdrop">
+  Add Products
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Add Products</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row g-3">
+          <div class="col-sm">
+            <label class="visually-hidden" for="inlineFormSelectPref">Preference</label>
+            <select class="form-select" id="inlineFormSelectPref">
+              <option selected>Choose...</option>
+              <option value="1">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+          </div>
+          <div class="col-sm">
+            <input type="text" class="form-control" placeholder="State" aria-label="State">
+          </div>
+          <div class="col-sm">
+            <input type="text" class="form-control" placeholder="Zip" aria-label="Zip">
+          </div>
+          <div class="col-sm">
+            <input type="text" class="form-control" placeholder="Zip" aria-label="Zip">
+          </div>
+          <div class="col-sm">
+            <input type="text" class="form-control" placeholder="Zip" aria-label="Zip">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- <div class="w3-container">
+  <h2>Tabs in a Grid</h2>
+
+  <div class="w3-row">
+    <a href="javascript:void(0)" onclick="openCity(event, 'London');">
+      <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding">London</div>
+    </a>
+    <a href="javascript:void(0)" onclick="openCity(event, 'Paris');">
+      <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding">Paris</div>
+    </a>
+    <a href="javascript:void(0)" onclick="openCity(event, 'Tokyo');">
+      <div class="w3-third tablink w3-bottombar w3-hover-light-grey w3-padding">Tokyo</div>
+    </a>
+  </div>
+
+  <div id="London" class="w3-container city" style="display:none">
+    <h2>London</h2>
+    <p>London is the capital city of England.</p>
+  </div>
+
+  <div id="Paris" class="w3-container city" style="display:none">
+    <h2>Paris</h2>
+    <p>Paris is the capital of France.</p> 
+  </div>
+
+  <div id="Tokyo" class="w3-container city" style="display:none">
+    <h2>Tokyo</h2>
+    <p>Tokyo is the capital of Japan.</p>
+  </div>
+</div>
+
+<script>
+function openCity(evt, cityName) {
+  var i, x, tablinks;
+  x = document.getElementsByClassName("city");
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablink");
+  for (i = 0; i < x.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" w3-border-red", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.firstElementChild.className += " w3-border-red";
+}
+</script>
+ -->
+
+
+
+
+ <ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true">Home</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Profile</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button" role="tab" aria-controls="contact" aria-selected="false">Contact</button>
+  </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">This is some placeholder content the Contact tab's associated content. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling. You can use it with tabs, pills, and any other .nav-powered navigation.</div>
+  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">This is some placeholder content the Contact tab's associated content. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling. You can use it with tabs, pills, and any other .nav-powered navigation.</div>
+  <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">This is some placeholder content the Contact tab's associated content. Clicking another tab will toggle the visibility of this one for the next. The tab JavaScript swaps classes to control the content visibility and styling. You can use it with tabs, pills, and any other .nav-powered navigation.</div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- <div class="table-responsive">
+  <table class="table">
+    <caption>List of users</caption>
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">First</th>
+        <th scope="col">Last</th>
+        <th scope="col">Handle</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Mark</td>
+        <td>Otto</td>
+        <td>@mdo</td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>Jacob</td>
+        <td>Thornton</td>
+        <td>@fat</td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>Larry</td>
+        <td>the Bird</td>
+        <td>@twitter</td>
+      </tr>
+    </tbody>
+  </table>
+</div> -->
+
+</div>
+
+{% endblock content %}
