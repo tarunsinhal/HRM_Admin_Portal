@@ -164,13 +164,13 @@ a.card-title{
   text-shadow: none;
   border-radius: 50%;
   border: none;
-  background-color: #b0d467;
+  background-color: #b8e4a3;
   overflow: hidden;
   transition: .3s;
   vertical-align: middle;
 }
 .table-title .add-new:hover{
-  background-color: #bbc997
+  background-color: #86e08a
 }
 
 table.table {
@@ -247,7 +247,7 @@ table.table td .add {
 .tab {
   overflow: hidden;
   border: 1px solid #ccc;
-  background-color: #f1f1f1;
+  background-color: #b8e4a3;
 }
 
 /* Style the buttons that are used to open the tab content */
@@ -263,12 +263,12 @@ table.table td .add {
 
 /* Change background color of buttons on hover */
 .tab button:hover {
-  background-color: #ddd;
+  background-color: #a3e4a6;
 }
 
 /* Create an active/current tablink class */
 .tab button.active {
-  background-color: #ccc;
+  background-color: #86e08a;
 }
 
 /* Style the tab content */
