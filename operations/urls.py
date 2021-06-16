@@ -4,5 +4,9 @@ from . import views
 app_name = 'operations'
 urlpatterns = [
     path('', views.operations_view, name='operations_view'),
-    path('food/', views.food_view, name='food')
+    path('food/', views.food_view, name='food'),
+    path('food/getProducts', views.getProducts, name='getProducts'),
+    path('food/addProducts', views.addProducts, name='addProducts'),
+    path('food/edit/<str:pk>', views.editProducts, name='editProducts'),
+    path('food/delete/<str:pk>', views.deleteProducts, name='deleteProducts')
 ]

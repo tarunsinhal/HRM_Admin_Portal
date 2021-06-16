@@ -2,7 +2,7 @@ from django.contrib import auth
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
-from authentication.forms import LoginForm
+# from authentication.forms import LoginForm
 
 app_name = 'authentication'
 urlpatterns = [

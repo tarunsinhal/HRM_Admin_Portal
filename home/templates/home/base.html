@@ -16,6 +16,7 @@
 
   <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/">
 
+
   <!-- color-light = #a4cb3b
     color-dark = #057333
     color-darker = #00240f
@@ -24,14 +25,17 @@
 
   <!-- Bootstrap core CSS -->
   <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
-  <!-- <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css"> -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 
 
-  <script>
+  {% block style %}
+  {% endblock style %}
+
+  <!-- <script>
     function formPopup(){
         document.getElementById('myForm').style.display = 'block';
     }
-</script>
+</script> -->
 
 
 
@@ -44,9 +48,9 @@
       user-select: none;
     }
 
-    .form-popup{
+    /* .form-popup{
       display: none;
-    }
+    } */
 
 
     @media (min-width: 768px) {

@@ -16,7 +16,6 @@ from django.views.decorators.cache import cache_control, never_cache
 # Create your views here.
 
 
-# @api_view(['GET', 'POST'])
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_login(request):
     form = LoginForm()
@@ -31,12 +30,12 @@ def user_login(request):
                     return HttpResponseRedirect('/home')
                 else:
                     messages.error(request, 'Invalid email or password!')
-                    return render(request, 'authentication/login1.html', {'form': form})
+                    return render(request, 'authentication/login.html', {'form': form})
             except:
                 messages.error(request, 'Invalid email or password!')
-                return render(request, 'authentication/login1.html', {'form': form})
+                return render(request, 'authentication/login.html', {'form': form})
             
-    return render(request, 'authentication/login1.html', {'form': form})
+    return render(request, 'authentication/login.html', {'form': form})
 
 
 class EmailValidationForm(PasswordResetForm):
@@ -49,12 +48,10 @@ class EmailValidationForm(PasswordResetForm):
             raise ValidationError(error_messages['not_registered'], code='not_registered')
         return email
 
+
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def logout_view(request):
     request.session.flush()
     logout(request)
     return HttpResponseRedirect('/login')
 
-
-# def home_view(request):
-#     return render(request, 'authentication/home.html')
