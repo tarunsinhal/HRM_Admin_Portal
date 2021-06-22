@@ -53,7 +53,7 @@
       <div class="card shadow p-3 mb-5 bg-white rounded">
         <img src="{% static 'media/stationary.svg' %}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Maintenance</a></h5>
+          <h5 class="card-title"><a href="{% url 'operations:maintenance' %}" class="card-title">Maintenance</a></h5>
           <p class="card-text">Manage Maintenance stuff consisting certificates, trophies, stationary, etc.</p>
         </div>
       </div>

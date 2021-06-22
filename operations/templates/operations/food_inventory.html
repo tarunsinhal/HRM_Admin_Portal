@@ -18,6 +18,11 @@
 <link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
 
 <link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+
+<!-- <link href=
+"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+         rel="stylesheet"> -->
 
 {% endblock style %}
 
@@ -77,7 +82,8 @@
                             +</button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:addProducts' %}" id="foodForm">
+                    <form method="POST" action="{% url 'operations:addProducts' %}" id="foodForm"
+                        class="needs-validation">
                         {% csrf_token %}
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -93,12 +99,18 @@
                                     <div class="modal-body">
                                         <div class="row g-3">
                                             {% for field in addProductsForm %}
-                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
-                                                <b>{{ field.label }}</b>
+                                            {% if field.is_hidden %}
+                                            <div class="col-sm"
+                                                style="text-align: left; font-size: 12px; display: none;">
                                                 {{ field }}
                                             </div>
+                                            {% else %}
+                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
+                                                {{ field.label }}
+                                                {{ field }}
+                                            </div>
+                                            {% endif %}
                                             {% endfor %}
-
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -106,7 +118,6 @@
                                             data-bs-dismiss="modal">Close</button>
                                         <input type="submit" value="Add" class="btn btn-primary">
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -124,16 +135,21 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-
                                     <div class="modal-body">
                                         <div class="row g-3">
                                             {% for field in editProductsForm %}
-                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
-                                                <b>{{ field.label }}</b>
+                                            {% if field.is_hidden %}
+                                            <div class="col-sm"
+                                                style="text-align: left; font-size: 12px; display: none;">
                                                 {{ field }}
                                             </div>
+                                            {% else %}
+                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
+                                                {{ field.label }}
+                                                {{ field }}
+                                            </div>
+                                            {% endif %}
                                             {% endfor %}
-
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -141,7 +157,6 @@
                                             data-bs-dismiss="modal">Close</button>
                                         <input type="submit" value="Update" class="btn btn-primary">
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -182,55 +197,65 @@
                 <input type="radio" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, 'Snacks')">
                 <label for="defaultOpen">Snacks</label>
                 <!-- Tab 2 -->
-                <input type="radio" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages" onclick="openTab(event, 'Beverages')">
+                <input type="radio" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
+                    onclick="openTab(event, 'Beverages')">
                 <label for="tab2">Beverages</label>
                 <!-- Tab 3 -->
-                <input type="radio" name="tabset" id="tab3" class="tablinks" aria-controls="Others" onclick="openTab(event, 'Others')">
+                <input type="radio" name="tabset" id="tab3" class="tablinks" aria-controls="Others"
+                    onclick="openTab(event, 'Others')">
                 <label for="tab3">Others</label>
 
                 <div class="tab-panels">
                     {% for product_type in product_list %}
                     <section class="tab-panel" id={{ product_type.grouper }}>
+                        <table class="productTable1">
+                            <!-- <div class="tbl-header table-hover"> -->
+                            <!-- <table class="table table-hover table-bordered"> -->
+                            <thead class="table tbl-header table-hover table-bordered">
+                                <tr>
+                                    <th width=20% style="padding: 12px;">Product name</th>
+                                    <th width=12% style="padding: 12px;">Quantity</th>
+                                    <th width=12% style="padding: 12px;">Price</th>
+                                    <th width=12% style="padding: 12px;">Amount</th>
+                                    <th width=15% style="padding: 12px;">Last Order Date</th>
+                                    <th width=18% style="padding: 12px;">Expected Order Date</th>
+                                    <th width=10% style="padding: 12px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <!-- </table> -->
+                            <!-- </div> -->
 
-                        <div class="tbl-header table-hover">
-                            <table cellpadding="0" cellspacing="0" class="table table-hover table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th width=25%>Product name</th>
-                                        <th width=15%>Quantity</th>
-                                        <th width=10%>Price</th>
-                                        <th width=20%>Last Order Date</th>
-                                        <th width=20%>Expected Order Date</th>
-                                        <th width=10%>Actions</th>
-                                    </tr>
-                                </thead>
-                            </table>
-                        </div>
-
-                        <div class="tbl-content table" style="border-bottom: px;">
-                            <table>
-                                <tbody>
-                                    {% for rows in product_type.list %}
-                                    <tr>
-                                        <td class="name font-weight-bold" width=25%>{{ rows.product }}</td>
-                                        <td class="name" width=15%>{{ rows.quantity }}</td>
-                                        <td class="name" width=10%>{{ rows.price }}</td>
-                                        <td class="last-date" width=20%>{{ rows.last_order_date }}</td>
-                                        <td class="last-date" width=20%>{{ rows.expected_order_date }}</td>
-                                        <td width=10%>
-                                            <a id='edit/{{ rows.id }}' onclick=editfunction(this) data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" style="color: #FFC107"><i class="material-icons">&#xE254;</i></a>
-                                            <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i class="material-icons">&#xE872;</i></a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
+                            <!-- <div class="tbl-content table"> -->
+                            <!-- <table id="productTable"> -->
+                            <tbody class="tbl-content table">
+                                {% for rows in product_type.list %}
+                                <tr>
+                                    <td class="name font-weight-bold" width=20% style="border-left: 2px solid #007bff;">
+                                        {{ rows.product }}</td>
+                                    <td class="name" width=12%>{{ rows.quantity }}</td>
+                                    <td class="name" width=12%>{{ rows.price }}</td>
+                                    <td class="name" width=12%>{% widthratio rows.price 1 rows.quantity %}</td>
+                                    <td class="last-date" width=15%>{{ rows.last_order_date }}</td>
+                                    <td class="last-date" width=18%>{{ rows.expected_order_date }}</td>
+                                    <td width=10%>
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this) data-bs-toggle="modal"
+                                            data-bs-target="#editModal" title="Edit" style="color: #FFC107"><i
+                                                class="material-icons">&#xE254;</i></a>
+                                        <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
+                                                class="material-icons">&#xE872;</i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <!-- </table> -->
+                            <!-- </div> -->
+                        </table>
                     </section>
                     {% endfor %}
                 </div>
 
-            
+
 
             </div>
 
@@ -246,8 +271,40 @@
 
 {% block addextra %}
 
+
 <!-- <script src="../assets/dist/js/bootstrap.bundle.min.js"></script> -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="{% static 'js/food_inventory.js' %}"></script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+
+
+
+
+<!-- <script  src=
+"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+        </script>
+        <script src=
+"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js">
+        </script>
+        <script src="{% static 'js/fancyTable.js' %}"></script>
+        </script>
+        <script type="text/javascript">
+              
+            $(document).ready(function() {
+                $(".productTable1").fancyTable({
+                  /* Column number for initial sorting*/
+                   sortColumn:0,
+                   /* Setting pagination or enabling */
+                   pagination: true,
+                   /* Rows per page kept for display */
+                   perPage:3,
+                   globalSearch:true
+                   });
+                              
+            });
+        </script> -->
+
 
 {% endblock addextra %}

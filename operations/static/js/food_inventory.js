@@ -65,6 +65,19 @@
 // 	evt.currentTarget.className += " active";
 //   }
 
+$(document).ready(function() {
+    $('.productTable1').DataTable({
+		columnDefs: [
+			{ orderable: false, targets: 1 },
+			{ orderable: false, targets: 2 },
+			{ orderable: false, targets: 6 }
+		  ],
+		'pageLength': 8,
+		"bLengthChange": false,
+		"autoWidth": false,
+		
+	});
+} );
 
 
 function openTab(evt, tabName) {
@@ -84,15 +97,16 @@ function openTab(evt, tabName) {
   // Get the element with id="defaultOpen" and click on it
   document.getElementById("defaultOpen").click();
 
-  function editfunction(obj){
-	console.log('Hello');
-	  document.getElementById('editForm').style.display = 'block'
-	  var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
-	  var y = document.getElementById('editForm').getElementsByTagName('input');
 
-	  for (i=0; i<(y.length-2); i++){
-		  y[i+1].value = x[i].textContent
-	  }
+  function editfunction(obj){
+	document.getElementById('editForm').style.display = 'block'
+	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	console.log(x);
+	var y = document.getElementById('editForm').getElementsByTagName('input');
+	console.log(y);
+	for (i=0; i<(y.length-2); i++){
+		y[i+1].value = x[i].textContent
+	}
 	document.getElementById('editForm').action = obj.id;
 }
 
@@ -100,3 +114,6 @@ function openTab(evt, tabName) {
 function deletefunction(obj){
 	document.getElementById('deleteForm').action = obj.id;
 }
+
+
+

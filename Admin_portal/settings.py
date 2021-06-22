@@ -54,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # 'django_require_login.middleware.LoginRequiredMiddleware'
 ]
 
 ROOT_URLCONF = 'Admin_portal.urls'
