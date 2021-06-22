@@ -22,8 +22,8 @@ class AddProducts(ModelForm):
     def clean_content(self):
         last_order_date = self.cleaned_data.get("last_order_date")
         expected_order_date = self.cleaned_data.get("expected_order_date")
-        if expected_order_date > last_order_date:
-            raise forms.ValidationError("This Tweet is too long!!!")
+        if expected_order_date < last_order_date:
+            raise forms.ValidationError("Expected Date is less than last Order date")
         return  last_order_date, expected_order_date
 
 
