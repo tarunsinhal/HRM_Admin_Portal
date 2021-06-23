@@ -75,7 +75,6 @@ $(document).ready(function() {
 		'pageLength': 8,
 		"bLengthChange": false,
 		"autoWidth": false,
-		
 	});
 } );
 
