@@ -10,5 +10,6 @@ urlpatterns = [
     path('food/getProducts', views.getProducts, name='getProducts'),
     path('food/addProducts', views.addProducts, name='addProducts'),
     path('food/edit/<str:pk>', views.editProducts, name='editProducts'),
-    path('food/delete/<str:pk>', views.deleteProducts, name='deleteProducts')
+    path('food/delete/<str:pk>', views.deleteProducts, name='deleteProducts'),
+    path('ajax/load-products/', views.load_products, name='ajax_load_products'),
 ]

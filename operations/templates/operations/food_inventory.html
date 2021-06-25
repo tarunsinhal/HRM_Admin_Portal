@@ -77,13 +77,13 @@
                         <h2><b>Food Inventory</b></h2>
                     </div>
                     <div class="col-sm-4" style="padding: 10px;">
-                        <button type="button" class="add-new button5" data-bs-toggle="modal"
+                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop" style="background-color: #007bff">
                             +</button>
                     </div>
 
                     <form method="POST" action="{% url 'operations:addProducts' %}" id="foodForm"
-                        class="needs-validation">
+                        data-products-url="{% url 'operations:ajax_load_products' %}" class="needs-validation">
                         {% csrf_token %}
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -97,11 +97,12 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <div class="row g-3">
+                                        <div class="row">
                                             {% for field in addProductsForm %}
                                             {% if field.is_hidden %}
                                             <div class="col-sm"
                                                 style="text-align: left; font-size: 12px; display: none;">
+                                                {{ field.label }}
                                                 {{ field }}
                                             </div>
                                             {% else %}
@@ -114,8 +115,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-secondary"
+                                            id="addAnother">Save and Add another</button>
                                         <input type="submit" value="Add" class="btn btn-primary">
                                     </div>
                                 </div>
@@ -194,15 +195,15 @@
 
             <div class="tabset">
                 <!-- Tab 1 -->
-                <input type="radio" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, 'Snacks')">
+                <input type="radio" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '1')">
                 <label for="defaultOpen">Snacks</label>
                 <!-- Tab 2 -->
                 <input type="radio" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
-                    onclick="openTab(event, 'Beverages')">
+                    onclick="openTab(event, 2)">
                 <label for="tab2">Beverages</label>
                 <!-- Tab 3 -->
                 <input type="radio" name="tabset" id="tab3" class="tablinks" aria-controls="Others"
-                    onclick="openTab(event, 'Others')">
+                    onclick="openTab(event, 3)">
                 <label for="tab3">Others</label>
 
                 <div class="tab-panels">
@@ -238,9 +239,9 @@
                                     <td class="last-date" width=15%>{{ rows.last_order_date }}</td>
                                     <td class="last-date" width=18%>{{ rows.expected_order_date }}</td>
                                     <td width=10%>
-                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this) data-bs-toggle="modal"
-                                            data-bs-target="#editModal" title="Edit" style="color: #FFC107"><i
-                                                class="material-icons">&#xE254;</i></a>
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }})
+                                            data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
+                                            style="color: #FFC107"><i class="material-icons">&#xE254;</i></a>
                                         <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
                                             data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
                                                 class="material-icons">&#xE872;</i></a>

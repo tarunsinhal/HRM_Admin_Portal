@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from django.http.response import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 from django.http import HttpResponseRedirect
 from .forms import LoginForm
 from django.contrib.auth import login, logout
@@ -14,6 +14,10 @@ from django.views.decorators.cache import cache_control, never_cache
 
 
 # Create your views here.
+
+
+def auth_redirect(request):
+    return redirect('auth/login/')
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)

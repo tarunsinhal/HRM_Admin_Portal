@@ -3,9 +3,9 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from rest_framework.serializers import Serializer
-from .models import FoodInventory
+from .models import FoodInventory, Product_type
 from django.http import JsonResponse
-from .serializers import FoodSerializer
+from .serializers import FoodSerializer, editFoodSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import requests 
@@ -21,6 +21,7 @@ def operations_view(request):
     return render(request, 'operations/operations.html')
 
 
+@login_required(login_url='/auth/login')
 def food_view(request):
     addProductsForm = AddProducts()
     editProducts = EditProducts(auto_id=True)
@@ -70,8 +71,9 @@ def addProducts(request):
 @api_view(['POST'])
 def editProducts(request, pk):
     product = FoodInventory.objects.get(id=pk)
-    serializer = FoodSerializer(instance=product, data=request.POST)
+    serializer = editFoodSerializer(instance=product, data=request.POST)
     if serializer.is_valid():
+        print('hello')
         serializer.save()
     return redirect('/operations/food')
 
@@ -81,6 +83,12 @@ def deleteProducts(request, pk):
     product = FoodInventory.objects.get(id=pk)
     product.delete()
     return redirect('/operations/food')
+
+
+def load_products(request):
+    item_id = request.GET.get('Type')
+    products = Product_type.objects.filter(product_type_id=item_id).order_by('product_name')
+    return render(request, 'operations/product_options.html', {'products': products})
 
 
 def maintenance_view(request):
