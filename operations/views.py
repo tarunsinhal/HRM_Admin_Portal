@@ -3,9 +3,9 @@ from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from rest_framework.serializers import Serializer
-from .models import FoodInventory, Product_type
+from .models import FoodInventory, Product_type, recurringItems
 from django.http import JsonResponse
-from .serializers import FoodSerializer, editFoodSerializer
+from .serializers import ProductSerializer, editProductSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import requests 
@@ -54,33 +54,34 @@ def food_view(request):
 @api_view(['GET'])
 def getProducts(request):
     if request.method == 'GET':
-        qs = FoodInventory.objects.all()
-        serializer = FoodSerializer(qs, many=True)
+        qs = recurringItems.objects.all()
+        serializer = ProductSerializer(qs, many=True)
         return Response(serializer.data)
 
 
 @api_view(['POST'])
 def addProducts(request):
     print(request.META.get('HTTP_REFERER', '/'))
-    serializer = FoodSerializer(data=request.POST)
+    serializer = ProductSerializer(data=request.POST)
+    print(serializer)
     if serializer.is_valid():
         serializer.save()
+    print(serializer.errors)
     return redirect('/operations/food')
 
 
 @api_view(['POST'])
 def editProducts(request, pk):
-    product = FoodInventory.objects.get(id=pk)
-    serializer = editFoodSerializer(instance=product, data=request.POST)
+    product = recurringItems.objects.get(id=pk)
+    serializer = editProductSerializer(instance=product, data=request.POST)
     if serializer.is_valid():
-        print('hello')
         serializer.save()
     return redirect('/operations/food')
 
 
 @api_view(['POST'])
 def deleteProducts(request, pk):
-    product = FoodInventory.objects.get(id=pk)
+    product = recurringItems.objects.get(id=pk)
     product.delete()
     return redirect('/operations/food')
 

@@ -223,7 +223,7 @@ table.table .form-control.error {
 table.table td .add {
   display: none;
 }
-
+/* 
 .modal::before {
   display: inline-block;
   height: 100%;    
@@ -241,7 +241,7 @@ table.table td .add {
   width: 1200px;
   margin-top: 40%;
   margin-left: 30%;
-}
+} */
 
 /* Style the tab */
 .tab {

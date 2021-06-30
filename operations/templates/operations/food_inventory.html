@@ -86,9 +86,9 @@
                         data-products-url="{% url 'operations:ajax_load_products' %}" class="needs-validation">
                         {% csrf_token %}
                         <!-- Modal -->
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                        <!-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
@@ -97,7 +97,7 @@
                                     </div>
 
                                     <div class="modal-body">
-                                        <div class="row">
+                                        <div class="row g-3">
                                             {% for field in addProductsForm %}
                                             {% if field.is_hidden %}
                                             <div class="col-sm"
@@ -115,13 +115,163 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-secondary"
-                                            id="addAnother">Save and Add another</button>
+                                        <button type="submit" class="btn btn-secondary" id="addAnother">Save and Add
+                                            another</button>
+                                        <input type="button" value="Add" id="saveNew" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div> -->
+
+
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            {% for field in addProductsForm %}
+                                            {% if field.is_hidden %}
+                                            <div class="container">
+                                                <div class="row"
+                                                    style="text-align: left; font-size: 15px; display: none;">
+                                                    <div class="col-4" style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4 font-weight-bold"
+                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
+
+
+
+
+                                            <!-- <div class="container">
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px;">                                                           
+                                                            {{ addProductsForm.type.label }}</div>
+                                                        <div style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.type }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-bold" style="padding: 0px;  margin-bottom: 2px; ">
+                                                            {{ addProductsForm.product.label }}</div>                                                      
+                                                            <div style="margin-bottom: 10px; padding: 0px;">                                                                
+                                                                {{ addProductsForm.product }}
+                                                            </div>
+                                                            <div style="padding: 0px;">
+                                                                {{ addProductsForm.new_product }}
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.quantity.label }}</div>
+                                                        <div style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.quantity }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col mb-2" style="text-align: left;">                                                    
+                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.unit.label }} </div>
+                                                        <div class="col g-2"
+                                                            style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.unit }}
+                                                        </div>                                                
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.purchased_quantity.label }} </div>
+                                                        <div
+                                                            style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.purchased_quantity }}
+                                                        </div>
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="col mb-2" style="text-align: left;">
+                                                    <div class="col-2 form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                        {{ addProductsForm.price.label }}
+                                                    </div>
+                                                    <div class="col-4 input-group"
+                                                        style="margin-bottom: 15px; padding: 0px;">
+                                                        <span class="input-group-text">&#x20b9;</span>
+                                                        {{ addProductsForm.price }}
+                                                        <span class="helptext">100 characters max.</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col mb-2" style="text-align: left;">
+                                                    <div class="col-2 form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                        {{ addProductsForm.amount.label }}
+                                                    </div>
+                                                    <div class="col-4 input-group"
+                                                        style="margin-bottom: 15px; padding: 0px;">
+                                                        <span class="input-group-text">&#x20b9;</span>
+                                                        {{ addProductsForm.amount }}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.last_order_date.label }}
+                                                        </div>
+                                                        <div
+                                                            style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.last_order_date }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.expected_order_date.label }}
+                                                        </div>
+                                                        <div style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.expected_order_date }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+
+
+
+
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Save and
+                                            Add Another</button>
                                         <input type="submit" value="Add" class="btn btn-primary">
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+
+
+
+
                     </form>
 
                     <form method="POST" id="editForm">
@@ -129,8 +279,9 @@
 
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
+                            <div class="modal-dialog"
+                                style="display: inline-block; text-align: center; vertical-align: middle;">
+                                <div class="modal-content" style="width: 1200px; margin-top: 40%;  margin-left: 30%;">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">Update Item</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -214,12 +365,13 @@
                             <!-- <table class="table table-hover table-bordered"> -->
                             <thead class="table tbl-header table-hover table-bordered">
                                 <tr>
-                                    <th width=20% style="padding: 12px;">Product name</th>
+                                    <th width=15% style="padding: 12px;">Product name</th>
                                     <th width=12% style="padding: 12px;">Quantity</th>
+                                    <th width=12% style="padding: 12px;">Unit</th>
                                     <th width=12% style="padding: 12px;">Price</th>
                                     <th width=12% style="padding: 12px;">Amount</th>
-                                    <th width=15% style="padding: 12px;">Last Order Date</th>
-                                    <th width=18% style="padding: 12px;">Expected Order Date</th>
+                                    <th width=15% style="padding: 12px;">Purchase Date</th>
+                                    <th width=18% style="padding: 12px;">Next Order Date</th>
                                     <th width=10% style="padding: 12px;">Actions</th>
                                 </tr>
                             </thead>
@@ -231,13 +383,14 @@
                             <tbody class="tbl-content table">
                                 {% for rows in product_type.list %}
                                 <tr>
-                                    <td class="name font-weight-bold" width=20% style="border-left: 2px solid #007bff;">
+                                    <td class="name font-weight-bold" width=15% style="border-left: 2px solid #007bff;">
                                         {{ rows.product }}</td>
                                     <td class="name" width=12%>{{ rows.quantity }}</td>
+                                    <td class="name" width=12%>{{ rows.unit }}</td>
                                     <td class="name" width=12%>{{ rows.price }}</td>
                                     <td class="name" width=12%>{% widthratio rows.price 1 rows.quantity %}</td>
-                                    <td class="last-date" width=15%>{{ rows.last_order_date }}</td>
-                                    <td class="last-date" width=18%>{{ rows.expected_order_date }}</td>
+                                    <td class="last-date" width=15%>{{ rows.purchase_date }}</td>
+                                    <td class="last-date" width=18%>{{ rows.next_order_date }}</td>
                                     <td width=10%>
                                         <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }})
                                             data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
