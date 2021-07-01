@@ -32,3 +32,19 @@ class FoodInventory(models.Model):
 
     def __str__(self):
         return str(self.product)
+
+
+class recurringItems(models.Model):
+    type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product_type, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+    unit = models.CharField(max_length=50)
+    price = models.PositiveIntegerField()
+    discount = models.PositiveIntegerField(default=0)
+    amount = models.PositiveIntegerField(null=True)
+    paid_by = models.CharField(max_length=50)
+    purchase_date = models.DateField()
+    next_order_date = models.DateField()
+
+    def __str__(self):
+        return str(self.product)

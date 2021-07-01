@@ -66,6 +66,8 @@
 //   }
 
 
+var minDate, maxDate;
+
 //...datatable plugin for pagination and search tab in tables...//
 $(document).ready(function () {
 	$('.productTable1').DataTable({
@@ -76,9 +78,39 @@ $(document).ready(function () {
 		],
 		'pageLength': 8,
 		"bLengthChange": false,
-		"autoWidth": false
+		"autoWidth": false,
+		initComplete: function () {
+			$.fn.dataTable.ext.search.push(
+				function(settings, data, dataIndex) {
+					var min = $('#min').val() ? new Date($('#min').val()) : null;
+					var max = $('#max').val() ? new Date($('#max').val()) : null;
+					var startDate = new Date(data[4]);
+					var endDate = new Date(data[5]);
+					if (min == null && max == null) {
+					  return true;
+					}
+					if (min == null && startDate <= max) {
+					  return true;
+					}
+					if (max == null && startDate >= min) {
+					  return true;
+					}
+					if (startDate <= max && startDate >= min) {
+					  return true;
+					}
+					return false;
+				  }
+				);
+		  }
 
 	});
+
+
+	$('#min, #max').on('change', function () {
+		table.draw();
+		$('#defaultOpen').click();
+    });
+
 });
 
 
@@ -98,14 +130,10 @@ function openTab(evt, tabName) {
 }
 // Get the element with id="defaultOpen" and click on it
 document.getElementById("defaultOpen").click();
-document.getElementById("addNew").click();
+
 
 //...called when edit button is clicked...//
 function editfunction(obj, obj2) {
-
-	// var s = document.getElementById('editForm').getElementsByTagName('select')[0]
-	// console.log(s)
-	// s.options[s.selectedIndex].value = 'chips'
 
 	document.getElementById('editForm').style.display = 'block'
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
@@ -151,19 +179,12 @@ function deletefunction(obj) {
 $('#id_product').change(function () {
 	var value = $(this).val();
 	if (value == "other") {
-		// $('#id_other_product').before(function () {
-		//     return $('<label />', {
-		//         for: this.id,
-		// 		text: 'Other',
-		// 		style: "margin: 0px"
-		//     }).append(this.previousSibling)
-		// })
 		$("#id_new_product").prop({ 'type': 'text', 'required': true });
-		$("#id_new_product").parent().css("display", "block");
+		$("#id_new_product").parent().parent().css("display", "block");
 	}
 	else {
 		$("#id_new_product").prop({ 'required': false });
-		$("#id_new_product").parent().css("display", "none");
+		$("#id_new_product").parent().parent().css("display", "none");
 	}
 	// var datearray = $('#id_last_order_date input').val().split("-");
 	// console.log(datearray)
@@ -174,8 +195,6 @@ $('#id_product').change(function () {
 	// var minDate = (year +"-"+ month +"-"+ day);
 	// $('#id_expected_order_date input').attr('min',minDate); 
 });
-
-
 
 
 
@@ -197,11 +216,36 @@ $("#id_type").change(function () {
 });
 
 
-// $(document).ready(function () {
-// 	$("#addAnother").on('click', function () {
-// 		console.log("Hello123")
-// 		document.getElementById("foodForm").click();
-// 	})
-// }
 
 
+// $("#saveNew").click(function (){
+// 	var url = $("#foodForm").attr("action");
+// 	var data = $("#foodForm").serialize();
+// $.ajax({
+//     type: "POST",
+//     url: url,
+//     data: data,
+    
+//     success: function(data,textStatus) {
+		
+// 		console.log(data)
+//         if (data.redirect) {
+//             // data.redirect contains the string URL to redirect to
+// 			console.log("hello")
+//             window.location.href = data.redirect;
+//         } else {
+//             // data.form contains the HTML for the replacement form
+// 			console.log("hello123")
+//             // $("#myform").replaceWith(data.form);
+//         }
+//     }
+// });
+// });
+
+
+
+$('#id_price, #id_quantity').on('change', function () {
+	var total = $("#id_price").val() * $("#id_quantity").val();
+	// var total = mul - $("id_discount").val();
+	document.getElementById("id_amount").value = total;
+});

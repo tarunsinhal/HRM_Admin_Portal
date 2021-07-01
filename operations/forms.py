@@ -1,31 +1,59 @@
 from datetime import date
 from django.db.models import fields
-from django.forms import forms, ModelForm, TextInput, ChoiceField, CharField
-from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple
-from .models import FoodInventory, Product_type
+from django.forms import forms, ModelForm, TextInput, MultiWidget, ChoiceField, CharField, IntegerField, ChoiceField, MultiValueField
+from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget
+from .models import FoodInventory, Product_type, recurringItems
+
+
+
+unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'),
+                ('mililiters', 'ml')]
+
+
+class UnitWidget(MultiWidget):
+    def __init__(self, *args, **kwargs):
+        self.widgets = [NumberInput({'type':'number', 'class':"form-control"}), Select(choices=unit_choices, attrs={'type':'select', 'class':"form-select"})]
+        super(UnitWidget, self).__init__(self.widgets, *args, **kwargs)
+
+    def decompress(self, value):
+        if value:
+            return value.split(' ')
+        return [None, None]
+
+
+class UnitField(MultiValueField):
+    widget = UnitWidget
+
+    def __init__(self, *args, **kwargs):
+        fields = (IntegerField(), ChoiceField(choices=unit_choices))
+        super(UnitField, self).__init__(fields, *args, **kwargs)
+    
+    def compress(self, data_list):
+        return ' '.join(data_list)
 
 
 class AddProducts(ModelForm):
-    new_product = CharField(max_length=50, label="New Product", widget=HiddenInput(attrs={'class':"form-control"}))
+    new_product = CharField(max_length=50, widget=HiddenInput(attrs={'class':"form-control", "placeholder":"Enter product"}))
+    unit = UnitField()
     class Meta:
-        model = FoodInventory
-        fields = ('type', 'product', 'new_product', 'quantity', 'price', 'amount', 'last_order_date', 'expected_order_date')
+        model = recurringItems
+        fields = ('type', 'product', 'new_product', 'quantity','unit', 'price', 'discount', 'amount', 'paid_by', 'purchase_date', 'next_order_date')
         widgets = {
             'type': Select(attrs={'type':'text', 'class':"form-select"}),
             'product': Select(attrs={'type':'text', 'class':"form-select"}),
-            # 'other_product':HiddenInput(attrs={'type':'text', 'class':"form-control"}),
-            'quantity': NumberInput(attrs={'type':'text', 'class':"form-control"}),
-            'price': NumberInput(attrs={'type':'text', 'class':"form-control"}),
-            'amount': HiddenInput(attrs={'class':"form-control"}),
-            'last_order_date': DateInput(attrs={'type':'date', 'class':"form-control"}),
-            'expected_order_date': TextInput(attrs={'type':'date', 'class':"form-control"})
+            'quantity': NumberInput(attrs={'type':'number', 'class':"form-control"}),
+            'price': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
+            'discount': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
+            'amount': NumberInput(attrs={'type':'number', 'class':"form-control"}),
+            'paid_by': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'purchase_date': DateInput(attrs={'type':'date', 'class':"form-control"}),
+            'next_order_date': DateInput(attrs={'type':'date', 'class':"form-control"})
         }
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product_type.objects.none()
 
-        print(self.instance.pk)
         # if 'type' in self.data:
         #     try:
         #         type_id = int(self.data.get('type'))
@@ -36,8 +64,8 @@ class AddProducts(ModelForm):
         #     self.fields['product'].queryset = self.instance.type.product_set.order_by('product_name')
 
     def clean_content(self):
-        last_order_date = self.cleaned_data.get("last_order_date")
-        expected_order_date = self.cleaned_data.get("expected_order_date")
+        last_order_date = self.cleaned_data.get("purchase_date")
+        expected_order_date = self.cleaned_data.get("next_order_date")
         if expected_order_date < last_order_date:
             raise forms.ValidationError("Expected Date is less than last Order date")
         return  last_order_date, expected_order_date
