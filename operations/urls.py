@@ -12,6 +12,7 @@ urlpatterns = [
     path('food/edit/<str:pk>', views.editProducts, name='editProducts'),
     path('food/delete/<str:pk>', views.deleteProducts, name='deleteProducts'),
     path('ajax/load-products/', views.load_products, name='ajax_load_products'),
-    # path('ajax/food/addProducts', views.addProducts, name='addProducts'),
+    path('ajax/food/addProducts', views.addProducts, name='addProducts'),
+    path('ajax/load_purchase_date', views.load_purchase_date, name="ajax_load_purchase_date")
 
 ]

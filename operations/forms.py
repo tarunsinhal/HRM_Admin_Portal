@@ -12,7 +12,7 @@ unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('mete
 
 class UnitWidget(MultiWidget):
     def __init__(self, *args, **kwargs):
-        self.widgets = [NumberInput({'type':'number', 'class':"form-control"}), Select(choices=unit_choices, attrs={'type':'select', 'class':"form-select"})]
+        self.widgets = [NumberInput({'type':'number', 'class':"required form-control"}), Select(choices=unit_choices, attrs={'type':'select', 'class':"form-select"})]
         super(UnitWidget, self).__init__(self.widgets, *args, **kwargs)
 
     def decompress(self, value):
@@ -33,21 +33,21 @@ class UnitField(MultiValueField):
 
 
 class AddProducts(ModelForm):
-    new_product = CharField(max_length=50, widget=HiddenInput(attrs={'class':"form-control", "placeholder":"Enter product"}))
+    new_product = CharField(max_length=50, widget=HiddenInput(attrs={ 'type':'hidden','class':"required form-control", "placeholder":"Enter product"}))
     unit = UnitField()
     class Meta:
         model = recurringItems
         fields = ('type', 'product', 'new_product', 'quantity','unit', 'price', 'discount', 'amount', 'paid_by', 'purchase_date', 'next_order_date')
         widgets = {
-            'type': Select(attrs={'type':'text', 'class':"form-select"}),
-            'product': Select(attrs={'type':'text', 'class':"form-select"}),
-            'quantity': NumberInput(attrs={'type':'number', 'class':"form-control"}),
-            'price': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
-            'discount': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
-            'amount': NumberInput(attrs={'type':'number', 'class':"form-control"}),
-            'paid_by': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'purchase_date': DateInput(attrs={'type':'date', 'class':"form-control"}),
-            'next_order_date': DateInput(attrs={'type':'date', 'class':"form-control"})
+            'type': Select(attrs={'type':'text', 'class':"required form-select"}),
+            'product': Select(attrs={'type':'text', 'class':"required form-select"}),
+            'quantity': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
+            'price': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
+            'discount': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
+            'amount': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
+            'paid_by': TextInput(attrs={'type':'text', 'class':"required form-control"}),
+            'purchase_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
+            'next_order_date': DateInput(attrs={'type':'date', 'class':"required form-control"})
         }
     
     def __init__(self, *args, **kwargs):

@@ -74,42 +74,41 @@ $(document).ready(function () {
 		columnDefs: [
 			{ orderable: false, targets: 1 },
 			{ orderable: false, targets: 2 },
-			{ orderable: false, targets: 6 }
+			{ orderable: false, targets: 9 }
 		],
 		'pageLength': 8,
 		"bLengthChange": false,
 		"autoWidth": false,
 		initComplete: function () {
 			$.fn.dataTable.ext.search.push(
-				function(settings, data, dataIndex) {
+				function (settings, data, dataIndex) {
 					var min = $('#min').val() ? new Date($('#min').val()) : null;
 					var max = $('#max').val() ? new Date($('#max').val()) : null;
 					var startDate = new Date(data[4]);
 					var endDate = new Date(data[5]);
 					if (min == null && max == null) {
-					  return true;
+						return true;
 					}
 					if (min == null && startDate <= max) {
-					  return true;
+						return true;
 					}
 					if (max == null && startDate >= min) {
-					  return true;
+						return true;
 					}
 					if (startDate <= max && startDate >= min) {
-					  return true;
+						return true;
 					}
 					return false;
-				  }
-				);
-		  }
+				}
+			);
+		}
 
 	});
-
 
 	$('#min, #max').on('change', function () {
 		table.draw();
 		$('#defaultOpen').click();
-    });
+	});
 
 });
 
@@ -134,13 +133,14 @@ document.getElementById("defaultOpen").click();
 
 //...called when edit button is clicked...//
 function editfunction(obj, obj2) {
-
 	document.getElementById('editForm').style.display = 'block'
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	console.log(x)
 	var y = document.getElementById('editForm').getElementsByTagName('input');
-
-	for (i = 0; i < (y.length - 2); i++) {
-		y[i + 1].value = x[i + 1].textContent
+	console.log(y)
+	for (i = 0; i < (y.length - 3); i++) {
+		var str = x[i + 1].textContent.split(/(\s+)/);
+		y[i + 2].value = str[0]
 	}
 	document.getElementById('editForm').action = obj.id;
 
@@ -154,13 +154,24 @@ function editfunction(obj, obj2) {
 		},
 		success: function (data) {
 			$("#product").html(data);
+			$("#product option[value='other']").remove();
 			var temp = x[0].textContent;
-			var mySelect = document.getElementById('editForm').getElementsByTagName('select')[0];
+			var unit = x[2].textContent.split(/(\s+)/)[2]
+			var mySelect = document.getElementById('editForm').getElementsByTagName('select');
 			console.log(mySelect)
-			for (var i, j = 0; i = mySelect.options[j]; j++) {
+			for (var i, j = 0; i = mySelect[0].options[j]; j++) {
 				if (temp.trim() == i.textContent) {
 					console.log('hello')
-					mySelect.selectedIndex = j;
+					mySelect[0].selectedIndex = j;
+					break;
+				}
+			}
+
+			for (var i, j = 0; i = mySelect[1].options[j]; j++) {
+				debugger
+				if (unit == i.value) {
+					console.log('hello')
+					mySelect[1].selectedIndex = j;
 					break;
 				}
 			}
@@ -197,7 +208,6 @@ $('#id_product').change(function () {
 });
 
 
-
 //.... for getting products list based on selected type in add product form...//
 $("#id_type").change(function () {
 	var url = $("#foodForm").attr("data-products-url");
@@ -216,36 +226,193 @@ $("#id_type").change(function () {
 });
 
 
-
-
-// $("#saveNew").click(function (){
-// 	var url = $("#foodForm").attr("action");
-// 	var data = $("#foodForm").serialize();
-// $.ajax({
-//     type: "POST",
-//     url: url,
-//     data: data,
-    
-//     success: function(data,textStatus) {
-		
-// 		console.log(data)
-//         if (data.redirect) {
-//             // data.redirect contains the string URL to redirect to
-// 			console.log("hello")
-//             window.location.href = data.redirect;
-//         } else {
-//             // data.form contains the HTML for the replacement form
-// 			console.log("hello123")
-//             // $("#myform").replaceWith(data.form);
-//         }
-//     }
-// });
-// });
-
-
-
-$('#id_price, #id_quantity').on('change', function () {
-	var total = $("#id_price").val() * $("#id_quantity").val();
-	// var total = mul - $("id_discount").val();
-	document.getElementById("id_amount").value = total;
+$('#id_price, #id_quantity, #id_discount').on('keyup', function () {
+	debugger
+	let mul = $("#id_price").val() * $("#id_quantity").val();
+	// let d = ($("#id_discount").val() == undefined)?0:$("#id_discount").val() ;
+	let d = $("#id_discount").val() ;
+	let totalVal = mul - d;
+	$("#id_amount").val(totalVal)
 });
+
+
+//...called when save and add another button on addProduct form is clicked...//
+$("#saveNew").click(function (e) {
+	e.preventDefault()
+	var $formId = $(this).parents('form');
+	console.log($formId)
+	var url = $("#foodForm").attr("action");
+	var data = $("#foodForm").serialize();
+
+	$.ajax({
+		type: "POST",
+		url: url,
+		data: data,
+		dataType: 'json',
+		success: function (data, status) {
+			if (status === "success") {
+				console.log(data)
+				document.getElementById('foodForm').reset()
+			}
+			console.log(data)
+			document.getElementById('foodForm').reset()
+			// if (data.redirect) {
+			//     // data.redirect contains the string URL to redirect to
+			// 	console.log("hello")
+			//     window.location.href = data.redirect;
+			// } else {
+			//     // data.form contains the HTML for the replacement form
+			// 	console.log("hello123")
+			//     // $("#myform").replaceWith(data.form);
+			// }
+		},
+		error: function (request, status, error) {
+			debugger
+			// console.log(request.responseJSON['price'].responseTEXT)
+			if ('non_field_errors' in request.responseJSON) {
+				alert(request.responseJSON['non_field_errors'][0])
+			}
+			$('.required', $formId).each(function () {
+				debugger
+				console.log(request)
+				var inputVal = $(this).val();
+				// var inputName = $(this).attr('name')
+				// if (inputName in request.responseJSON){
+				// 	console.log('hello')
+				// }
+
+				var $parentTag = $(this).parent();
+				if (inputVal == '') {
+					$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
+				}
+
+			})
+		}
+	});
+});
+
+
+//...function called when addProduct form is submitted...//
+function handleaddnewProduct(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			const newProduct = xhr.response
+			myForm.reset()
+			window.location.reload();
+			document.getElementById("addNew").click();
+			// window.location.href = "/operations/food"
+		}
+		else {
+			alert('Next order should be greater than purchase date.')
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const addNewForm = document.getElementById('foodForm')
+addNewForm.addEventListener("submit", handleaddnewProduct)
+
+
+//...function called when edit form is submitted...//
+function handleEditProduct(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			const newProduct = xhr.response
+			window.location.reload();
+		}
+		else {
+			alert('Next order should be greater than purchase date.')
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const editForm = document.getElementById('editForm')
+editForm.addEventListener("submit", handleEditProduct)
+
+
+//...function called when delete form is submitted...//
+function handleDeleteProduct(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+			// window.location.href = "/operations/food"
+		}
+		else {
+			alert('There is some problem in deleting the product.')
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const deleteForm = document.getElementById('deleteForm')
+deleteForm.addEventListener("submit", handleDeleteProduct)
+
+
+//...called for loading the purchase date in addProduct form...//
+$("#id_product").change(function () {
+	var url = $("#foodForm").attr("data-date-url");
+	var productId = $(this).val();
+
+	$.ajax({                       // initialize an AJAX request
+		url: url,
+		data: {
+			'product': productId
+		},
+		success: function (data) {
+			debugger
+			if (data) {
+				$("#id_purchase_date").val(data['data'])
+			}
+		}
+	});
+});
+
+
+
+//...loading page again on closing the add new product form...//
+$('#staticBackdrop').on('hidden.bs.modal', function () {
+	window.location.reload();
+})
