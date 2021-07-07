@@ -1,5 +1,6 @@
 
-from django.http.response import HttpResponseRedirect
+from django.forms.widgets import DateInput
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from rest_framework.serializers import Serializer
@@ -62,12 +63,15 @@ def getProducts(request):
 @api_view(['POST'])
 def addProducts(request):
     print(request.META.get('HTTP_REFERER', '/'))
+    print(request.POST)
     serializer = ProductSerializer(data=request.POST)
-    print(serializer)
+    # if request.is_ajax():
+    #     print("Hello123456")
     if serializer.is_valid():
         serializer.save()
+        return Response(serializer.data, status=201)
     print(serializer.errors)
-    return redirect('/operations/food')
+    return Response(serializer.errors, status=400)
 
 
 @api_view(['POST'])
@@ -76,20 +80,31 @@ def editProducts(request, pk):
     serializer = editProductSerializer(instance=product, data=request.POST)
     if serializer.is_valid():
         serializer.save()
-    return redirect('/operations/food')
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
 
 
 @api_view(['POST'])
 def deleteProducts(request, pk):
     product = recurringItems.objects.get(id=pk)
     product.delete()
-    return redirect('/operations/food')
+    return Response({}, status=201)
 
 
 def load_products(request):
     item_id = request.GET.get('Type')
     products = Product_type.objects.filter(product_type_id=item_id).order_by('product_name')
     return render(request, 'operations/product_options.html', {'products': products})
+
+
+def load_purchase_date(request):
+    product = request.GET.get('product')
+    try:
+        date = recurringItems.objects.filter(product=product).order_by('-next_order_date').values('next_order_date')[0]['next_order_date']
+        print(date.strftime('%Y-%m-%d'))
+        return JsonResponse({'data':date.strftime('%Y-%m-%d')})
+    except:
+        return JsonResponse({'data': ''})
 
 
 def maintenance_view(request):

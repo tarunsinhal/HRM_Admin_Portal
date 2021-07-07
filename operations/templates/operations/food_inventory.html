@@ -83,7 +83,7 @@
                     </div>
 
                     <form method="POST" action="{% url 'operations:addProducts' %}" id="foodForm"
-                        data-products-url="{% url 'operations:ajax_load_products' %}" class="needs-validation">
+                        data-products-url="{% url 'operations:ajax_load_products' %}" data-date-url="{% url 'operations:ajax_load_purchase_date' %}" class="needs-validation">
                         {% csrf_token %}
                         <!-- Modal -->
                         <!-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -140,9 +140,8 @@
                                             {% for field in addProductsForm %}
                                             {% if field.is_hidden %}
                                             <div class="container">
-                                                <div class="row"
-                                                    style="text-align: left; font-size: 15px; display: none;">
-                                                    <div class="col-4" style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                <div class="row" style="text-align: left; font-size: 15px; display: none;">
+                                                    <div class="col-4 font-weight-bold" style="margin: 5px; text-align: center;">{{ field.label }}</div>
                                                     <div class="col-6" style="margin: 5px">
                                                         {{ field }}
                                                     </div>
@@ -151,10 +150,10 @@
                                             {% else %}
                                             <div class="container">
                                                 <div class="row" style="text-align: left; font-size: 15px;">
-                                                    <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                    <div class="col-4 font-weight-bold" style="margin: 5px; text-align: center;">{{ field.label }}</div>
                                                     <div class="col-6" style="margin: 5px">
                                                         {{ field }}
+                                                        {{ field.errors }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -260,35 +259,27 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Save and
-                                            Add Another</button>
-                                        <input type="submit" value="Add" class="btn btn-primary">
+                                        <button type="button" class="btn btn-secondary" name="saveButton" value="Save and Add Another" id="saveNew">Save and Add Another</button>
+                                        <button type="submit" name="addButton" value="Add" class="btn btn-primary">Add</button>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-
-
-
-
                     </form>
 
                     <form method="POST" id="editForm">
                         {% csrf_token %}
-
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog"
-                                style="display: inline-block; text-align: center; vertical-align: middle;">
-                                <div class="modal-content" style="width: 1200px; margin-top: 40%;  margin-left: 30%;">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">Update Item</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="row g-3">
+                                        <!-- <div class="row g-3">
                                             {% for field in editProductsForm %}
                                             {% if field.is_hidden %}
                                             <div class="col-sm"
@@ -302,7 +293,36 @@
                                             </div>
                                             {% endif %}
                                             {% endfor %}
+                                        </div> -->
+
+                                        <div class="row g-3">
+                                            {% for field in editProductsForm %}
+                                            {% if field.is_hidden %}
+                                            <div class="container">
+                                                <div class="row"
+                                                    style="text-align: left; font-size: 15px; display: none;">
+                                                    <div class="col-4" style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4 font-weight-bold"
+                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                        {{ field.errors }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
                                         </div>
+
+
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
@@ -373,7 +393,9 @@
                                     <th width=12% style="padding: 12px;">Quantity</th>
                                     <th width=12% style="padding: 12px;">Unit</th>
                                     <th width=12% style="padding: 12px;">Price</th>
+                                    <td style="display: none;">Discount</td>
                                     <th width=12% style="padding: 12px;">Amount</th>
+                                    <td style="display: none;">Amount</td>
                                     <th width=15% style="padding: 12px;">Purchase Date</th>
                                     <th width=18% style="padding: 12px;">Next Order Date</th>
                                     <th width=10% style="padding: 12px;">Actions</th>
@@ -392,7 +414,9 @@
                                     <td class="name" width=12%>{{ rows.quantity }}</td>
                                     <td class="name" width=12%>{{ rows.unit }}</td>
                                     <td class="name" width=12%>{{ rows.price }}</td>
+                                    <td style="display: none;">{{ rows.discount }}</td>
                                     <td class="name" width=12%>{% widthratio rows.price 1 rows.quantity %}</td>
+                                    <td style="display: none;">{{ rows.paid_by }}</td>
                                     <td class="last-date" width=15%>{{ rows.purchase_date }}</td>
                                     <td class="last-date" width=18%>{{ rows.next_order_date }}</td>
                                     <td width=10%>
@@ -413,10 +437,7 @@
                     {% endfor %}
                 </div>
 
-
-
             </div>
-
 
         </div>
     </div>

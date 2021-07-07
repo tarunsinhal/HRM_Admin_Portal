@@ -43,4 +43,4 @@ class ProductSerializer(serializers.ModelSerializer):
 
 class editProductSerializer(ProductSerializer):
     class Meta(ProductSerializer.Meta):
-        fields = ['product', 'quantity', 'price', 'amount', 'purhase_date', 'next_order_date']
+        fields = ['product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'purchase_date', 'next_order_date']
