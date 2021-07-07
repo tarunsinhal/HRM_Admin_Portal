@@ -70,7 +70,7 @@ var minDate, maxDate;
 
 //...datatable plugin for pagination and search tab in tables...//
 $(document).ready(function () {
-	$('.productTable1').DataTable({
+	var table=$('.productTable1').DataTable({
 		columnDefs: [
 			{ orderable: false, targets: 1 },
 			{ orderable: false, targets: 2 },
@@ -116,6 +116,7 @@ $(document).ready(function () {
 
 //...function for switching between different tabs...//
 function openTab(evt, tabName) {
+	debugger;
 	var i, tabcontent, tablinks;
 	tabcontent = document.getElementsByClassName("tab-panel");
 	for (i = 0; i < tabcontent.length; i++) {

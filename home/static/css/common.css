@@ -39,7 +39,7 @@ body {
   
   /* Add an active class to the active dropdown button */
   .active {
-    background-color: green;
+    background-color: #365f34 !important;
     color: white;
   }
   

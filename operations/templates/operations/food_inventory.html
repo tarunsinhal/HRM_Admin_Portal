@@ -361,6 +361,10 @@
                     {% for product_type in product_list %}
                     <section class="tab-panel" id={{ product_type.grouper }}>
                         <table class="productTable1">
+                            <div>
+                                Minimum date: <input type="date" id="min" name="min"/>
+                                Maximum date: <input type="date" id="max" name="max"/>
+                               </div>
                             <!-- <div class="tbl-header table-hover"> -->
                             <!-- <table class="table table-hover table-bordered"> -->
                             <thead class="table tbl-header table-hover table-bordered">
