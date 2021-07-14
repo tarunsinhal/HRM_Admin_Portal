@@ -1,0 +1,107 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Home-Notifications {% endblock title %}
+
+
+{% block style %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/notifications.css' %}" rel="stylesheet">
+{% endblock style %}
+
+
+{% block content %}
+
+
+<div class="container-lg">
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-1" style="text-align: center;">
+                        <img src="{% static 'media/notification.svg' %}" width="100%" height="100%" alt="...">
+                    </div>
+                    <div class="col-sm-11" id="notification-title"
+                        style="justify-content: center; vertical-align: center;">
+                        <h2><b>Notifications</b></h2>
+                        <p>Every notification you've ever received. Showing newest first.</p>
+                    </div>
+                    <!-- <div class="col-sm-4" style="padding: 10px;">
+                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop" style="background-color: #007bff">
+                            +</button>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+
+        <!-- <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-11" id="foodtitle">
+                        <h2><b>Notifications</b></h2>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+
+    <div class="table-responsive">
+        <div class="table-wrapper1">
+            <div class="table-title">
+
+                 {% regroup notifications by notification_date as notifications_list %}
+
+                 {% for notification_date in notifications_list %}
+                <div class="row">
+                   <div style="color: #007bff">
+                    <h3>{{ notification_date.grouper }}</h3>
+                </div>
+
+
+                   {% for rows in notification_date.list %}
+                   <!-- <ul>
+                       <li><strong>{{ rows.product }}</strong> next order date is tomorrow.</li>
+                   </ul> -->
+                   <div class="row">
+                    <div class="col-1">
+                       </div>
+                       <div class="col-6">
+                        <strong class="font-weight-bold">{{ rows.product }}</strong> next order date is tomorrow.
+                       </div>
+                   </div>
+                   {% endfor %}
+                   
+                </div>
+                <hr>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-11" id="foodtitle">
+                        <h2><b>Notifications</b></h2>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
+
+    </div>
+
+
+</div>
+
+
+<!-- {% for notification in notifications %}
+
+<p>{{ notification.product }}</p>
+
+{% endfor %} -->
+
+{% endblock content %}

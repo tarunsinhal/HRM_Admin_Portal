@@ -13,7 +13,7 @@ import requests
 from .forms import AddProducts, EditProducts
 from django.urls import reverse
 from django.views import generic
-# from .forms import AddProducts
+from home.models import notifications
 
 # Create your views here.
 
@@ -23,41 +23,22 @@ def operations_view(request):
 
 
 @login_required(login_url='/auth/login')
+def pantry_view(request):
+    return render(request, 'operations/pantry.html')
+
+
+@login_required(login_url='/auth/login')
 def food_view(request):
     addProductsForm = AddProducts()
     editProducts = EditProducts(auto_id=True)
-    callApi = requests.get('http://127.0.0.1:8000/operations/food/getProducts')
-    results = callApi.json()
-    return render(request, 'operations/food_inventory.html', {'products': results, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts})
+    # callApi = requests.get('http://127.0.0.1:8000/operations/food/getProducts')
+    # results = callApi.json()
 
-# class IndexView(generic.ListView):
-#     template_name = "operations/food_inventory.html"
-#     context_object_name = "products"
-#     paginate_by = 3
-
-#     def get_queryset(self):
-#         qs = FoodInventory.objects.all()
-#         # serializer = FoodSerializer(qs, many=True)
-#         return qs
-
-#     def get_context_data(self, **kwargs):
-#         context = super(IndexView, self).get_context_data(**kwargs)
-#         # callApi = requests.get('http://127.0.0.1:8000/operations/food/getProducts')
-#         # results = callApi.json()
-#         addProductsForm = AddProducts()
-#         editProducts = EditProducts(auto_id=True)
-#         # context['products'] = results
-#         context['addProductsForm'] = addProductsForm
-#         context['editProductsForm'] = editProducts
-#         return context
-
-
-@api_view(['GET'])
-def getProducts(request):
     if request.method == 'GET':
         qs = recurringItems.objects.all()
         serializer = ProductSerializer(qs, many=True)
-        return Response(serializer.data)
+
+    return render(request, 'operations/food_inventory.html', {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts})
 
 
 @api_view(['POST'])
@@ -65,18 +46,21 @@ def addProducts(request):
     print(request.META.get('HTTP_REFERER', '/'))
     print(request.POST)
     serializer = ProductSerializer(data=request.POST)
-    # if request.is_ajax():
-    #     print("Hello123456")
+    
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 
 @api_view(['POST'])
 def editProducts(request, pk):
     product = recurringItems.objects.get(id=pk)
+    if product.next_order_date != request.POST['next_order_date']:
+        notification = notifications.objects.filter(item_id=pk)
+        if notification:
+            notification.delete()
+    
     serializer = editProductSerializer(instance=product, data=request.POST)
     if serializer.is_valid():
         serializer.save()
@@ -101,7 +85,6 @@ def load_purchase_date(request):
     product = request.GET.get('product')
     try:
         date = recurringItems.objects.filter(product=product).order_by('-next_order_date').values('next_order_date')[0]['next_order_date']
-        print(date.strftime('%Y-%m-%d'))
         return JsonResponse({'data':date.strftime('%Y-%m-%d')})
     except:
         return JsonResponse({'data': ''})
@@ -109,3 +92,39 @@ def load_purchase_date(request):
 
 def maintenance_view(request):
     return render(request, 'operations/maintenance.html')
+
+
+
+
+
+
+
+# class IndexView(generic.ListView):
+#     template_name = "operations/food_inventory.html"
+#     context_object_name = "products"
+#     paginate_by = 3
+
+#     def get_queryset(self):
+#         qs = FoodInventory.objects.all()
+#         # serializer = FoodSerializer(qs, many=True)
+#         return qs
+
+#     def get_context_data(self, **kwargs):
+#         context = super(IndexView, self).get_context_data(**kwargs)
+#         # callApi = requests.get('http://127.0.0.1:8000/operations/food/getProducts')
+#         # results = callApi.json()
+#         addProductsForm = AddProducts()
+#         editProducts = EditProducts(auto_id=True)
+#         # context['products'] = results
+#         context['addProductsForm'] = addProductsForm
+#         context['editProductsForm'] = editProducts
+#         return context
+
+
+# @api_view(['GET'])
+# def getProducts(request):
+#     if request.method == 'GET':
+#         qs = recurringItems.objects.all()
+#         serializer = ProductSerializer(qs, many=True)
+#         return Response(serializer.data)
+
