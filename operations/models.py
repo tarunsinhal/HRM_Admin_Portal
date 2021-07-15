@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.fields import DateField
 
 choices = [('Snacks', 'Snacks'), ('Beverages', 'Beverages'), ('Others', 'Others')]
 
@@ -48,3 +49,5 @@ class recurringItems(models.Model):
 
     def __str__(self):
         return str(self.product)
+
+    

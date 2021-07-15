@@ -66,11 +66,20 @@
 //   }
 
 
-var minDate, maxDate;
+var minDate, maxDate, dataTableRes;
 
 //...datatable plugin for pagination and search tab in tables...//
 $(document).ready(function () {
-	var table=$('.productTable1').DataTable({
+	dataTableRes = $('.productTable1').DataTable({
+		dom: 'Bfrtip',
+		buttons: [{
+			extend: 'csv',
+			text: 'Export as CSV',
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 6, 7, 8]
+			},
+		}
+		],
 		columnDefs: [
 			{ orderable: false, targets: 1 },
 			{ orderable: false, targets: 2 },
@@ -79,43 +88,62 @@ $(document).ready(function () {
 		'pageLength': 8,
 		"bLengthChange": false,
 		"autoWidth": false,
-		initComplete: function () {
+		initComplete: function () {		
 			$.fn.dataTable.ext.search.push(
-				function (settings, data, dataIndex) {
-					var min = $('#min').val() ? new Date($('#min').val()) : null;
-					var max = $('#max').val() ? new Date($('#max').val()) : null;
-					var startDate = new Date(data[4]);
-					var endDate = new Date(data[5]);
-					if (min == null && max == null) {
-						return true;
-					}
-					if (min == null && startDate <= max) {
-						return true;
-					}
-					if (max == null && startDate >= min) {
-						return true;
-					}
-					if (startDate <= max && startDate >= min) {
-						return true;
-					}
-					return false;
-				}
-			);
-		}
+				function (settings, data, dataIndex) {	
+					debugger;	
+					let activeTabId = $('.tablinks.active').attr('data-tab-id');
+					let pur_min =$('#pur_min_'+activeTabId).val();
+					let pur_max = $('#pur_max_'+activeTabId).val();
+					let next_min =$('#next_min_'+activeTabId).val();
+					let next_max = $('#next_max_'+activeTabId).val();
+					
+					pur_min = (pur_min != "")?new Date(pur_min):null ;
+					pur_max = (pur_max != "")?new Date(pur_max):null;
+					next_min = (next_min != "")?new Date(next_min):null ;
+					next_max = (next_max != "")?new Date(next_max):null;
 
-	});
+					let purchaseDate = new Date(data[7]);
+					let nextDate = new Date(data[8]);
+					let recordType  = data[9]
 
-	$('#min, #max').on('change', function () {
-		table.draw();
-		$('#defaultOpen').click();
-	});
-
+					if(activeTabId == recordType){
+						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null )) 
+							return true;
+						if ((pur_min == null && purchaseDate <= pur_max) && (next_min == null && nextDate <= next_max ))
+							return true;
+						if ((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)) || (next_max == null && (next_min != null && nextDate >= next_min )))
+							return true;
+						if ((purchaseDate <= pur_max && purchaseDate >= pur_min) || ( (nextDate <= next_max && nextDate >= next_min)))
+							return true;
+					}else{
+						return true;
+					}	
+				}		
+			)	
+		}		
+	});	
 });
+$('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3').on('change', function (e) {
+	let selDateType = e.target.getAttribute('data-attr-type')
+	let selDateTypeVal = (selDateType == "pur")?"next":"pur";
+	let activeTabId = $('.tablinks.active').attr('data-tab-id');
+	let resetDateIdMin = selDateTypeVal+"_min_"+activeTabId;
+	let resetDateIdMax = selDateTypeVal+"_max_"+activeTabId;
+	$('#'+resetDateIdMin).val('')
+	$('#'+resetDateIdMax).val('')
+	$('[data-tab-id="+activeTabId+"]').click();
+	dataTableRes.draw();
+});
+$('.daterefresh').on('click', function (e) {
+	let selSecId= e.target.getAttribute('data-section-id')
+	$('.inventory_datepicker_'+selSecId).val('');
+	dataTableRes.draw();
 
+})
 
 //...function for switching between different tabs...//
 function openTab(evt, tabName) {
-	debugger;
 	var i, tabcontent, tablinks;
 	tabcontent = document.getElementsByClassName("tab-panel");
 	for (i = 0; i < tabcontent.length; i++) {
@@ -127,25 +155,31 @@ function openTab(evt, tabName) {
 	}
 	document.getElementById(tabName).style.display = "block";
 	evt.currentTarget.className += " active";
+
+	if(dataTableRes){
+		dataTableRes.draw();		
+	}		
 }
-// Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultOpen").click();
+
+
+$("#defaultOpen").click();
+
+// // Get the element with id="defaultOpen" and click on it
+// document.getElementById("defaultOpen").click();
 
 
 //...called when edit button is clicked...//
 function editfunction(obj, obj2) {
 	document.getElementById('editForm').style.display = 'block'
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
-	console.log(x)
 	var y = document.getElementById('editForm').getElementsByTagName('input');
-	console.log(y)
 	for (i = 0; i < (y.length - 3); i++) {
 		var str = x[i + 1].textContent.split(/(\s+)/);
 		y[i + 2].value = str[0]
 	}
 	document.getElementById('editForm').action = obj.id;
 
-	var url = $("#foodForm").attr("data-products-url");
+	var url = $("#addForm").attr("data-products-url");
 	var typeId = obj2;
 
 	$.ajax({                       // initialize an AJAX request
@@ -159,19 +193,15 @@ function editfunction(obj, obj2) {
 			var temp = x[0].textContent;
 			var unit = x[2].textContent.split(/(\s+)/)[2]
 			var mySelect = document.getElementById('editForm').getElementsByTagName('select');
-			console.log(mySelect)
 			for (var i, j = 0; i = mySelect[0].options[j]; j++) {
 				if (temp.trim() == i.textContent) {
-					console.log('hello')
 					mySelect[0].selectedIndex = j;
 					break;
 				}
 			}
 
 			for (var i, j = 0; i = mySelect[1].options[j]; j++) {
-				debugger
 				if (unit == i.value) {
-					console.log('hello')
 					mySelect[1].selectedIndex = j;
 					break;
 				}
@@ -187,6 +217,72 @@ function deletefunction(obj) {
 }
 
 
+//...called when repeat button is clicked...//
+function repeatfunction(obj, obj2) {
+	document.getElementById('staticBackdropLabel').textContent = 'Repeat Product';
+	document.getElementById('saveNew').remove();
+	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	var y = document.getElementById('addForm').getElementsByTagName('input');
+	var mySelect = document.getElementById('addForm').getElementsByTagName('select');
+
+	var unit = x[2].textContent.split(/(\s+)/)[2]
+	for (var i, j = 0; i = mySelect[2].options[j]; j++) {
+		if (unit == i.value) {
+			mySelect[2].selectedIndex = j;
+			mySelect[2].style.pointerEvents = 'none';
+			break;
+		}
+	}
+
+	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
+		if (obj2 == i.value) {
+			mySelect[0].selectedIndex = j;
+			document.getElementById("id_type").style.pointerEvents = 'none';
+			var url = $("#addForm").attr("data-products-url");
+			var typeId = i.value;
+
+			$.ajax({                       // initialize an AJAX request
+				url: url,
+				data: {
+					'Type': typeId
+				},
+				success: function (data) {
+					$("#id_product").html(data);
+					for (var i, j = 0; i = mySelect[1].options[j]; j++) {
+						if (x[0].textContent.trim() == i.textContent) {
+							mySelect[1].selectedIndex = j;
+							document.getElementById("id_product").style.pointerEvents = 'none';
+
+							var url = $("#addForm").attr("data-date-url");
+							var productId = $("#id_product").val();
+
+							$.ajax({                      
+								url: url,
+								data: {
+									'product': productId
+								},
+								success: function (data) {
+									if (data) {
+										$("#id_purchase_date").val(data['data'])
+									}
+								}
+							});
+							break;
+						}
+					}
+				}
+			});
+			break;
+		}
+	}
+
+	for (i = 0; i < (y.length - 5); i++) {
+		var str = x[i + 1].textContent.split(/(\s+)/);
+		y[i + 2].value = str[0]
+		y[i + 2].readOnly = true;
+	}
+}
+
 
 $('#id_product').change(function () {
 	var value = $(this).val();
@@ -198,20 +294,12 @@ $('#id_product').change(function () {
 		$("#id_new_product").prop({ 'required': false });
 		$("#id_new_product").parent().parent().css("display", "none");
 	}
-	// var datearray = $('#id_last_order_date input').val().split("-");
-	// console.log(datearray)
-	// var montharray = ["Jan", "Feb", "Mar","Apr", "May", "Jun","Jul", "Aug", "Sep","Oct", "Nov", "Dec"];
-	// var year = datearray[2];
-	// var month = montharray.indexOf(datearray[1])+1;
-	// var day = datearray[0];
-	// var minDate = (year +"-"+ month +"-"+ day);
-	// $('#id_expected_order_date input').attr('min',minDate); 
 });
 
 
 //.... for getting products list based on selected type in add product form...//
 $("#id_type").change(function () {
-	var url = $("#foodForm").attr("data-products-url");
+	var url = $("#addForm").attr("data-products-url");
 	var typeId = $(this).val();
 
 	$.ajax({                       // initialize an AJAX request
@@ -228,10 +316,9 @@ $("#id_type").change(function () {
 
 
 $('#id_price, #id_quantity, #id_discount').on('keyup', function () {
-	debugger
 	let mul = $("#id_price").val() * $("#id_quantity").val();
 	// let d = ($("#id_discount").val() == undefined)?0:$("#id_discount").val() ;
-	let d = $("#id_discount").val() ;
+	let d = $("#id_discount").val();
 	let totalVal = mul - d;
 	$("#id_amount").val(totalVal)
 });
@@ -242,8 +329,8 @@ $("#saveNew").click(function (e) {
 	e.preventDefault()
 	var $formId = $(this).parents('form');
 	console.log($formId)
-	var url = $("#foodForm").attr("action");
-	var data = $("#foodForm").serialize();
+	var url = $("#addForm").attr("action");
+	var data = $("#addForm").serialize();
 
 	$.ajax({
 		type: "POST",
@@ -253,38 +340,37 @@ $("#saveNew").click(function (e) {
 		success: function (data, status) {
 			if (status === "success") {
 				console.log(data)
-				document.getElementById('foodForm').reset()
+				document.getElementById('addForm').reset()
 			}
 			console.log(data)
-			document.getElementById('foodForm').reset()
-			// if (data.redirect) {
-			//     // data.redirect contains the string URL to redirect to
-			// 	console.log("hello")
-			//     window.location.href = data.redirect;
-			// } else {
-			//     // data.form contains the HTML for the replacement form
-			// 	console.log("hello123")
-			//     // $("#myform").replaceWith(data.form);
-			// }
+			document.getElementById('addForm').reset()
 		},
 		error: function (request, status, error) {
-			debugger
 			// console.log(request.responseJSON['price'].responseTEXT)
 			if ('non_field_errors' in request.responseJSON) {
 				alert(request.responseJSON['non_field_errors'][0])
 			}
 			$('.required', $formId).each(function () {
-				debugger
 				console.log(request)
 				var inputVal = $(this).val();
-				// var inputName = $(this).attr('name')
-				// if (inputName in request.responseJSON){
-				// 	console.log('hello')
-				// }
 
 				var $parentTag = $(this).parent();
+				// if (inputVal == '') {
+				// 	$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
+				// }
+
+
 				if (inputVal == '') {
-					$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
+					if($parentTag[0].className!=="col-6 error"){
+					$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');}
+				}else{
+					if($(this).nextAll().length==2){
+						$parentTag.removeClass("error");
+						$(this).nextAll()[1].remove();
+					}else{
+						$parentTag.removeClass("error");
+						$(this).next().remove();
+					}
 				}
 
 			})
@@ -314,8 +400,6 @@ function handleaddnewProduct(event) {
 			const newProduct = xhr.response
 			myForm.reset()
 			window.location.reload();
-			document.getElementById("addNew").click();
-			// window.location.href = "/operations/food"
 		}
 		else {
 			alert('Next order should be greater than purchase date.')
@@ -324,7 +408,7 @@ function handleaddnewProduct(event) {
 	xhr.send(myFormData)
 }
 
-const addNewForm = document.getElementById('foodForm')
+const addNewForm = document.getElementById('addForm')
 addNewForm.addEventListener("submit", handleaddnewProduct)
 
 
@@ -379,7 +463,6 @@ function handleDeleteProduct(event) {
 	xhr.onload = function () {
 		if (xhr.status === 201) {
 			window.location.reload();
-			// window.location.href = "/operations/food"
 		}
 		else {
 			alert('There is some problem in deleting the product.')
@@ -394,7 +477,7 @@ deleteForm.addEventListener("submit", handleDeleteProduct)
 
 //...called for loading the purchase date in addProduct form...//
 $("#id_product").change(function () {
-	var url = $("#foodForm").attr("data-date-url");
+	var url = $("#addForm").attr("data-date-url");
 	var productId = $(this).val();
 
 	$.ajax({                       // initialize an AJAX request
@@ -403,7 +486,6 @@ $("#id_product").change(function () {
 			'product': productId
 		},
 		success: function (data) {
-			debugger
 			if (data) {
 				$("#id_purchase_date").val(data['data'])
 			}
@@ -417,3 +499,6 @@ $("#id_product").change(function () {
 $('#staticBackdrop').on('hidden.bs.modal', function () {
 	window.location.reload();
 })
+
+
+

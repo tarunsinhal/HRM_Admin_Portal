@@ -19,7 +19,7 @@ from home.models import notifications
 
 @login_required(login_url='/auth/login')
 def operations_view(request):
-    return render(request, 'operations/operations.html')
+    return redirect(reverse('operations:pantry_view'))
 
 
 @login_required(login_url='/auth/login')
@@ -28,7 +28,17 @@ def pantry_view(request):
 
 
 @login_required(login_url='/auth/login')
-def food_view(request):
+def mro_view(request):
+    return render(request, 'operations/mro_supplies.html')
+
+
+@login_required(login_url='/auth/login')
+def engagements_view(request):
+    return render(request, 'operations/pantry.html')
+
+
+@login_required(login_url='/auth/login')
+def pantry_recurring_view(request):
     addProductsForm = AddProducts()
     editProducts = EditProducts(auto_id=True)
     # callApi = requests.get('http://127.0.0.1:8000/operations/food/getProducts')

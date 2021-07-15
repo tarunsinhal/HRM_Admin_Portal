@@ -1,7 +1,7 @@
 body {
     font-family: "Lato", sans-serif;
   }
-  
+
   /* Fixed sidenav, full height */
   .sidenav {
     z-index: 1;
@@ -12,7 +12,7 @@ body {
   
   /* Style the sidenav links and the dropdown button */
   .sidenav a, .dropdown-btn {
-    padding: 20px 8px 6px 16px;
+    padding: 10px 8px 6px 10px;
     text-decoration: none;
     font-size: 16px;
     color: #cbcaca;
@@ -28,6 +28,7 @@ body {
   /* On mouse-over */
   .sidenav a:hover, .dropdown-btn:hover {
     color: #f1f1f1;
+    font-weight: bolder;
   }
   
   /* Main content */
@@ -41,13 +42,15 @@ body {
   .active {
     background-color: #365f34 !important;
     color: white;
+    border-radius: 15px;
   }
   
   /* Dropdown container (hidden by default). Optional: add a lighter background color and some left padding to change the design of the dropdown content */
   .dropdown-container {
     display: none;
-    background-color: #262626;
-    padding-left: 8px;
+    /* background-color: #262626; */
+    padding-left: 20px;
+    margin-left: 10px;
   }
   
   /* Optional: Style the caret down icon */
@@ -55,7 +58,8 @@ body {
     float: right;
     padding-right: 8px;
   }
-  
+
+
   /* Some media queries for responsiveness */
   @media screen and (max-height: 450px) {
     .sidenav {padding-top: 15px;}

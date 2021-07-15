@@ -4,7 +4,7 @@ body {
   color: #404E67;
   background: #F5F7FA;
   font-family: 'Open Sans', sans-serif;
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }
 
 
@@ -141,10 +141,11 @@ a.card-title{
 
 .table-wrapper {
   width: auto;
-  margin: 30px auto;
+  margin: 10px auto;
   background: #fff;
   padding: 20px;	
-  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+  /* box-shadow: 0 1px 1px rgba(0,0,0,.05); */
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
 }
 .table-title {
   padding-bottom: 10px;

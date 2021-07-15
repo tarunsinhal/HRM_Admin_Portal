@@ -3,26 +3,41 @@
 <link href="{% static 'css/common.css' %}" rel="stylesheet">
 <div class="sidenav nav-sidebar">
   <a class="nav home" href="{% url 'home:home_view' %}"><i class="fa fa-home"></i> Home</a>
-  <button class="dropdown-btn"><i class="fa fa-server"></i> Operation 
+  
+  <button class="dropdown-btn"><i class="fa fa-server"></i> Operations 
     <i class="fa fa-caret-down"></i>
   </button>
-  <div class="dropdown-container">
-    <a href="#">Pantry</a>
-    <a href="#">Service Inventory</a>
-    <a href="#">Office Events</a>
+  <div class="dropdown-container operation">
+    <a class="nav pantry" style="font-size: 14px;" href="{% url 'operations:pantry_view' %}">Pantry</a>
+    <a class="nav mro_supplies" style="font-size: 14px;" href="{% url 'operations:mro_view' %}">MRO Supplies</a>
+    <a class="nav engagements" style="font-size: 14px;" href="{% url 'operations:engagements_view' %}">Engagements</a>
   </div>
+
+  <a class="nav it_infrastructure" href="{% url 'home:home_view' %}"><i class="fa fa-home"></i> IT Infrastructure</a>
+
   <a class="nav report" href="{% url 'home:home_view' %}"><i class="fa fa-flag"></i> Report</a>
-  <button class="dropdown-btn"><i class="fa fa-sticky-note"></i> Bills & Reimbursement 
+  <!-- <button class="dropdown-btn"><i class="fa fa-sticky-note"></i> Bills & Reimbursement 
     <i class="fa fa-caret-down"></i>
   </button>
-  <div class="dropdown-container">
-    <a href="#">Pankaj</a>
-    <a href="#">Shreya</a>
-    <a href="#">Company</a>
-  </div>
+  <div class="dropdown-container bills_reimbursement">
+    <a class="nav pankaj" href="#">Pankaj</a>
+    <a class="nav shreya" href="#">Shreya</a>
+    <a class="nav company" href="#">Company</a>
+  </div> -->
+
+  <a class="nav bills_and_reimbursement" href="{% url 'home:home_view' %}"><i class="fa fa-sticky-note"></i> Bills and Reimbursement</a>
+
   <a class="nav suggestions" href="{% url 'home:home_view' %}"><i class="fa fa-gear"></i> Suggestions</a>
-  <a class="nav notifications" href="{% url 'home:home_view' %}"><i class="fa fa-bell"></i> Notifications</a>
+
+  <a class="nav notifications" href="{% url 'home:notifications' %}">
+    <div class="row">
+      <div class="col-10"><i class="fa fa-bell"></i> Notifications </div>
+      <div class="col-2 notification-circle" id="notification"></div>
+    </div> 
+</a>
+
   <a class="nav logout" href="{% url 'home:home_view' %}"><i class="fa fa-sign-out"></i> Logout</a>
 </div>
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="{% static 'js/common.js' %}"></script>

@@ -7,12 +7,14 @@
 Home
 {% endblock title %}
 
-{% block navbar_content %}
+{% block style %}
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="{% static 'js/dashboard.js' %}" type="text/javascript"></script>
+  {% endblock style %}
 
-{% endblock navbar_content %}
 
 {% block content %}
-  <div class="row row-cols-1 row-cols-md-3 g-5 mt-3">
+  <!-- <div class="row row-cols-1 row-cols-md-3 g-5 mt-3">
 
     <div class="col">
       <div class="card shadow p-3 mb-5 bg-white rounded">
@@ -68,8 +70,11 @@ Home
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
 {% endblock content %}
 
+{% block addextra %}
 
+
+ {% endblock addextra %}

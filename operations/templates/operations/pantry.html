@@ -1,0 +1,40 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations {% endblock title %}
+
+
+{% block content %}
+
+<div class="row row-cols-1 row-cols-md-2 g-5 mt-3">
+
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'img/calendar.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'operations:pantry_recurring' %}" class="card-title">Daily/Weekly</a></h5>
+          <p class="card-text">Manage food Inventory, find tables and data for the available stock and requirements.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'img/snack.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'operations:pantry_recurring' %}" class="card-title">Pantry-Recurring</a></h5>
+          <p class="card-text">Manage Maintenance stuff consisting certificates, trophies, stationary, etc.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'img/pantry.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Pantry-Adhoc</Inp></a></h5>
+          <p class="card-text">Manage Inventory for the new employee joining kit, consisting T-shirts, systems, ID cards, etc.</p>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock content %}

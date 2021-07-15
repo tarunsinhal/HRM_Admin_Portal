@@ -79,6 +79,3 @@ class EditProducts(AddProducts, ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product_type.objects.none()
 
-
-    
-

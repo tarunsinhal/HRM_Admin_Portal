@@ -52,12 +52,14 @@ td{
   vertical-align:middle;
   font-weight: 500;
   font-size: 12px;
+  padding: 5px 5px;
 }
+
 
 section{
   margin: 5px;
 }
-  
+
 /* .modal1::before {
     display: inline-block;
     height: 100%;    
@@ -77,7 +79,7 @@ section{
   margin-left: 30%;
 } */
 
-.table-wrapper {
+/* .table-wrapper {
   width: auto;
   margin: 30px auto;
   background: #fff;
@@ -91,7 +93,7 @@ section{
 .table-title h2 {
   margin: 6px 0 0;
   font-size: 22px;
-}
+} */
 
 /* for custom scrollbar for webkit browser*/
 
@@ -106,6 +108,16 @@ section{
 } */
 
 
+.table-wrapper1 {
+  width: auto;
+  margin: 5px auto;
+  background: #fff;
+  padding: 20px;	
+  /* box-shadow: 0 1px 1px rgba(0,0,0,.05); */
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+  }
+
+
 .add-new{
   background-color: #007bff;
   color: #fff;
@@ -117,7 +129,9 @@ section{
 
 #foodtitle{
   height: 10px ;
+  color: #057333;
 }
+
 #foodtitle > h2{
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif ;
   font-size: 40px;
@@ -127,6 +141,11 @@ section{
   /*
   CSS for the main interaction
 */
+
+.tabset{
+  margin-top: 5px;
+}
+
 .tabset > input[type="radio"] {
   position: absolute;
   left: -200vw;
