@@ -1,18 +1,20 @@
 from datetime import date
 from django.db.models import fields
-from django.forms import forms, ModelForm, TextInput, MultiWidget, ChoiceField, CharField, IntegerField, ChoiceField, MultiValueField
+from django.forms import forms, ModelForm, TextInput, MultiWidget, ChoiceField, CharField, IntegerField, ChoiceField,  MultiValueField
 from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget
-from .models import FoodInventory, Product_type, recurringItems
-
-
+from .models import FoodInventory, Product_type, recurringItems ,AdhocItems
 
 unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'),
                 ('mililiters', 'ml')]
+paid_by = [('Shreya', 'Shreya'), ('Pankaj', 'Pankaj'), ('Company', 'Company'), ('Others', 'Others')]
+
+unit_choices_adhoc_items=[('Set', 'Set'), ('Number', 'Number')]
 
 
 class UnitWidget(MultiWidget):
     def __init__(self, *args, **kwargs):
-        self.widgets = [NumberInput({'type':'number', 'class':"required form-control"}), Select(choices=unit_choices, attrs={'type':'select', 'class':"form-select"})]
+        self.widgets = [NumberInput({'type': 'number', 'class': "required form-control"}),
+                        Select(choices=unit_choices, attrs={'type': 'select', 'class': "form-select"})]
         super(UnitWidget, self).__init__(self.widgets, *args, **kwargs)
 
     def decompress(self, value):
@@ -27,29 +29,36 @@ class UnitField(MultiValueField):
     def __init__(self, *args, **kwargs):
         fields = (IntegerField(), ChoiceField(choices=unit_choices))
         super(UnitField, self).__init__(fields, *args, **kwargs)
-    
+
     def compress(self, data_list):
         return ' '.join(data_list)
 
 
 class AddProducts(ModelForm):
-    new_product = CharField(max_length=50, widget=HiddenInput(attrs={ 'type':'hidden','class':"required form-control", "placeholder":"Enter product"}))
+    new_product = CharField(max_length=50, widget=HiddenInput(
+        attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter product"}))
     unit = UnitField()
+
     class Meta:
         model = recurringItems
-        fields = ('type', 'product', 'new_product', 'quantity','unit', 'price', 'discount', 'amount', 'paid_by', 'purchase_date', 'next_order_date')
+        fields = (
+            'type', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by',
+            'purchase_date',
+            'next_order_date')
         widgets = {
-            'type': Select(attrs={'type':'text', 'class':"required form-select"}),
-            'product': Select(attrs={'type':'text', 'class':"required form-select"}),
-            'quantity': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
-            'price': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
-            'discount': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
-            'amount': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
-            'paid_by': TextInput(attrs={'type':'text', 'class':"required form-control"}),
-            'purchase_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
-            'next_order_date': DateInput(attrs={'type':'date', 'class':"required form-control"})
+            'type': Select(attrs={'type': 'text', 'class': "required form-select"}),
+            'product': Select(attrs={'type': 'text', 'class': "required form-select"}),
+            'quantity': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
+            'price': NumberInput(
+                attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
+            'discount': NumberInput(
+                attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
+            'amount': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
+            'paid_by': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
+            'purchase_date': DateInput(attrs={'type': 'date', 'class': "required form-control"}),
+            'next_order_date': DateInput(attrs={'type': 'date', 'class': "required form-control"})
         }
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product_type.objects.none()
@@ -68,14 +77,43 @@ class AddProducts(ModelForm):
         expected_order_date = self.cleaned_data.get("next_order_date")
         if expected_order_date < last_order_date:
             raise forms.ValidationError("Expected Date is less than last Order date")
-        return  last_order_date, expected_order_date
+        return last_order_date, expected_order_date
 
 
 class EditProducts(AddProducts, ModelForm):
     class Meta(AddProducts.Meta):
         exclude = ['type']
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product_type.objects.none()
 
+
+class AddAdhocItemsForm(ModelForm):
+    add_user = CharField(max_length=50, widget=HiddenInput(
+        attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter user"}))
+
+    class Meta:
+        model = AdhocItems
+        fields = ('product', 'quantity', 'unit','price', 'amount',
+                  'paid_by', 'add_user', 'purchase_date', 'additional_info')
+        widgets = {
+            'purchase_date': DateInput(attrs={'type': 'date', 'class': "required form-control"}),
+            'product': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
+            'quantity': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
+            'unit': Select(choices=unit_choices_adhoc_items, attrs={'type': 'select', 'class': "form-select"}),
+
+            'price': NumberInput(
+                attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
+            'amount': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
+            'paid_by':  Select(choices=paid_by, attrs={'type': 'select', 'class': "form-select"}),
+            'addition_info': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
+
+        }
+
+
+
+class EditAdhocItemsForm(AddAdhocItemsForm, ModelForm):
+    class Meta(AddAdhocItemsForm.Meta):
+        fields = ['purchase_date', 'product', 'quantity', 'unit','price', 'amount',
+                  'paid_by', 'additional_info']

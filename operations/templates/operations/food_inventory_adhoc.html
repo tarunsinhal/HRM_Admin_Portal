@@ -1,0 +1,538 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations-Pantry-Adhoc {% endblock title %}
+
+{% block style %}
+
+
+<!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+<!-- <link href=
+"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+         rel="stylesheet"> -->
+
+{% endblock style %}
+
+
+{% block content %}
+
+<div class="container-lg" style="overflow-y: scroll;">
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <img src="{% static 'img/pantry.svg' %}" height="100%" width="100%" alt="...">
+                    </div>
+                    <div class="col-sm-7" id="foodtitle">
+                        <h2><b>Pantry-Adhoc</b></h2>
+                        <p>Manage Inventory for the ad hoc products like electronics, furniture, crockery etc.</p>
+                    </div>
+                    <div class="col-sm-4" style="padding: 10px;">
+                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" style="background-color: #007bff">
+                            +
+                        </button>
+                    </div>
+
+                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addForm">
+
+                        {% csrf_token %}
+                        <!-- Modal -->
+                        <!--                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"-->
+                        <!--                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">-->
+                        <!--                            <div class="modal-dialog modal-dialog-scrollable">-->
+                        <!--                                <div class="modal-content">-->
+                        <!--                                    <div class="modal-header">-->
+                        <!--                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>-->
+                        <!--                                        <button type="button" class="btn-close" data-bs-dismiss="modal"-->
+                        <!--                                            aria-label="Close"></button>-->
+                        <!--                                    </div>-->
+
+                        <!--                                    <div class="modal-body">
+                                                                <div class="row g-3">
+                                                                    {% for field in addProductsForm %}
+                                                                    {% if field.is_hidden %}
+                                                                    <div class="col-sm"
+                                                                        style="text-align: left; font-size: 12px; display: none;">
+                                                                        {{ field.label }}
+                                                                        {{ field }}
+                                                                    </div>
+                                                                    {% else %}
+                                                                    <div class="col-sm" style="text-align: left; font-size: 12px;">
+                                                                        {{ field.label }}
+                                                                        {{ field }}
+                                                                    </div>
+                                                                    {% endif %}
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="submit" class="btn btn-secondary" id="addAnother">Save and Add
+                                                                    another</button>
+                                                                <input type="button" value="Add" id="saveNew" class="btn btn-primary">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            {% for field in addAdhocProductsForm %}
+                                            {% if field.is_hidden %}
+                                            <div class="container">
+                                                <div class="row"
+                                                     style="text-align: left; font-size: 15px; display: none;">
+                                                    <div class="col-4 font-weight-bold"
+                                                         style="margin: 5px; text-align: center;">{{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4 font-weight-bold"
+                                                         style="margin: 5px; text-align: center;">{{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                        {{ field.errors }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
+
+
+                                            <!-- <div class="container">
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px;">
+                                                            {{ addProductsForm.type.label }}</div>
+                                                        <div style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.type }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-bold" style="padding: 0px;  margin-bottom: 2px; ">
+                                                            {{ addProductsForm.product.label }}</div>
+                                                            <div style="margin-bottom: 10px; padding: 0px;">
+                                                                {{ addProductsForm.product }}
+                                                            </div>
+                                                            <div style="padding: 0px;">
+                                                                {{ addProductsForm.new_product }}
+                                                            </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.quantity.label }}</div>
+                                                        <div style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.quantity }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.unit.label }} </div>
+                                                        <div class="col g-2"
+                                                            style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.unit }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.purchased_quantity.label }} </div>
+                                                        <div
+                                                            style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.purchased_quantity }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col mb-2" style="text-align: left;">
+                                                    <div class="col-2 form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                        {{ addProductsForm.price.label }}
+                                                    </div>
+                                                    <div class="col-4 input-group"
+                                                        style="margin-bottom: 15px; padding: 0px;">
+                                                        <span class="input-group-text">&#x20b9;</span>
+                                                        {{ addProductsForm.price }}
+                                                        <span class="helptext">100 characters max.</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col mb-2" style="text-align: left;">
+                                                    <div class="col-2 form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                        {{ addProductsForm.amount.label }}
+                                                    </div>
+                                                    <div class="col-4 input-group"
+                                                        style="margin-bottom: 15px; padding: 0px;">
+                                                        <span class="input-group-text">&#x20b9;</span>
+                                                        {{ addProductsForm.amount }}
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.last_order_date.label }}
+                                                        </div>
+                                                        <div
+                                                            style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.last_order_date }}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col mb-2" style="text-align: left;">
+                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
+                                                            {{ addProductsForm.expected_order_date.label }}
+                                                        </div>
+                                                        <div style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addProductsForm.expected_order_date }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div> -->
+
+
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-secondary" name="saveButton"
+                                                value="Save and Add Another" id="saveNew">Save and Add Another
+                                        </button>
+                                        <button type="submit" name="addButton" value="Add"
+                                                class="btn btn-primary">Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" id="editForm">
+                        {% csrf_token %}
+                        <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Update Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            {% for field in editAdhocProductsForm %}
+                                            {% if field.is_hidden %}
+                                            <div class="container">
+                                                <div class="row"
+                                                     style="text-align: left; font-size: 15px; display: none;">
+                                                    <div class="col-4" style="margin: 5px; text-align: center;">
+                                                        {{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4 font-weight-bold"
+                                                         style="margin: 5px; text-align: center;">{{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                        {{ field.errors }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close
+                                        </button>
+
+
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" id="deleteForm">
+                        {% csrf_token %}
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content"
+                                     style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this product?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="table-responsive">
+        <div class="table-wrapper1">
+            <div class="table-title">
+
+
+                <!--                {% regroup products|dictsort:'purchase_date' by date as products%}-->
+
+                <div class="tabset">
+                    <!-- Tab 1 -->
+                    <input type="radio" data-tab-id="1" name="tabset" id="defaultOpen" class="tablinks"
+                           onclick="openTab(event, '1')">
+                    <label for="defaultOpen"><a href="{% url 'operations:pantry_adhoc' %}">Product</a></label>
+                    <!-- Tab 2 -->
+                    <!--                    <input type="radio" data-tab-id="2" name="tabset" id="tab2" class="tablinks"-->
+                    <!--                           aria-controls="Beverages"-->
+                    <!--                           onclick="openTab(event, 2)">-->
+                    <!--                    <label for="tab2">Beverages</label>-->
+                    <!--                    &lt;!&ndash; Tab 3 &ndash;&gt;-->
+                    <!--                    <input type="radio" data-tab-id="3" name="tabset" id="tab3" class="tablinks" aria-controls="Others"-->
+                    <!--                           onclick="openTab(event, 3)">-->
+                    <!--                    <label for="tab3">Others</label>-->
+
+                    <div class="tab-panels">
+                        {% for product in products %}
+                        <!--                        <section class="tab-panel" id={{purchase_date.grouper}}>-->
+                        <table class="productTable1">
+
+                            <!-- <div class="tbl-header table-hover"> -->
+                            <!-- <table class="table table-hover table-bordered"> -->
+
+                            <div style="display: flex;">
+                                <!-- <div class="col-md-12">
+                                    <div class="col-md-6" style="float: left;">
+                                        <div>
+                                            Purchase date: <input type="date" class="inventory_datepicker_{{ product_type.grouper }}"
+                                                id="pur_min_{{ product_type.grouper }}" name="pur_min_{{ product_type.grouper }}"
+                                                data-attr-type="pur" /> to <input type="date"
+                                                class="inventory_datepicker_{{ product_type.grouper }}" id="pur_max_{{ product_type.grouper }}"
+                                                name="pur_max_{{ product_type.grouper }}" data-attr-type="pur" />
+                                        </div>
+                                        <div>
+                                            Next date: <input type="date" class="inventory_datepicker_{{ product_type.grouper }}"
+                                                id="next_min_{{ product_type.grouper }}" name="next_min_{{ product_type.grouper }}"
+                                                data-attr-type="next" /> to <input type="date"
+                                                class="inventory_datepicker_{{ product_type.grouper }}" id="next_max_{{ product_type.grouper }}"
+                                                name="next_max_{{ product_type.grouper }}" data-attr-type="next" />
+                                        </div>
+                                    </div>
+                                </div> -->
+
+
+                                <div class="col-md-12" style="padding-bottom: 5px;">
+                                    <!--                                    <span>-->
+                                    <!--                                       <span class="font-weight-bold">Purchase date: </span> <input type="date"-->
+                                    <!--                                                                                                    class="inventory_datepicker_{{ product_type.grouper }}"-->
+                                    <!--                                                                                                    id="pur_min_{{ product_type.grouper }}"-->
+                                    <!--                                                                                                    name="pur_min_{{ product_type.grouper }}"-->
+                                    <!--                                                                                                    data-attr-type="pur"/> to <input-->
+                                    <!--                                            type="date" class="inventory_datepicker_{{ product_type.grouper }}"-->
+                                    <!--                                            id="pur_max_{{ product_type.grouper }}"-->
+                                    <!--                                            name="pur_max_{{ product_type.grouper }}" data-attr-type="pur"/>-->
+                                    <!--                                    </span>-->
+                                    <!--                                    |-->
+                                    <!--                                    <span>-->
+                                    <!--                                       <span class="font-weight-bold">Next date: </span> <input type="date"-->
+                                    <!--                                                                                                class="inventory_datepicker_{{ product_type.grouper }}"-->
+                                    <!--                                                                                                id="next_min_{{ product_type.grouper }}"-->
+                                    <!--                                                                                                name="next_min_{{ product_type.grouper }}"-->
+                                    <!--                                                                                                data-attr-type="next"/> to <input-->
+                                    <!--                                            type="date" class="inventory_datepicker_{{ product_type.grouper }}"-->
+                                    <!--                                            id="next_max_{{ product_type.grouper }}"-->
+                                    <!--                                            name="next_max_{{ product_type.grouper }}" data-attr-type="next"/>-->
+                                    <!--                                    </span>-->
+                                    <!--                                    <span>-->
+                                    <!--                                        <i data-section-id="{{product_type.grouper }}" class="daterefresh fa fa-refresh"-->
+                                    <!--                                           aria-hidden="true" style="margin-left: 20px;"></i>-->
+                                    <!--                                        &lt;!&ndash; <img data-section-id="{{product_type.grouper }}" class="daterefresh" src="../../static/img/refresh.jpg" height="70" style="margin-left: 20px;"> &ndash;&gt;-->
+                                    <!--                                    </span>-->
+                                    <!--                                </div>-->
+                                    <!--                            </div>-->
+                                    <!--                                <div class="col-md-12" style="padding-bottom: 5px;">-->
+                                    <span>
+                                        <span class="font-weight-bold">Purchase date: </span> <input type="date"
+                                                                                                     class="inventory_datepicker_{{ purchase_date.grouper }}"
+                                                                                                     id="pur_min_{{ purchase_date.grouper }}"
+                                                                                                     name="pur_min_{{ purchase_date.grouper }}"
+                                                                                                     data-attr-type="pur"/> to <input
+                                            type="date" class="inventory_datepicker_{{ purchase_date.grouper }}"
+                                            id="pur_max_{{ purchase_date.grouper }}"
+                                            name="pur_max_{{ purchase_date.grouper }}" data-attr-type="pur"/>
+                                    </span>
+                                    <!--                                    |-->
+                                    <!--                                    <span >-->
+                                    <!--                                       <span class="font-weight-bold">Next date: </span> <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="next_min_{{ product_type.grouper }}" name="next_min_{{ product_type.grouper }}" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="next_max_{{ product_type.grouper }}" name="next_max_{{ product_type.grouper }}" data-attr-type="next"/>-->
+                                    <!--                                    </span>-->
+                                    <!--                                    <span>-->
+                                    <i data-section-id="{{purchase_date.grouper }}" class="daterefresh fa fa-refresh"
+                                       aria-hidden="true" style="margin-left: 20px;"></i>
+                                    <!-- <img data-section-id="{{product_type.grouper }}" class="daterefresh" src="../../static/img/refresh.jpg" height="70" style="margin-left: 20px;"> -->
+                                    </span>
+                                </div>
+
+                                <thead class="table tbl-header table-hover table-bordered">
+                                <tr>
+                                    <th class="name" style="display: none;"></th>
+                                    <th width=15% style="padding: 12px;">Purchase Date</th>
+                                    <th width=15% style="padding: 12px;">Product Name</th>
+                                    <th width=10% style="padding: 12px;">Quantity</th>
+                                    <th width=15% style="padding: 12px;">unit</th>
+                                    <th width=12% style="padding: 12px;">Price</th>
+                                    <th width=12% style="padding: 12px;">Amount</th>
+                                    <th width=12% style="padding: 12px;">Paid By</th>
+                                    <th width=12% style="padding: 12px;">Additional Info</th>
+                                    <td class="name" style="display: none;"></td>
+                                    <th width=12% style="padding: 12px;">Actions</th>
+                                </tr>
+                                </thead>
+                                <!-- </table> -->
+                                <!-- </div> -->
+
+                                <!-- <div class="tbl-content table"> -->
+                                <!-- <table id="productTable"> -->
+                                <tbody class="tbl-content table">
+                                {% for rows in product.list %}
+
+                                <tr>
+
+                                    <td class="name" style="display: none;"></td>
+                                    <td class="last-date font-weight-bold" width=15% style="border-left: 2px solid #007bff; padding: 2px 5px;">{{ rows.purchase_date }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px;">{{ rows.product }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.quantity }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px;">{{ rows.unit }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.price }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.amount }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.paid_by }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.additional_info }}</td>
+                                    <td class="name" style="display: none;"></td>
+                                    <td width=10% style="padding: 2px 5px;">
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this)
+                                           data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
+                                           style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
+                                        <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
+                                           data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
+                                                class="material-icons">&#xE872;</i></a>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                                <!-- </table> -->
+                                <!-- </div> -->
+                                </section>
+                                {% endfor %}
+                            </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    {% endblock content %}
+
+
+    {% block addextra %}
+
+
+    <!-- <script src="../assets/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{% static 'js/food_inventory_adhoc.js' %}"></script>
+
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
+
+    <!-- <script  src=
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+            </script>
+            <script src=
+    "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js">
+            </script>
+            <script src="{% static 'js/fancyTable.js' %}"></script>
+            </script>
+            <script type="text/javascript">
+
+                $(document).ready(function() {
+                    $(".productTable1").fancyTable({
+                      /* Column number for initial sorting*/
+                       sortColumn:0,
+                       /* Setting pagination or enabling */
+                       pagination: true,
+                       /* Rows per page kept for display */
+                       perPage:3,
+                       globalSearch:true
+                       });
+
+                });
+            </script> -->
+
+
+    {% endblock addextra %}

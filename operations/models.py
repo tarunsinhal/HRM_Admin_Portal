@@ -2,6 +2,8 @@ from django.db import models
 from django.db.models.fields import DateField
 
 choices = [('Snacks', 'Snacks'), ('Beverages', 'Beverages'), ('Others', 'Others')]
+paid_by = [('Shreya', 'Shreya'), ('Pankaj', 'Pankaj'), ('Company', 'Company'), ('Others', 'Others')]
+unit_choices_adhoc_items = [('Set', 'Set'), ('Number', 'Number')]
 
 
 # Create your models here.
@@ -9,7 +11,7 @@ class Item_types(models.Model):
     type_name = models.CharField(max_length=50)
     type_id = models.IntegerField(primary_key=True)
 
-    def __str__(self) :
+    def __str__(self):
         return str(self.type_name)
 
 
@@ -50,4 +52,16 @@ class recurringItems(models.Model):
     def __str__(self):
         return str(self.product)
 
-    
+
+class AdhocItems(models.Model):
+    product = models.CharField(max_length=50)
+    quantity = models.PositiveIntegerField()
+    unit = models.CharField(max_length=50, choices=unit_choices_adhoc_items)
+    price = models.PositiveIntegerField()
+    amount = models.PositiveIntegerField()
+    paid_by = models.CharField(max_length=50, choices=paid_by)
+    purchase_date = models.DateField()
+    additional_info = models.CharField(max_length=100, blank=True)
+
+    def __str__(self):
+        return str(self.product)

@@ -30,8 +30,10 @@
       <div class="card shadow p-3 mb-5 bg-white rounded">
         <img src="{% static 'img/pantry.svg' %}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Pantry-Adhoc</Inp></a></h5>
-          <p class="card-text">Manage Inventory for the new employee joining kit, consisting T-shirts, systems, ID cards, etc.</p>
+          <h5 class="card-title"><a href="{% url 'operations:pantry_adhoc' %}" class="card-title">Pantry-Adhoc</Inp></a></h5>
+          <p class="card-text">Manage Inventory for the ad hoc products like electronics, furniture, crockery etc.
+
+</p>
         </div>
       </div>
     </div>
