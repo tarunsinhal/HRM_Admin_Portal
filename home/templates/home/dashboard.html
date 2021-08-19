@@ -1,80 +1,68 @@
 {% extends 'home/base.html' %}
-
 {% load static %}
 
-
-{% block title %}
-Home
-{% endblock title %}
+{% block title %} Home {% endblock title %}
 
 {% block style %}
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="{% static 'js/dashboard.js' %}" type="text/javascript"></script>
-  {% endblock style %}
 
+<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Flamenco&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+{% endblock style %}
 
 {% block content %}
-  <!-- <div class="row row-cols-1 row-cols-md-3 g-5 mt-3">
+{% if request.user.is_superuser %}
 
-    <div class="col">
-      <div class="card shadow p-3 mb-5 bg-white rounded">
-        <img src="{% static 'media/inventory.svg' %}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><a href="{% url 'operations:operations_view' %}" class="card-title">Operations</a></h5>
-          <p class="card-text">Manage your Food inventory, Maintenance, and operations related Items</p>
-        </div>
-      </div>
+<header class="header ">
+    <div class="dash" align="left;">
+
+        <a href="{% url 'authentication:register' %}" title="Register" >
+            <ion-icon style="font-size:33px; margin-left: 80%; margin-top:50px; margin-right:70px;color:black;" name="person-add" ></ion-icon>
+        </a>
+        <a href="{% url 'home:profile' %}" title="Manage Accounts"><ion-icon style="font-size:36px; color:black;" name="people"></ion-icon>
+        </a>
+
     </div>
-    <div class="col">
-      <div class="card shadow p-3 mb-5 bg-white rounded">
-        <img src="{% static 'media/calendar.svg' %}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Daily Stuff</a></h5>
-          <p class="card-text">Section for the items needs to be bought daily</p>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card shadow p-3 mb-5 bg-white rounded">
-        <img src="{% static 'media/party.svg' %}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Office Events</a></h5>
-          <p class="card-text">Manage items used in office parties, celebrations, and festivities.</p>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card shadow p-3 mb-5 bg-white rounded">
-        <img src="{% static 'media/invoice.svg' %}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Bills-Reimbursement</a></h5>
-          <p class="card-text">Manage your Bills and Reimbursement</p>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card shadow p-3 mb-5 bg-white rounded">
-        <img src="{% static 'media/suggestion.svg' %}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Suggestions</a></h5>
-          <p class="card-text">Manage Suggestions from all over the company</p>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="card shadow p-3 mb-5 bg-white rounded">
-        <img src="{% static 'media/seller.svg' %}" class="card-img-top" alt="...">
-        <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Business Vendors</a></h5>
-          <p class="card-text">Manage business vendors for the company</p>
-        </div>
-      </div>
-    </div>
-  </div> -->
+
+    {% endif %}
+
+</header>
 
 {% endblock content %}
 
+
 {% block addextra %}
+<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<!--    <script src="{% static 'js/food_inventory_adhoc.js' %}"></script>-->
 
- {% endblock addextra %}
+<script type="text/javascript" charset="utf8"
+        src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+{% endblock addextra %}

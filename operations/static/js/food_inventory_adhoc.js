@@ -1,69 +1,3 @@
-/* global bootstrap: false */
-// (function () {
-//   'use strict'
-//   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-//   tooltipTriggerList.forEach(function (tooltipTriggerEl) {
-//     new bootstrap.Tooltip(tooltipTriggerEl)
-//   })
-// })()
-
-// $(document).ready(function(){
-// 	$('[data-toggle="tooltip"]').tooltip();
-// 	var actions = $("table td:last-child").html();
-// 	// Add row on add button click
-// 	$(document).on("click", ".add", function(){
-// 		var empty = false;
-// 		var input = $(this).parents("tr").find('input[type="text"]');
-//         input.each(function(){
-// 			if(!$(this).val()){
-// 				$(this).addClass("error");
-// 				empty = true;
-// 			} else{
-//                 $(this).removeClass("error");
-//             }
-// 		});
-// 		$(this).parents("tr").find(".error").first().focus();
-// 		if(!empty){
-// 			input.each(function(){
-// 				$(this).parent("td").html($(this).val());
-// 			});
-// 			$(this).parents("tr").find(".add, .edit").toggle();
-// 			$(".add-new").removeAttr("disabled");
-// 		}
-//     });
-// 	// Edit row on edit button click
-// 	$(document).on("click", ".edit", function(){
-//         $(this).parents("tr").find("td:not(:last-child)").each(function(){
-//           if (this.className != undefined && this.className == "last-date"){
-//             $(this).html('<input type="date" class="form-control" value="' + $(this).text() + '">');
-//           }
-//           else{
-//             $(this).html('<input type="text" class="form-control" value="' + $(this).text() + '">');
-//           }
-// 		});
-// 		$(this).parents("tr").find(".add, .edit").toggle();
-// 		$(".add-new").attr("disabled", "disabled");
-//     });
-// 	// Delete row on delete button click
-// 	$(document).on("click", ".delete", function(){
-//         $(this).parents("tr").remove();
-// 		$(".add-new").removeAttr("disabled");
-//     });
-// });
-
-// function openCity(evt, cityName) {
-// 	var i, tabcontent, tablinks;
-// 	tabcontent = document.getElementsByClassName("tabcontent");
-// 	for (i = 0; i < tabcontent.length; i++) {
-// 	  tabcontent[i].style.display = "none";
-// 	}
-// 	tablinks = document.getElementsByClassName("tablinks");
-// 	for (i = 0; i < tablinks.length; i++) {
-// 	  tablinks[i].className = tablinks[i].className.replace(" active", "");
-// 	}
-// 	document.getElementById(cityName).style.display = "block";
-// 	evt.currentTarget.className += " active";
-//   }
 
 
 var minDate, maxDate, dataTableRes;
@@ -76,7 +10,7 @@ $(document).ready(function () {
 			extend: 'csv',
 			text: 'Export as CSV',
 			exportOptions: {
-				columns: [ 1, 2, 3, 4, 5, 6, 7, 8]
+				columns: [ 2, 3, 4, 5, 6, 7, 8]
 			},
 		}
 		],
@@ -121,17 +55,17 @@ $(document).ready(function () {
 		}
 	});
 });
-$('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3').on('change', function (e) {
-	let selDateType = e.target.getAttribute('data-attr-type')
-	let selDateTypeVal = (selDateType == "pur")?"next":"pur";
-	let activeTabId = $('.tablinks.active').attr('data-tab-id');
-	let resetDateIdMin = selDateTypeVal+"_min_"+activeTabId;
-	let resetDateIdMax = selDateTypeVal+"_max_"+activeTabId;
-	$('#'+resetDateIdMin).val('')
-	$('#'+resetDateIdMax).val('')
-	$('[data-tab-id="+activeTabId+"]').click();
-	dataTableRes.draw();
-});
+//$('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3').on('change', function (e) {
+//	let selDateType = e.target.getAttribute('data-attr-type')
+//	let selDateTypeVal = (selDateType == "pur")?"next":"pur";
+//	let activeTabId = $('.tablinks.active').attr('data-tab-id');
+//	let resetDateIdMin = selDateTypeVal+"_min_"+activeTabId;
+//	let resetDateIdMax = selDateTypeVal+"_max_"+activeTabId;
+//	$('#'+resetDateIdMin).val('')
+//	$('#'+resetDateIdMax).val('')
+//	$('[data-tab-id="+activeTabId+"]').click();
+//	dataTableRes.draw();
+//});
 $('.daterefresh').on('click', function (e) {
 	let selSecId= e.target.getAttribute('data-section-id')
 	$('.inventory_datepicker_'+selSecId).val('');
@@ -166,47 +100,94 @@ $("#defaultOpen").click();
 
 
 //...called when edit button is clicked...//
-function editfunction(obj, obj2) {
-	document.getElementById('editForm').style.display = 'block'
+function editfunction(obj) {
+debugger;
+		document.getElementById('editFormAdhoc').style.display = 'block'
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
-	var y = document.getElementById('editForm').getElementsByTagName('input');
-	for (i = 0; i < (y.length - 2); i++) {
-		var str = x[i + 1].textContent.split(/(\s+)/);
-		y[i + 1].value = str[0]
-	}
-	document.getElementById('editForm').action = obj.id;
+	var y = document.getElementById('editFormAdhoc').getElementsByTagName('input');
+	var mySelect = document.getElementById('editFormAdhoc').getElementsByTagName('select');
+	var myText = document.getElementById('editFormAdhoc').getElementsByTagName('textarea');
+	var paid_by = x[7].textContent.split(/(\s+)/)[0]
+    var quantity_1= x[4].textContent.split(/(\s+)/)[2]
 
-//	var url = $("#addForm").attr("data-products-url");
-//	var typeId = obj2;
-
-	$.ajax({                       // initialize an AJAX request
-		url: url,
-		data: {
-			'Product': productId
-		},
-		success: function (data) {
-			$("#product").html(data);
-//			$("#product option[value='other']").remove();
-			var temp = x[0].textContent;
-			var unit = x[2].textContent.split(/(\s+)/)[2]
-			var mySelect = document.getElementById('editForm').getElementsByTagName('select');
-			for (var i, j = 0; i = mySelect[0].options[j]; j++) {
-				if (temp.trim() == i.textContent) {
+	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
+				if (quantity_1 == i.value) {
 					mySelect[0].selectedIndex = j;
 					break;
 				}
 			}
-
-			for (var i, j = 0; i = mySelect[1].options[j]; j++) {
-				if (unit == i.value) {
+    for (var i, j = 0; i = mySelect[1].options[j]; j++) {
+				if (paid_by == i.value) {
 					mySelect[1].selectedIndex = j;
 					break;
 				}
 			}
-		}
-	});
-}
 
+	for (i = 1; i < (y.length-1); i++) {
+		var str = x[i + 1].textContent.split(/(\s+)/);
+				y[i].value = str[0]
+	}
+	myText[0].value = x[8].textContent
+	document.getElementById('editFormAdhoc').action = obj.id;
+
+	var url = $("#editFormAdhoc").attr("data-paidby-url");
+
+//	var typeId = obj2;
+
+	$.ajax({                       // initialize an AJAX request
+	    type: "GET",
+		url: url,
+		dataType: "html",
+//		data: {
+//			'Product': productId
+
+//		},
+		success: function (response) {
+			$("#paid_by").html(response);
+			}
+			});
+}
+$('select[name="paid_by"]').change(function(){
+
+    if ($(this).val() == "other"){
+    debugger;
+            alert("call the do something function on option 2");
+//
+//    	$("#id_add_name").prop({ 'type': 'text', 'required': true });
+//		$("#id_add_name").parent().parent().css("display", "block");
+////   $("#id_add_user").show('<input type="text" placeholder="Name" name="name"/>');
+
+     }
+     else {
+
+
+		$("#id_add_name").prop({ 'required': false });
+		$("#id_add_name").parent().parent().css("display", "none");
+	}
+});
+
+$('#price, #quantity_0').on('keyup', function () {
+debugger;
+	let total = $("#price").val() * $("#quantity_0").val();
+	$("#amount").val(total)
+});
+
+	var url = $("#addFormAdhoc").attr("data-users-url");
+$('select[name="paid_by"]').change(function(){
+
+    if ($(this).val() == "add_name"){
+    debugger;
+            alert("call the do ");
+
+    	$("#add_name").prop({ 'type': 'text', 'required': true });
+		$("#add_name").parent().parent().css("display", "block");
+
+     }
+     else {
+		$("#add_name").prop({ 'required': false });
+		$("#add_name").parent().parent().css("display", "none");
+	}
+});
 
 //...called when delete button is clicked...//
 function deletefunction(obj) {
@@ -217,16 +198,25 @@ function deletefunction(obj) {
 
 
 //.... for getting products list based on selected type in add product form...//
-//$("#id_type").change(function () {
-//	var url = $("#addForm").attr("data-products-url");
-//	var typeId = $(this).val();
-//
+//$("#id_paid_by").click(function () {
+//	var url = $("#addFormAdhoc").attr("data-users-url");
+////	var typeId = $(this).val();
+////
 //	$.ajax({                       // initialize an AJAX request
+//        type: "GET",
 //		url: url,
+//		dataType: "html",
+//		success: function (response) {
+//			$("#id_paid_by").html(response);
+//			}
+//			});
+//}
+
+
 //		data: {
 //			'Type': typeId
 //		},
-//		success: function (data) {
+//		success: function (html) {
 //			$("#id_product").html(data);
 //		}
 //	});
@@ -234,9 +224,9 @@ function deletefunction(obj) {
 //});
 
 
-$('#id_price, #id_quantity').on('keyup', function () {
+$('#id_price, #id_quantity_0').on('keyup', function () {
     debugger;
-	let total = $("#id_price").val() * $("#id_quantity").val();
+	let total = $("#id_price").val() * $("#id_quantity_0").val();
 	$("#id_amount").val(total)
 });
 
@@ -246,8 +236,8 @@ $("#saveNew").click(function (e) {
 	e.preventDefault()
 	var $formId = $(this).parents('form');
 	console.log($formId)
-	var url = $("#addForm").attr("action");
-	var data = $("#addForm").serialize();
+	var url = $("#addFormAdhoc").attr("action");
+	var data = $("#addFormAdhoc").serialize();
 
 	$.ajax({
 		type: "POST",
@@ -257,10 +247,10 @@ $("#saveNew").click(function (e) {
 		success: function (data, status) {
 			if (status === "success") {
 				console.log(data)
-				document.getElementById('addForm').reset()
+				document.getElementById('addFormAdhoc').reset()
 			}
 			console.log(data)
-			document.getElementById('addForm').reset()
+			document.getElementById('addFormAdhoc').reset()
 		},
 		error: function (request, status, error) {
 			// console.log(request.responseJSON['price'].responseTEXT)
@@ -298,6 +288,7 @@ $("#saveNew").click(function (e) {
 
 //...function called when addProduct form is submitted...//
 function handleaddnewProduct(event) {
+debugger;
 	event.preventDefault()
 	const myForm = event.target
 	const myFormData = new FormData(myForm)
@@ -318,14 +309,12 @@ function handleaddnewProduct(event) {
 			myForm.reset()
 			window.location.reload();
 		}
-		else {
-			alert('Next order should be greater than purchase date.')
-		}
+
 	}
 	xhr.send(myFormData)
 }
 
-const addNewForm = document.getElementById('addForm')
+const addNewForm = document.getElementById('addFormAdhoc')
 addNewForm.addEventListener("submit", handleaddnewProduct)
 
 
@@ -350,15 +339,13 @@ function handleEditProduct(event) {
 			const newProduct = xhr.response
 			window.location.reload();
 		}
-		else {
-			alert('Next order should be greater than purchase date.')
-		}
+
 	}
 	xhr.send(myFormData)
 }
 
-const editForm = document.getElementById('editForm')
-editForm.addEventListener("submit", handleEditProduct)
+const editFormAdhoc = document.getElementById('editFormAdhoc')
+editFormAdhoc.addEventListener("submit", handleEditProduct)
 
 
 //...function called when delete form is submitted...//
@@ -391,31 +378,6 @@ function handleDeleteProduct(event) {
 const deleteForm = document.getElementById('deleteForm')
 deleteForm.addEventListener("submit", handleDeleteProduct)
 
-
-//...called for loading the purchase date in addProduct form...//
-//$("#id_product").change(function () {
-//	var url = $("#addForm").attr("data-date-url");
-//	var productId = $(this).val();
-//
-//	$.ajax({                       // initialize an AJAX request
-//		url: url,
-//		data: {
-//			'product': productId
-//		},
-//		success: function (data) {
-//			if (data) {
-//				$("#id_purchase_date").val(data['data'])
-//			}
-//		}
-//	});
-//});
-//
-
-
-//...loading page again on closing the add new product form...//
-$('#staticBackdrop').on('hidden.bs.modal', function () {
-	window.location.reload();
-})
 
 
 

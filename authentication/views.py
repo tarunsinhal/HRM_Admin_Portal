@@ -2,7 +2,7 @@ from django.contrib.auth import authenticate
 from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from django.http import HttpResponseRedirect
-from .forms import LoginForm
+from .forms import LoginForm , RegistrationForm
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.admin import User
@@ -18,6 +18,23 @@ from django.views.decorators.cache import cache_control, never_cache
 
 def auth_redirect(request):
     return redirect('auth/login/')
+
+def register(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # first_name = form.cleaned_data.get('first_name')
+            # email = form.cleaned_data.get('email')
+            username = form.cleaned_data.get('username')
+            # fullname= first_name+" "+ last_name
+            # print(username,email)
+            messages.success(request, f'Account created for {username}!, Now you can Login')
+            return HttpResponseRedirect('/home/')
+    else:
+        form = RegistrationForm()
+    return render(request, 'authentication/register.html', {'form': form})
+
 
 
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
@@ -53,9 +70,9 @@ class EmailValidationForm(PasswordResetForm):
         return email
 
 
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
-def logout_view(request):
-    request.session.flush()
-    logout(request)
-    return HttpResponseRedirect('/login')
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# def logout_view(request):
+#     request.session.flush()
+#     logout(request)
+#     return HttpResponseRedirect('/login')
 

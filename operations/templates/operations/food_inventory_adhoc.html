@@ -40,17 +40,19 @@
                         <img src="{% static 'img/pantry.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
-                        <h2><b>Pantry-Adhoc</b></h2>
-                        <p>Manage Inventory for the ad hoc products like electronics, furniture, crockery etc.</p>
+                        <h3><b>Pantry-Adhoc</b></h3>
+                        <p style="font-size:14px;">Manage Inventory for the ad hoc products like electronics, furniture, crockery etc.</p>
                     </div>
                     <div class="col-sm-4" style="padding: 10px;">
                         <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop" style="background-color: #007bff">
+                                data-bs-target="#staticBackdrop" style="background-color: #2b8c54">
                             +
                         </button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addForm">
+                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addFormAdhoc"
+                        data-users-url="{% url 'operations:ajax_load_users' %}">
+
 
                         {% csrf_token %}
                         <!-- Modal -->
@@ -239,7 +241,9 @@
                         </div>
                     </form>
 
-                    <form method="POST" id="editForm">
+                    <form method="POST" id="editFormAdhoc"
+                          data-paidby-url="{% url 'operations:ajax_load_paidby' %}">
+
                         {% csrf_token %}
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
                              tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -338,12 +342,12 @@
 
                 <!--                {% regroup products|dictsort:'purchase_date' by date as products%}-->
 
-                <div class="tabset">
-                    <!-- Tab 1 -->
-                    <input type="radio" data-tab-id="1" name="tabset" id="defaultOpen" class="tablinks"
-                           onclick="openTab(event, '1')">
-                    <label for="defaultOpen"><a href="{% url 'operations:pantry_adhoc' %}">Product</a></label>
-                    <!-- Tab 2 -->
+<!--                <div class="tabset">-->
+<!--                    &lt;!&ndash; Tab 1 &ndash;&gt;-->
+<!--                    <input type="radio" data-tab-id="1" name="tabset" id="defaultOpen" class="tablinks"-->
+<!--                           onclick="openTab(event, '1')">-->
+<!--                    <label for="defaultOpen"><a href="{% url 'operations:pantry_adhoc' %}">Product</a></label>-->
+<!--                    &lt;!&ndash; Tab 2 &ndash;&gt;-->
                     <!--                    <input type="radio" data-tab-id="2" name="tabset" id="tab2" class="tablinks"-->
                     <!--                           aria-controls="Beverages"-->
                     <!--                           onclick="openTab(event, 2)">-->
@@ -436,10 +440,10 @@
                                 <thead class="table tbl-header table-hover table-bordered">
                                 <tr>
                                     <th class="name" style="display: none;"></th>
+                                    <th class="name" style="display: none;"></th>
                                     <th width=15% style="padding: 12px;">Purchase Date</th>
                                     <th width=15% style="padding: 12px;">Product Name</th>
                                     <th width=10% style="padding: 12px;">Quantity</th>
-                                    <th width=15% style="padding: 12px;">unit</th>
                                     <th width=12% style="padding: 12px;">Price</th>
                                     <th width=12% style="padding: 12px;">Amount</th>
                                     <th width=12% style="padding: 12px;">Paid By</th>
@@ -457,12 +461,11 @@
                                 {% for rows in product.list %}
 
                                 <tr>
-
+                                    <td class="name" style="display: none;"></td>
                                     <td class="name" style="display: none;"></td>
                                     <td class="last-date font-weight-bold" width=15% style="border-left: 2px solid #007bff; padding: 2px 5px;">{{ rows.purchase_date }}</td>
                                     <td class="name" width=15% style="padding: 2px 5px;">{{ rows.product }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.quantity }}</td>
-                                    <td class="name" width=15% style="padding: 2px 5px;">{{ rows.unit }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.price }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.amount }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.paid_by }}</td>
@@ -471,7 +474,7 @@
                                     <td width=10% style="padding: 2px 5px;">
                                         <a id='edit/{{ rows.id }}' onclick=editfunction(this)
                                            data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
-                                           style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
+                                           style="color: #2b8c54; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
                                         <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
                                            data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
                                                 class="material-icons">&#xE872;</i></a>

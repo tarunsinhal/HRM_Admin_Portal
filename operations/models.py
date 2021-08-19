@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.conf import settings
 from django.db.models.fields import DateField
 from django.core.validators import RegexValidator
 
@@ -61,11 +63,10 @@ class recurringItems(models.Model):
 
 class AdhocItems(models.Model):
     product = models.CharField(max_length=50)
-    quantity = models.PositiveIntegerField()
-    unit = models.CharField(max_length=50, choices=unit_choices_adhoc_items)
+    quantity = models.CharField(max_length=50)
     price = models.PositiveIntegerField()
     amount = models.PositiveIntegerField()
-    paid_by = models.CharField(max_length=50, choices=paid_by)
+    paid_by = models.ForeignKey(User, on_delete=models.CASCADE)
     purchase_date = models.DateField()
     additional_info = models.CharField(max_length=100, blank=True)
 

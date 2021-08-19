@@ -1,0 +1,70 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block title %}
+
+    <title>{{ title }}</title>
+    {% endblock title %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Flamenco&display=swap" rel="stylesheet">
+    {% block style %}
+    {% endblock style %}
+
+
+</head>
+<body>
+
+<header class="site-header">
+    <div class="flash">
+        <!--        {% for message in messages %}-->
+        <!--            {{ message }}-->
+        <!--          {% endfor %}-->
+    </div>
+    <nav>
+        <img src="{% static 'img/logo.png' %}" id="icon" alt="User Icon"/>
+
+        <div class="logo">
+            <h2>ℂ𝔼ℝ𝕋𝔸𝕀ℕ𝕋𝕐 <h5>𝐶𝑟𝑎𝑓𝑡𝑖𝑛𝑔 𝐸𝑥𝑐𝑒𝑙𝑙𝑒𝑛𝑐𝑒</h5></h2>
+
+
+        </div>
+        <div class=" menu">
+            <ul>
+                <li><a href="{% url 'home:home_view' %}">
+                    <ion-icon class="icon" name="home"></ion-icon>
+                </a></li>
+                <li><a href="{% url 'home:profile' %}">
+                    <ion-icon class="icon" name="people"></ion-icon>
+                </a></li>
+                <!--               <li> <a href="login"> Login</a></li>-->
+                <!--                <li class="cart"></li>-->
+                <!--                   <a href="cart"></a>-->
+                <!--                    <ion-icon class="cart" name="Cart"></ion-icon><span>0</span>-->
+
+            </ul>
+
+        </div>
+    </nav>
+
+
+    <section>
+
+
+        {% block code %} {% endblock code %}
+
+
+    </section>
+
+{% block content %} {% endblock content %}
+
+<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
+
+{% block addextra %} {% endblock %}
+
+</body>
+</html>

@@ -40,4 +40,7 @@ urlpatterns = [
     path('ajax/load-products/', views.load_products, name='ajax_load_products'),
     path('ajax/food/addProducts', views.addProducts, name='addProducts'),
     path('ajax/load_purchase_date', views.load_purchase_date, name="ajax_load_purchase_date"),
+    path('ajax/load-users/', views.load_users, name='ajax_load_users'),
+    path('ajax/load-paidby/', views.load_paid_by, name='ajax_load_paidby'),
+
 ]
