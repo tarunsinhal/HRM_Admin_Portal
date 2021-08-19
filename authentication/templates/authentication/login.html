@@ -42,11 +42,13 @@
 
             {% if messages %}
             <div class="alert alert-warning">
-                {{ message }}
+                {% for message in messages %}
+                  {{ message }}
+                {% endfor %}
             </div>
             {% endif %}
             <br>
-
+            
             <form method="POST">
 
                 {% csrf_token %}

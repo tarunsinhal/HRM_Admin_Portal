@@ -23,7 +23,8 @@ table{
 }
 
 .tbl-header{
-  background-color: #007bff;
+  /* background-color: #007bff; */
+  background-color: #F0F0F0;
   /* margin-bottom: 0px; */
   }
 
@@ -32,24 +33,28 @@ table{
   /* overflow-x:auto; */
   margin-top: 0px;
   background: #FFF;
-  border-left: 2px solid #007bff;
+  /* border-left: 2px solid #007bff; */
+  border-left: 2px solid #F0F0F0;
   box-shadow:5px 5px 5px 5px rgba(0,0,0,0.1);
 }
 
 table tr th{
   /* padding: 10px 5px 10px 5px; */
-  padding: 0px;
-  text-align: left;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  /* padding: 0px; */
+  text-align: center;
+  vertical-align: middle !important;
   font-weight: 800;
   font-size: 14px;
-  color: #fff;
-  text-transform: uppercase;
+  color:black;
+  text-transform: capitalize;
 }
 
 td{
   /* padding: 5px; */
-  text-align: left;
-  vertical-align:middle;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  text-align: center;
+  vertical-align:middle !important;
   font-weight: 500;
   font-size: 12px;
   padding: 5px 5px;
@@ -119,7 +124,8 @@ section{
 
 
 .add-new{
-  background-color: #007bff;
+  background-color: #2f8669;
+  /* background-color: #007bff; */
   color: #fff;
 }
 
@@ -174,24 +180,29 @@ section{
 
 .tabset > label:hover,
 .tabset > input:focus + label {
-  color: #a4cb3b;
+  color: #2f8669;
+  /* color: #a4cb3b; */
+
 }
 
 .tabset > label:hover::after,
 .tabset > input:focus + label::after,
 .tabset > input:checked + label::after {
-  background: #a4cb3b;
+  background: #2f8669;
+  /* background: #a4cb3b; */
 }
 
 .tabset > input:checked + label {
-  border-color: #a4cb3b;
+  border-color: #2f8669;
+  /* border-color: #a4cb3b; */
   border-bottom: 1px solid #fff;
   margin-bottom: -1px;
 }
 
 .tab-panel {
   padding: 5px 0;
-  border-top: 2px solid #a4cb3b;
+  border-top: 2px solid #2f8669;
+  /* border-top: 2px solid #a4cb3b; */
 }
 
 

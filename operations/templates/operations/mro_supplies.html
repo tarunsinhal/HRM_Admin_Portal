@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<div class="row row-cols-1 row-cols-md-2 g-5 mt-3">
+<div class="row row-cols-1 row-cols-md-2 g-5 mt-3" style="overflow-y: scroll;">
 
     <div class="col">
       <div class="card shadow p-3 mb-5 bg-white rounded">
@@ -28,10 +28,19 @@
     </div>
     <div class="col">
       <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'img/seller.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'operations:mro_maintenance_vendor' %}" class="card-title">MRO-Vendor</Inp></a></h5>
+          <p class="card-text">Manage Inventory for the new vendor services and contact details.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
         <img src="{% static 'img/pantry.svg' %}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title"><a href="https://www.google.com" class="card-title">MRO-Maintenance</Inp></a></h5>
-          <p class="card-text">Manage Inventory for the new employee joining kit, consisting T-shirts, systems, ID cards, etc.</p>
+          <h5 class="card-title"><a href="{% url 'operations:mro_maintenance_service' %}" class="card-title">MRO-Repair/Service</Inp></a></h5>
+          <p class="card-text">Manage Inventory for all the services taken as well vendor contact details.</p>
         </div>
       </div>
     </div>
