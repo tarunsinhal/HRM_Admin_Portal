@@ -1,9 +1,15 @@
 from django.db import models
 from django.db.models.fields import DateField
+from django.core.validators import RegexValidator
 
 choices = [('Snacks', 'Snacks'), ('Beverages', 'Beverages'), ('Others', 'Others')]
 paid_by = [('Shreya', 'Shreya'), ('Pankaj', 'Pankaj'), ('Company', 'Company'), ('Others', 'Others')]
 unit_choices_adhoc_items = [('Set', 'Set'), ('Number', 'Number')]
+daily_weekly_choices = [('1', 'Foods'), ('2', 'Beverage'), ('3', 'Others')]
+unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'),
+                ('Ml', 'mililiter')]
+paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
+payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
 
 
 # Create your models here.
@@ -45,7 +51,7 @@ class recurringItems(models.Model):
     price = models.PositiveIntegerField()
     discount = models.PositiveIntegerField(default=0)
     amount = models.PositiveIntegerField(null=True)
-    paid_by = models.CharField(max_length=50)
+    paid_by = models.CharField(max_length=50, choices=paid_by_choices)
     purchase_date = models.DateField()
     next_order_date = models.DateField()
 
@@ -65,3 +71,44 @@ class AdhocItems(models.Model):
 
     def __str__(self):
         return str(self.product)
+class dailyWeeklyItems(models.Model):
+    # type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
+    type = models.CharField(max_length=50, choices=daily_weekly_choices)
+    product = models.CharField(max_length=50)
+    quantity = models.PositiveIntegerField()
+    unit = models.CharField(max_length=50, choices=unit_choices)
+    amount = models.PositiveIntegerField(null=True)
+    purchase_date = models.DateField()
+    aditional_info = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return str(self.product)
+
+class vendorContactList(models.Model):
+    phone_regex = RegexValidator(regex=r'^\d{10}$', message="Phone number must be positive intergers.Up to 10 digits allowed.")
+    service = models.CharField(max_length=50)
+    vendor_name = models.CharField(max_length=100)
+    contact_no = models.CharField(validators=[phone_regex], max_length=10)
+    alternate_no = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True,)
+    nominal_charges = models.PositiveIntegerField(null=True, blank=True)
+    aditional_info = models.CharField(max_length=200, blank=True, null=True,)
+
+    def __str__(self):
+        return str(self.service)
+
+
+class repairServices(models.Model):
+    service_date = models.DateField()
+    service_of = models.ForeignKey(vendorContactList, on_delete=models.CASCADE)
+    service_type = models.CharField(max_length=50)
+    charges = models.PositiveIntegerField()
+    vendor_name = models.CharField(max_length=50)
+    contact_no = models.CharField(max_length=10)
+    paid_by = models.CharField(max_length=50, choices=paid_by_choices)
+    payment_mode = models.CharField(max_length=50, choices=payment_mode_choices)
+    next_service_date = models.DateField()
+    aditional_info = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return str(self.service_of)
+

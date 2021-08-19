@@ -1,14 +1,12 @@
 from datetime import date
 from django.db.models import fields
-from django.forms import forms, ModelForm, TextInput, MultiWidget, ChoiceField, CharField, IntegerField, ChoiceField,  MultiValueField
-from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget
-from .models import FoodInventory, Product_type, recurringItems ,AdhocItems
+from django.forms import forms, ModelForm, TextInput, MultiWidget, ChoiceField, CharField, IntegerField, ChoiceField, MultiValueField, RegexField
+from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Textarea, Widget
+from .models import FoodInventory, Product_type, recurringItems, dailyWeeklyItems, vendorContactList, repairServices
 
-unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'),
-                ('mililiters', 'ml')]
-paid_by = [('Shreya', 'Shreya'), ('Pankaj', 'Pankaj'), ('Company', 'Company'), ('Others', 'Others')]
-
-unit_choices_adhoc_items=[('Set', 'Set'), ('Number', 'Number')]
+unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'), ('mililiters', 'ml')]
+paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
+payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
 
 
 class UnitWidget(MultiWidget):
@@ -46,31 +44,20 @@ class AddProducts(ModelForm):
             'purchase_date',
             'next_order_date')
         widgets = {
-            'type': Select(attrs={'type': 'text', 'class': "required form-select"}),
-            'product': Select(attrs={'type': 'text', 'class': "required form-select"}),
-            'quantity': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
-            'price': NumberInput(
-                attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
-            'discount': NumberInput(
-                attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
-            'amount': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
-            'paid_by': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            'purchase_date': DateInput(attrs={'type': 'date', 'class': "required form-control"}),
-            'next_order_date': DateInput(attrs={'type': 'date', 'class': "required form-control"})
+            'type': Select(attrs={'type':'text', 'class':"required form-select"}),
+            'product': Select(attrs={'type':'text', 'class':"required form-select"}),
+            'quantity': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
+            'price': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
+            'discount': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
+            'amount': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
+            'paid_by': Select(attrs={'type':'select', 'class':"required form-select"}),
+            'purchase_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
+            'next_order_date': DateInput(attrs={'type':'date', 'class':"required form-control"})
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product_type.objects.none()
-
-        # if 'type' in self.data:
-        #     try:
-        #         type_id = int(self.data.get('type'))
-        #         self.fields['product'].queryset = Product_type.objects.filter(product_type_id=type_id).order_by('product_name')
-        #     except (ValueError, TypeError):
-        #         pass  # invalid input from the client; ignore and fallback to empty Product queryset
-        # elif self.instance.pk:
-        #     self.fields['product'].queryset = self.instance.type.product_set.order_by('product_name')
 
     def clean_content(self):
         last_order_date = self.cleaned_data.get("purchase_date")
@@ -117,3 +104,65 @@ class EditAdhocItemsForm(AddAdhocItemsForm, ModelForm):
     class Meta(AddAdhocItemsForm.Meta):
         fields = ['purchase_date', 'product', 'quantity', 'unit','price', 'amount',
                   'paid_by', 'additional_info']
+class AddItems(ModelForm):
+    class Meta:
+        model = dailyWeeklyItems
+        fields = ('type', 'purchase_date', 'product', 'quantity', 'unit', 'amount', 'aditional_info')
+        widgets = {
+            'type': Select(attrs={'type':'text', 'class':"required form-select"}),
+            'purchase_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
+            'product': TextInput(attrs={'type':'text', 'class':"required form-control"}),
+            'quantity': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
+            'unit': Select(attrs={'type':'text', 'class':"required form-select"}),
+            'amount': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
+            'aditional_info': Textarea(attrs={'type':'textarea', 'class':"form-control"})
+        }
+    
+class EditItems(AddItems, ModelForm):
+    class Meta(AddItems.Meta):
+        exclude = ['type']
+
+
+class AddVendor(ModelForm):
+    class Meta:
+        model = vendorContactList
+        fields = '__all__'
+        widgets = {
+            'service': TextInput(attrs={'type':'text', 'class':"required form-control chk"}),
+            'vendor_name': TextInput(attrs={'type':'text', 'class':"required form-control chk"}),
+            'contact_no': TextInput(attrs={'type':'text', 'class':"required form-control chk"}),
+            'alternate_no': TextInput(attrs={'type':'text', 'class':"form-control chk"}),
+            'nominal_charges': NumberInput(attrs={'type':'number', 'class':"form-control chk", "aria-describedby":"inputGroupPrepend"}),
+            'aditional_info': Textarea(attrs={'type':'textarea', 'class':"form-control chk"})
+        }
+
+class EditVendor(AddVendor, ModelForm):
+    class Meta(AddVendor.Meta):
+        fields = '__all__'
+
+class AddRepairServices(ModelForm):
+    class Meta:
+        model = repairServices
+        fields = ('service_date', 'service_of','service_type', 'charges', 'vendor_name', 'contact_no', 'paid_by', 'payment_mode', 'next_service_date', 'aditional_info')
+        widgets = {
+            'service_date': TextInput(attrs={'type':'date', 'class':"required form-control"}),
+            'service_of':Select(attrs={'type':'text', 'class':"required form-select", 'options_value':''}),
+            'service_type': TextInput(attrs={'type':'text', 'class':"required form-control"}),
+            'charges': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
+            'vendor_name': Select(attrs={'type':'text', 'class':"required form-select"}),
+            'contact_no': TextInput(attrs={'type':'text', 'class':"required form-control"}),
+            'paid_by': Select(choices=paid_by_choices, attrs={'type':'select', 'class':"form-select"}),
+            'payment_mode': Select(choices=payment_mode_choices, attrs={'type':'select', 'class':"required form-select"}),
+            'next_service_date': TextInput(attrs={'type':'date', 'class':"required form-control"}),
+            'aditional_info': Textarea(attrs={'type':'textarea', 'class':"form-control"})
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # self.fields['service_of'].queryset = vendorContactList.objects.values('service').distinct()
+        self.fields['service_of'].queryset = vendorContactList.objects.values_list('service',  flat=True).distinct()
+
+
+class EditRepairServices(AddRepairServices, ModelForm):
+    class Meta(AddRepairServices.Meta):
+        fields = '__all__'
