@@ -1,12 +1,20 @@
 from datetime import date
 from django.db.models import fields
-from django.forms import forms, ModelForm, TextInput, MultiWidget, ChoiceField, CharField, IntegerField, ChoiceField, MultiValueField, RegexField
-from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Textarea, Widget
-from .models import FoodInventory, Product_type, recurringItems, dailyWeeklyItems, vendorContactList, repairServices
-
-unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'), ('mililiters', 'ml')]
 paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
 payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
+from django.forms import forms, ModelForm, TextInput, MultiWidget,  CharField, IntegerField, ChoiceField, \
+    MultiValueField, RegexField
+from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget, Textarea
+from .models import FoodInventory, Product_type, recurringItems, AdhocItems, dailyWeeklyItems, vendorContactList, repairServices
+from django.contrib.auth.models import User
+
+
+unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'),
+                ('mililiters', 'ml')]
+
+quantity_adhoc_choices = [('Set', 'Set'), ('Number', 'Number'), ('gram', 'gm'), ('kilogram', 'kg'),
+                          ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'),
+                          ('mililiters', 'ml')]
 
 
 class UnitWidget(MultiWidget):
@@ -76,34 +84,61 @@ class EditProducts(AddProducts, ModelForm):
         self.fields['product'].queryset = Product_type.objects.none()
 
 
+class QuantityWidgetAdhoc(MultiWidget):
+    def __init__(self, *args, **kwargs):
+        self.widgets = [NumberInput({'type': 'number', 'class': "required form-control"}),
+                        Select(choices=quantity_adhoc_choices, attrs={'type': 'select', 'class': "form-select"})]
+        super(QuantityWidgetAdhoc, self).__init__(self.widgets, *args, **kwargs)
+
+    def decompress(self, value):
+        if value:
+            return value.split(' ')
+        return [None, None]
+
+
+class QuantityFieldAdhoc(MultiValueField):
+    widget = QuantityWidgetAdhoc
+
+    def __init__(self, *args, **kwargs):
+        fields = (IntegerField(), ChoiceField(choices=quantity_adhoc_choices))
+        super(QuantityFieldAdhoc, self).__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        return ' '.join(data_list)
+
+
 class AddAdhocItemsForm(ModelForm):
-    add_user = CharField(max_length=50, widget=HiddenInput(
-        attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter user"}))
+    # add_user = CharField(max_length=50, widget=HiddenInput(
+    #     attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter Username"}))
+
+    quantity = QuantityFieldAdhoc()
 
     class Meta:
         model = AdhocItems
-        fields = ('product', 'quantity', 'unit','price', 'amount',
-                  'paid_by', 'add_user', 'purchase_date', 'additional_info')
+        fields = ('product', 'quantity', 'price', 'amount',
+                  'paid_by', 'purchase_date', 'additional_info')
         widgets = {
             'purchase_date': DateInput(attrs={'type': 'date', 'class': "required form-control"}),
             'product': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            'quantity': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
-            'unit': Select(choices=unit_choices_adhoc_items, attrs={'type': 'select', 'class': "form-select"}),
-
             'price': NumberInput(
                 attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
             'amount': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
-            'paid_by':  Select(choices=paid_by, attrs={'type': 'select', 'class': "form-select"}),
-            'addition_info': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
+            'paid_by': Select(attrs={'type': 'text', 'class': "required form-select"}),
+            'additional_info': Textarea(attrs={'type': 'text', 'class': "required form-control"}),}
 
-        }
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        paid_by = self.fields['paid_by']
+        paid_by.choices = list(paid_by.choices)
+        paid_by.choices.append(tuple(('add_name', 'Other')))
 
 
 class EditAdhocItemsForm(AddAdhocItemsForm, ModelForm):
     class Meta(AddAdhocItemsForm.Meta):
-        fields = ['purchase_date', 'product', 'quantity', 'unit','price', 'amount',
+        fields = ['purchase_date', 'product', 'quantity', 'price', 'amount',
                   'paid_by', 'additional_info']
+
+
 class AddItems(ModelForm):
     class Meta:
         model = dailyWeeklyItems
@@ -117,7 +152,8 @@ class AddItems(ModelForm):
             'amount': NumberInput(attrs={'type':'number', 'class':"required form-control", "aria-describedby":"inputGroupPrepend"}),
             'aditional_info': Textarea(attrs={'type':'textarea', 'class':"form-control"})
         }
-    
+
+
 class EditItems(AddItems, ModelForm):
     class Meta(AddItems.Meta):
         exclude = ['type']
@@ -136,9 +172,11 @@ class AddVendor(ModelForm):
             'aditional_info': Textarea(attrs={'type':'textarea', 'class':"form-control chk"})
         }
 
+
 class EditVendor(AddVendor, ModelForm):
     class Meta(AddVendor.Meta):
         fields = '__all__'
+
 
 class AddRepairServices(ModelForm):
     class Meta:
@@ -166,3 +204,4 @@ class AddRepairServices(ModelForm):
 class EditRepairServices(AddRepairServices, ModelForm):
     class Meta(AddRepairServices.Meta):
         fields = '__all__'
+

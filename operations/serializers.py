@@ -2,6 +2,9 @@ from django.db import models
 from django.http import request
 from rest_framework import serializers
 from .models import FoodInventory,Item_types, Product_type, dailyWeeklyItems, recurringItems, vendorContactList, repairServices
+from .models import (FoodInventory, Item_types, Product_type, dailyWeeklyItems, recurringItems, vendorContactList,
+                     repairServices,  AdhocItems)
+from django.contrib.auth.models import User
 
 
 class ItemTypeSerializer(serializers.ModelSerializer):
@@ -51,21 +54,21 @@ class AdhocItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = AdhocItems
         fields = '__all__'
-    # def __init__(self, *args, instance=None, data=None, **kwargs):
-    #
-    #     if data:
-    #         data._mutable = True
-    #         if data['add_user']:
-    #             try:
-    #                 p = AdhocItems.objects.get(product_type_id=data['type'], product_name=data['add_user'])
-    #             except:
-    #                 p = Product_type.objects.create(product_type_id=data['type'], product_name=data['new_product'])
-    #                 p.save()
-    #             data['product'] = p.pk
-    #         data._mutable = False
-    #         super(ProductSerializer, self).__init__(instance=instance, data=data, **kwargs)
-    #     super(ProductSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
+
+    def __init__(self, *args, instance=None, data=None, **kwargs):
+        if data:
+            data._mutable = True
+            data['quantity'] = data['quantity_0'] + ' ' + data['quantity_1']
+
+            data._mutable = False
+            super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
+        super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
+
+    def to_representation(self, instance):
+        rep = super(AdhocItemSerializer, self).to_representation(instance)
+        rep['paid_by'] = instance.paid_by.username
+        return rep
 
 
 class EditAdhocItemSerializer(AdhocItemSerializer):
@@ -80,9 +83,11 @@ class ItemSerializer(serializers.ModelSerializer):
         model = dailyWeeklyItems
         fields = '__all__'
 
+
 class editItemSerializer(ItemSerializer):
     class Meta(ItemSerializer.Meta):
         fields = ['purchase_date', 'product', 'quantity', 'unit', 'amount', 'aditional_info']
+
 
 class vendorSerializer(serializers.ModelSerializer):
     class Meta:
@@ -153,3 +158,15 @@ class editRepairServicesSerializer(repairServicesSerializer):
         fields = '__all__'
 
 
+class EditAdhocItemSerializer(serializers.ModelSerializer):
+    # paid_by = serializers.StringRelatedField()
+
+    class Meta:
+        model = AdhocItems
+        fields = ['purchase_date', 'product', 'price', 'amount', 'paid_by', 'additional_info']
+
+    # def to_representation(self, instance):
+    #     rep = super(EditAdhocItemSerializer, self).to_representation(instance)
+    #     rep['paid_by'] = instance.paid_by.username
+    #     # print('1111111111',instance.paid_by.username)
+    #     return rep

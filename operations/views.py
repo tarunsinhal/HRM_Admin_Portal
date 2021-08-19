@@ -13,12 +13,17 @@ from .forms import AddProducts, EditProducts, AddAdhocItemsForm, EditAdhocItemsF
 from django.urls import reverse
 from django.views import generic
 from home.models import notifications
+from django.contrib.auth.models import User
+# from .utils import specific_user_access, test_func
+# from django.contrib.auth.decorators import user_passes_test
+# from users.views import specific_user_access
 
-
+# from .permissons import check_func
 # from rest_framework.views import APIView
 
 
 # Create your views here.
+
 
 @login_required(login_url='/auth/login')
 def operations_view(request):
@@ -30,6 +35,7 @@ def pantry_view(request):
     return render(request, 'operations/pantry.html')
 
 
+# @specific_user_access
 @login_required(login_url='/auth/login')
 def mro_view(request):
     return render(request, 'operations/mro_supplies.html')
@@ -40,6 +46,7 @@ def engagements_view(request):
     return render(request, 'operations/pantry.html')
 
 
+# @specific_user_access(test_func)
 @login_required(login_url='/auth/login')
 def pantry_recurring_view(request):
     addProductsForm = AddProducts()
@@ -105,17 +112,19 @@ def load_purchase_date(request):
         return JsonResponse({'data': ''})
 
 
+# @specific_user_access(test_func)
 @login_required(login_url='/auth/login')
 def pantry_adhoc_view(request):
     addAdhocProductsForm = AddAdhocItemsForm()
     editAdhocProductsForm = EditAdhocItemsForm(auto_id=True)
-
     if request.method == 'GET':
         qs = AdhocItems.objects.all()
         serializer = AdhocItemSerializer(qs, many=True)
+        users = User.objects.all()
 
     return render(request, 'operations/food_inventory_adhoc.html',
                   {'products': serializer.data, 'addAdhocProductsForm': addAdhocProductsForm,
+                   'users': users,
                    'editAdhocProductsForm': editAdhocProductsForm})
                    
 
@@ -169,6 +178,7 @@ def load_purchase_date_only(request):
     except:
         return JsonResponse({'data': ''})
 
+
 @login_required(login_url='/auth/login')
 def mro_maintenance_vendor(request):
     addVendorForm = AddVendor()
@@ -180,13 +190,15 @@ def mro_maintenance_vendor(request):
     
     return render(request, 'operations/mro_maintenance_vendor.html', {'vendor':serializer.data, 'addVendorForm': addVendorForm, 'editVendorForm': editVendorForm})
 
+
 @api_view(['POST'])
 def addAdhocProducts(request):
     serializer = AdhocItemSerializer(data=request.POST)
-
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
+    print(serializer.errors)
+
     return Response(serializer.errors, status=400)
     
 
@@ -247,6 +259,7 @@ def addRepairServices(request):
     print(serializer.errors)
     return Response(serializer.errors, status=400)
 
+
 @api_view(['POST'])
 def editRepairServices(request, pk):
     vendor = repairServices.objects.get(id=pk)
@@ -283,9 +296,12 @@ def load_vendor_no(request):
 def editAdhocProducts(request, pk):
     product = AdhocItems.objects.get(id=pk)
     serializer = EditAdhocItemSerializer(instance=product, data=request.POST)
+    print(request.POST)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
+    print(serializer.errors)
+
     return Response(serializer.errors, status=400)
 
 
@@ -295,6 +311,32 @@ def deleteAdhocProducts(request, pk):
     product.delete()
     return Response({}, status=201)
 
+
+def load_users(request):
+    # user_id = request.GET.get('User')
+    users = User.objects.all()
+    return render(request, 'operations/paid_by_dropdown.html', {'users': users})
+
+
+def load_paid_by(request):
+    paid_by = AdhocItems.objects.all().values('paid_by').distinct()
+
+    # serializer = AdhocItemSerializer(qs, many=True)
+    # if serializer.is_valid:
+    #     serializer.save()
+    # print(serializer.data)
+    # print(serializer.errors)
+    users = User.objects.all()
+    return render(request, 'operations/adhoc_paid_by.html',
+                  {'products': paid_by, 'users': users})
+
+    # return render(request, 'operations/paid_by_dropdown.html', {'users': users})
+
+
+# def users(request):
+#     if request.method=="GET":
+#         users= User.objects.all().values('user__username')
+#         return
+
 def maintenance_view(request):
     return render(request, 'operations/maintenance.html')
-
