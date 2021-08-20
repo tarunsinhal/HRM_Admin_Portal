@@ -138,14 +138,23 @@ a.card-title{
 
 /* .pt-3-half { padding-top: 1.4rem; } */
 
+.container-lg{
+  margin: 10px 20px 10px;
+}
+
+
+.table-responsive{
+  overflow-x: hidden;
+}
 
 .table-wrapper {
   width: auto;
   margin: 10px auto;
   background: #fff;
-  padding: 20px;	
+  padding: 10px;	
   /* box-shadow: 0 1px 1px rgba(0,0,0,.05); */
-  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+  /* box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important; */
+  box-shadow: 0.2rem 0.2rem 0.2rem 0.2rem rgba(0,0,0,.15)!important;
 }
 .table-title {
   padding-bottom: 10px;

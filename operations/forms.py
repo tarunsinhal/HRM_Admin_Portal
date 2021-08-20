@@ -1,7 +1,5 @@
 from datetime import date
 from django.db.models import fields
-paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
-payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
 from django.forms import forms, ModelForm, TextInput, MultiWidget,  CharField, IntegerField, ChoiceField, \
     MultiValueField, RegexField
 from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget, Textarea
@@ -15,6 +13,8 @@ unit_choices = [('gram', 'gm'), ('kilogram', 'kg'), ('centimeter', 'cm'), ('mete
 quantity_adhoc_choices = [('Set', 'Set'), ('Number', 'Number'), ('gram', 'gm'), ('kilogram', 'kg'),
                           ('centimeter', 'cm'), ('meter', 'm'), ('liter', 'liters'),
                           ('mililiters', 'ml')]
+paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
+payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
 
 
 class UnitWidget(MultiWidget):
@@ -205,3 +205,28 @@ class EditRepairServices(AddRepairServices, ModelForm):
     class Meta(AddRepairServices.Meta):
         fields = '__all__'
 
+                  
+class addTshirtForm(ModelForm):
+    class Meta:
+        model = t_shirt_inventory
+        fields = ('order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'allotted',
+                'paid_by', 'additional')
+        widgets = {
+            'order_date': DateInput(attrs={'type':'date', 'required':True,  'class':"required form-control"}),
+            'receiving_date': DateInput(attrs={'type':'date', 'required':True, 'class':"required form-control"}),
+            'size': Select(attrs={'type':'text', 'required':True, 'class':"form-control"}),
+            'previous_stock': NumberInput(attrs={'type':'number', 'required':True, 'readOnly': True, 'class':"required form-control"}),
+            'ordered_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
+            'allotted': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
+            'paid_by': TextInput(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-control"}),
+            'additional': Textarea(attrs={'type':'text', 'class':"required form-control"}),
+            'total_quantity': HiddenInput(attrs={'type':'hidden', 'required':True, 'class':"required form-control"}),
+            'remaining': HiddenInput(attrs={'type':'hidden', 'required':True, 'class':"required form-control"})
+        }
+
+
+class editTshirtForm(addTshirtForm, ModelForm):
+    class Meta(addTshirtForm.Meta):
+        fields = ('size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'additional')
+
+    

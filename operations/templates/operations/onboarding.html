@@ -21,6 +21,8 @@
 <link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+<script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
+
 
 <!-- <link href=
 "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
@@ -32,16 +34,16 @@
 
 {% block content %}
 
-<div class="container-lg">
-    <div>
-        <div>
+<div class="container-lg" style="overflow-y: scroll;">
+    <div class="table-responsive">
+        <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
-                        <img src="{% static 'img/snack.svg' %}" height="100%" width="100%" alt="...">
+                        <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
-                        <h2><b>Pantry-Recurring</b></h2>
+                        <h2><b>On-Boarding</b></h2>
                         <p>Manage food Inventory, find tables and data for the available stock and requirements.</p>
                     </div>
                     <div class="col-sm-4" style="padding: 10px;">
@@ -50,54 +52,16 @@
                             +</button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:addProducts' %}" id="addForm"
-                        data-products-url="{% url 'operations:ajax_load_products' %}"
-                        data-date-url="{% url 'operations:ajax_load_purchase_date' %}" class="needs-validation">
+                    <form method="POST" action="{% url 'operations:addTshirts' %}"  id="addTshirtForm"
+                        class="needs-validation">
                         {% csrf_token %}
-                        <!-- Modal -->
-                        <!-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
 
-                                    <div class="modal-body">
-                                        <div class="row g-3">
-                                            {% for field in addProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="col-sm"
-                                                style="text-align: left; font-size: 12px; display: none;">
-                                                {{ field.label }}
-                                                {{ field }}
-                                            </div>
-                                            {% else %}
-                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
-                                                {{ field.label }}
-                                                {{ field }}
-                                            </div>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-secondary" id="addAnother">Save and Add
-                                            another</button>
-                                        <input type="button" value="Add" id="saveNew" class="btn btn-primary">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
-
+                        {{addTshirtFormSet.management_form}}
 
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable">
+                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
@@ -106,33 +70,102 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
-                                            {% for field in addProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="container">
-                                                <div class="row"
-                                                    style="text-align: left; font-size: 15px; display: none;">
-                                                    <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
-                                                    <div class="col-6" style="margin: 5px">
-                                                        {{ field }}
+                                            
+                                        <div class="add-tshirt-container">
+
+                                                    <div class="row add-form-container" style="margin-left: 3px;">
+                                                        <div class="col" style="padding-left: 0;">
+                                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 12px;">                                                           
+                                                                {{ addTshirtFormSet.0.order_date.label }}</div>
+                                                            <div style="margin-bottom: 15px; padding: 0px;">
+                                                                {{ addTshirtFormSet.0.order_date }}
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 12px;">                                                           
+                                                                {{ addTshirtFormSet.0.receiving_date.label }}</div>
+                                                            <div style="margin-bottom: 15px; padding: 0px;">
+                                                                {{ addTshirtFormSet.0.receiving_date }}
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            {% else %}
-                                            <div class="container">
-                                                <div class="row" style="text-align: left; font-size: 15px;">
-                                                    <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
-                                                    <div class="col-6" style="margin: 5px">
-                                                        {{ field }}
-                                                        {{ field.errors }}
+
+                                                    <hr class="font-weight-bold">
+
+                                                    <table class="productTable" style="height: auto;">
+                                                        <thead class="table tbl-header table-bordered">
+                                                            <tr>
+                                                                <th style="padding: 12px;">Size</th>
+                                                                <th style="padding: 12px;">Previous Stock</th>
+                                                                <th style="padding: 12px;">Ordered Quantity</th>
+                                                                <th style="padding: 12px;">Allotted</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody class="table">
+                                                            <tr>
+                                                                <td class="tshirt-size">{{ addTshirtFormSet.0.size }}</td>
+                                                                <td>{{ addTshirtFormSet.0.previous_stock }}</td>
+                                                                <td>{{ addTshirtFormSet.0.ordered_quantity }}</td>
+                                                                <td>{{ addTshirtFormSet.0.allotted }}</td>
+                                                            </tr>          
+                                                            <tr>
+                                                                <td class="tshirt-size">{{ addTshirtFormSet.1.size }}</td>
+                                                                <td>{{ addTshirtFormSet.1.previous_stock }}</td>
+                                                                <td>{{ addTshirtFormSet.1.ordered_quantity }}</td>
+                                                                <td>{{ addTshirtFormSet.1.allotted }}</td>
+                                                            </tr>         
+                                                            <tr>
+                                                                <td class="tshirt-size">{{ addTshirtFormSet.2.size }}</td>
+                                                                <td>{{ addTshirtFormSet.2.previous_stock }}</td>
+                                                                <td>{{ addTshirtFormSet.2.ordered_quantity }}</td>
+                                                                <td>{{ addTshirtFormSet.2.allotted }}</td>
+                                                            </tr>          
+                                                            <tr>
+                                                                <td class="tshirt-size">{{ addTshirtFormSet.3.size }}</td>
+                                                                <td>{{ addTshirtFormSet.3.previous_stock }}</td>
+                                                                <td>{{ addTshirtFormSet.3.ordered_quantity }}</td>
+                                                                <td>{{ addTshirtFormSet.3.allotted }}</td>
+                                                            </tr>          
+                                                            <tr>
+                                                                <td class="tshirt-size">{{ addTshirtFormSet.4.size }}</td>
+                                                                <td>{{ addTshirtFormSet.4.previous_stock }}</td>
+                                                                <td>{{ addTshirtFormSet.4.ordered_quantity }}</td>
+                                                                <td>{{ addTshirtFormSet.4.allotted }}</td>
+                                                            </tr>          
+                                                            <tr>
+                                                                <td class="tshirt-size">{{ addTshirtFormSet.5.size }}</td>
+                                                                <td>{{ addTshirtFormSet.5.previous_stock }}</td>
+                                                                <td>{{ addTshirtFormSet.5.ordered_quantity }}</td>
+                                                                <td>{{ addTshirtFormSet.5.allotted }}</td>
+                                                            </tr>                                                             
+                                                        </tbody>
+                                                    </table>
+
+                                                    <hr class="font-weight-bold">
+                                                    <br>
+
+                                                    <div class="row" style="margin-left: 5px;">
+                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px;">                                                           
+                                                            {{ addTshirtFormSet.0.paid_by.label }}</div>
+                                                        <div class="col-3" style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addTshirtFormSet.0.paid_by }}
+                                                        </div>
                                                     </div>
-                                                </div>
+
+                                                    <div class="row" style="margin-left: 5px;">
+                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px;">                                                           
+                                                            {{ addTshirtFormSet.0.additional.label }}</div>
+                                                        <div class="col-6" style="margin-bottom: 15px; padding: 0px; height: 10px;">
+                                                            {{ addTshirtFormSet.0.additional }}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    
                                             </div>
-                                            {% endif %}
-                                            {% endfor %}
 
 
+                                            <!-- <a id="add-form" type="button">Add More Size</a> -->
 
 
                                             <!-- <div class="container">
@@ -231,8 +264,6 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" name="saveButton"
-                                            value="Save and Add Another" id="saveNew">Save and Add Another</button>
                                         <button type="submit" name="addButton" value="Add"
                                             class="btn btn-primary">Add</button>
                                     </div>
@@ -241,7 +272,7 @@
                         </div>
                     </form>
 
-                    <form method="POST" id="editForm">
+                    <form method="POST" id="editTshirtForm">
                         {% csrf_token %}
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -253,24 +284,9 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <!-- <div class="row g-3">
-                                            {% for field in editProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="col-sm"
-                                                style="text-align: left; font-size: 12px; display: none;">
-                                                {{ field }}
-                                            </div>
-                                            {% else %}
-                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
-                                                {{ field.label }}
-                                                {{ field }}
-                                            </div>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </div> -->
 
                                         <div class="row g-3">
-                                            {% for field in editProductsForm %}
+                                            {% for field in editTshirtForm %}
                                             {% if field.is_hidden %}
                                             <div class="container">
                                                 <div class="row"
@@ -297,7 +313,6 @@
                                             {% endfor %}
                                         </div>
 
-
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
@@ -309,7 +324,7 @@
                         </div>
                     </form>
 
-                    <form method="POST" id="deleteForm">
+                    <form method="POST" id="deleteTshirtForm">
                         {% csrf_token %}
                         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
@@ -346,119 +361,103 @@
         <div class="table-wrapper1">
             <div class="table-title">
 
-            {% regroup products|dictsort:'type' by type as product_list %}
+
+
+                <!-- {% regroup tshirtData by receiving_date as groupedData %} -->
+
 
             <div class="tabset">
                 <!-- Tab 1 -->
                 <input type="radio" data-tab-id ="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '1')">
-                <label for="defaultOpen">Snacks</label>
+                <label for="defaultOpen">T-Shirt Inventory</label>
                 <!-- Tab 2 -->
                 <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
                     onclick="openTab(event, 2)">
-                <label for="tab2">Beverages</label>
-                <!-- Tab 3 -->
-                <input type="radio" data-tab-id ="3" name="tabset" id="tab3" class="tablinks" aria-controls="Others"
-                    onclick="openTab(event, 3)">
-                <label for="tab3">Others</label>
-
+                <label for="tab2">Joining Formalities</label>
+              
                 <div class="tab-panels">
-                    {% for product_type in product_list %}
-                    <section class="tab-panel" id={{ product_type.grouper }}>
+                    
+                    <section class="tab-panel" id='1'>
+
+                        <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="float: right; margin: 2px 5px 10px 10px; padding: 8px; cursor: pointer;" class="btn btn-secondary">
+                            <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+                        </button></a>
+
+
                         <table class="productTable1">
                             
-                            <!-- <div class="tbl-header table-hover"> -->
-                            <!-- <table class="table table-hover table-bordered"> -->
-
-                            <div style="display: flex;">
-                                <!-- <div class="col-md-12">
-                                    <div class="col-md-6" style="float: left;">
-                                        <div>
-                                            Purchase date: <input type="date" class="inventory_datepicker_{{ product_type.grouper }}"
-                                                id="pur_min_{{ product_type.grouper }}" name="pur_min_{{ product_type.grouper }}"
-                                                data-attr-type="pur" /> to <input type="date"
-                                                class="inventory_datepicker_{{ product_type.grouper }}" id="pur_max_{{ product_type.grouper }}"
-                                                name="pur_max_{{ product_type.grouper }}" data-attr-type="pur" />
-                                        </div>
-                                        <div>
-                                            Next date: <input type="date" class="inventory_datepicker_{{ product_type.grouper }}"
-                                                id="next_min_{{ product_type.grouper }}" name="next_min_{{ product_type.grouper }}"
-                                                data-attr-type="next" /> to <input type="date"
-                                                class="inventory_datepicker_{{ product_type.grouper }}" id="next_max_{{ product_type.grouper }}"
-                                                name="next_max_{{ product_type.grouper }}" data-attr-type="next" />
-                                        </div>
-                                    </div>
-                                </div> -->
-
-
+                            
+                            <!-- <div style="display: flex;">
+                            
                                 <div class="col-md-12" style="padding-bottom: 5px;">
                                     <span>
-                                       <span class="font-weight-bold">Purchase date: </span> <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="pur_min_{{ product_type.grouper }}" name="pur_min_{{ product_type.grouper }}"data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="pur_max_{{ product_type.grouper }}" name="pur_max_{{ product_type.grouper }}" data-attr-type="pur"/>
-                                    </span>
-                                    |
-                                    <span >
-                                       <span class="font-weight-bold">Next date: </span> <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="next_min_{{ product_type.grouper }}" name="next_min_{{ product_type.grouper }}" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="next_max_{{ product_type.grouper }}" name="next_max_{{ product_type.grouper }}" data-attr-type="next"/>
+                                        <span class="font-weight-bold">Purchase date: </span> <input type="date"
+                                            class="inventory_datepicker_{{ product_type.grouper }}" id="pur_min_{{ product_type.grouper }}"
+                                            name="pur_min_{{ product_type.grouper }}" data-attr-type="pur" /> to <input type="date"
+                                            class="inventory_datepicker_{{ product_type.grouper }}" id="pur_max_{{ product_type.grouper }}"
+                                            name="pur_max_{{ product_type.grouper }}" data-attr-type="pur" />
                                     </span>
                                     <span>
-                                        <i data-section-id="{{product_type.grouper }}" class="daterefresh fa fa-refresh" aria-hidden="true" style="margin-left: 20px;"></i>
-                                        <!-- <img data-section-id="{{product_type.grouper }}" class="daterefresh" src="../../static/img/refresh.jpg" height="70" style="margin-left: 20px;"> -->
+                                        <i data-section-id="{{product_type.grouper }}" class="daterefresh fa fa-refresh" aria-hidden="true"
+                                            style="margin-left: 20px;"></i>
+                            
                                     </span>
-                            </div>
-                            </div>
+                                </div>
+                            </div> -->
 
-
-                            <thead class="table tbl-header table-hover table-bordered">
+                            <thead class="table tbl-header table-bordered">
                                 <tr>
-                                    <th width=15% style="padding: 12px;">Product name</th>
-                                    <th width=10% style="padding: 12px;">Quantity</th>
-                                    <th width=12% style="padding: 12px;">Unit</th>
-                                    <th width=12% style="padding: 12px;">Price</th>
-                                    <td style="display: none;">Discount</td>
-                                    <th width=12% style="padding: 12px;">Amount</th>
-                                    <td style="display: none;">Paid By</td>
-                                    <th width=15% style="padding: 12px;">Purchase Date</th>
-                                    <th width=18% style="padding: 12px;">Next Order Date</th>
-                                    <td class="name" style="display: none;"> </td>
-                                    <th width=12% style="padding: 12px;">Actions</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">Receiving Date</th>
+                                    <th width=5% style="padding: 12px; text-align:center;">Size</th>
+                                    <th width=5% style="display: none;">Previous Stock</th>
+                                    <th width=12% style="padding: 12px; text-align:center;">Ordered Qty</th>
+                                    <th width=14% style="padding: 12px; text-align:center;">Total Quantity</th>
+                                    <th width=14% style="padding: 12px; text-align:center; display: none;">Allotted</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Remaining</th>
+                                    <th width=18% style="display: none;">Paid By</td>
+                                    <th width=18% style="padding: 12px; text-align:center;">Additional Info</td>
+                                    <!-- <td class="name" style="display: none;"> </td> -->
+                                    <th width=10% style="padding: 12px;">Actions</th>
                                 </tr>
                             </thead>
-                            <!-- </table> -->
-                            <!-- </div> -->
+
+
 
                             <!-- <div class="tbl-content table"> -->
                             <!-- <table id="productTable"> -->
-                            <tbody class="tbl-content table-bordered">
-                                {% for rows in product_type.list %}
-                                <tr>
-                                    <td class="name font-weight-bold" width=15% style="border-left: 2px solid #007bff; padding: 2px 5px;">
-                                        {{ rows.product }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.quantity }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.unit }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.price }}</td>
-                                    <td style="display: none;" style="padding: 2px 5px;">{{ rows.discount }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.amount }}</td>
-                                    <td style="display: none;" style="padding: 2px 5px;">{{ rows.paid_by }}</td>
-                                    <td class="last-date" width=15% style="padding: 2px 5px;">{{ rows.purchase_date }}</td>
-                                    <td class="last-date" width=18% style="padding: 2px 5px;">{{ rows.next_order_date }}</td>
-                                    <td class="name" style="display: none;">{{ product_type.grouper }} </td>
-                                    <td width=10% style="padding: 2px 5px;">
-                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }})
-                                            data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
-                                            style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
-                                        <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
-                                                class="material-icons">&#xE872;</i></a>
-                                        <a id={{ rows.id }} onclick=repeatfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop" title="Repeat"><i
-                                            class="material-icons">&#8942;</i></a>
-                                    </td>
+                            <tbody class="tbl-content table table-bordered">
+                                
+                                                {% for data in tshirtData %}
+                                        <tr>
+
+                                                <td style="vertical-align : middle;text-align:center; border-left: 2px solid #007bff; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+                                                    {{ data.receiving_date }}</td>
+                                              <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
+                                              <td class="name" width=12% style="display: none;">{{ data.previous_stock }}</td>
+                                              <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
+                                              <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.total_quantity }}</td>
+                                              <td class="name" width=10% style="padding: 2px 5px; text-align:center; display: none;">{{ data.allotted }}</td>
+                                              <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.remaining }}</td>
+                                              <td class="name" style="display: none;">{{ data.paid_by }}</td>
+                                                  <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name" width="15%">{{ data.additional }}</td>                                            
+                                              <!-- <td class="name" style="display: none;"></td> -->
+                                              <td width=10% style="padding: 2px 5px;">
+                                                  <a id='onBoarding/edit/{{ data.id }}' onclick=editfunction(this)
+                                                      data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
+                                                      style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
+                                                  <a id='onBoarding/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
+                                                      data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
+                                                          class="material-icons">&#xE872;</i></a>
+                                                        </td>
+                                      
+
                                 </tr>
                                 {% endfor %}
+                               
                             </tbody>
-                            <!-- </table> -->
-                            <!-- </div> -->
+                    
                         </table>
                     </section>
-                    {% endfor %}
                 </div>
 
             </div>
@@ -475,11 +474,17 @@
 {% block addextra %}
 
 
-<!-- <script src="../assets/dist/js/bootstrap.bundle.min.js"></script> -->
+<!-- <script src="../assets/dist/js/bootstrap.bundle.min.js">0</script> -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="{% static 'js/food_inventory.js' %}"></script>
+<!-- <script src="{% static 'js/food_inventory.js' %}"></script> -->
+<script src="{% static 'js/onboarding.js' %}"></script>
+
+
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+
+<script src="{% static 'js/dataTables.rowsGroup.js' %}"></script>
 
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>

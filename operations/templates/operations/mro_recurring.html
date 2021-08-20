@@ -33,16 +33,16 @@
 {% block content %}
 
 <div class="container-lg">
-    <div>
-        <div>
+    <div class="table-responsive">
+        <div class="table-wrapper">
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
-                        <img src="{% static 'img/snack.svg' %}" height="100%" width="100%" alt="...">
+                        <img src="{% static 'img/stationary.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
-                        <h2><b>Pantry-Recurring</b></h2>
-                        <p>Manage food Inventory, find tables and data for the available stock and requirements.</p>
+                        <h2><b>MRO-Recurring</b></h2>
+                        <p>Manage MRO Inventory, find tables and data for the available stock and requirements.</p>
                     </div>
                     <div class="col-sm-4" style="padding: 10px;">
                         <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
@@ -346,19 +346,21 @@
         <div class="table-wrapper1">
             <div class="table-title">
 
+
+
             {% regroup products|dictsort:'type' by type as product_list %}
 
             <div class="tabset">
                 <!-- Tab 1 -->
-                <input type="radio" data-tab-id ="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '1')">
-                <label for="defaultOpen">Snacks</label>
+                <input type="radio" data-tab-id ="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '4')">
+                <label for="defaultOpen">Stationary</label>
                 <!-- Tab 2 -->
                 <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
-                    onclick="openTab(event, 2)">
-                <label for="tab2">Beverages</label>
+                    onclick="openTab(event, 5)">
+                <label for="tab2">Cleaning Products</label>
                 <!-- Tab 3 -->
                 <input type="radio" data-tab-id ="3" name="tabset" id="tab3" class="tablinks" aria-controls="Others"
-                    onclick="openTab(event, 3)">
+                    onclick="openTab(event, 6)">
                 <label for="tab3">Others</label>
 
                 <div class="tab-panels">
@@ -441,7 +443,7 @@
                                     <td class="last-date" width=18% style="padding: 2px 5px;">{{ rows.next_order_date }}</td>
                                     <td class="name" style="display: none;">{{ product_type.grouper }} </td>
                                     <td width=10% style="padding: 2px 5px;">
-                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }})
+                                        <!-- <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }})
                                             data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
                                             style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
                                         <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
@@ -449,7 +451,19 @@
                                                 class="material-icons">&#xE872;</i></a>
                                         <a id={{ rows.id }} onclick=repeatfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal"
                                         data-bs-target="#staticBackdrop" title="Repeat"><i
-                                            class="material-icons">&#8942;</i></a>
+                                            class="material-icons">&#8942;</i></a> -->
+
+
+                                            <div class="dropdown-container">
+                                                <div class="three-dots"></div>
+                                                <div class="dropdown">
+                                                  <a href="#"><div>click here for a scam</div></a>
+                                                  <a href="#"><div>even more scams</div></a>
+                                                  <a href="#"><div>still some money left?</div></a>
+                                                </div>
+                                              </div>
+
+
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -483,31 +497,6 @@
 
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-
-
-<!-- <script  src=
-"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-        </script>
-        <script src=
-"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js">
-        </script>
-        <script src="{% static 'js/fancyTable.js' %}"></script>
-        </script>
-        <script type="text/javascript">
-              
-            $(document).ready(function() {
-                $(".productTable1").fancyTable({
-                  /* Column number for initial sorting*/
-                   sortColumn:0,
-                   /* Setting pagination or enabling */
-                   pagination: true,
-                   /* Rows per page kept for display */
-                   perPage:3,
-                   globalSearch:true
-                   });
-                              
-            });
-        </script> -->
 
 
 {% endblock addextra %}

@@ -1,0 +1,173 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations-TshirtInventory-History {% endblock title %}
+
+{% block style %}
+
+
+<!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+<script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
+
+
+<!-- <link href=
+"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+         rel="stylesheet"> -->
+
+{% endblock style %}
+
+
+
+{% block content %}
+
+<div class="container-lg" style="overflow-y: scroll;">
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <!-- <div class="col-sm-1">
+                        <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
+                    </div> -->
+                    <div class="col-8" id="foodtitle">
+                        <h2><b>Version History</b></h2>
+                    </div>
+                    
+                    
+
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="table-responsive">
+        <div class="table-wrapper1">
+            <div class="table-title">
+
+                <!-- {% regroup tshirtData by receiving_date as groupedData %} -->
+            
+                <form>
+                    <i class="fa fa-arrow-left" aria-hidden="true"></i>
+                    <input type="button" class="btn btn-secondary" style="padding: 5px;" value="Go Back" onclick="history.back()">
+                </form>
+
+            <div class="tabset">
+                
+                <div class="tab-panels">
+                    
+                    <section class="tab-panel">
+
+                        <table class="productTable1" id="productTable1">
+                            
+                            <thead class="table tbl-header table-bordered">
+                                <tr>
+                                    <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                    <th width=5% style="padding: 12px; text-align:center;">Size</th>
+                                    <th width=12% style="padding: 12px; text-align:center;">Previous Stock</th>
+                                    <th width=12% style="padding: 12px; text-align:center;">Ordered Qty</th>
+                                    <th width=18% style="padding: 12px; text-align:center;">User</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                    <th width=14% style="display: none;">Order Date</th>
+                                    <th width=14% style="display: none;">Receiving Date</th>
+                                    <th width=14% style="display: none;">Total Quantity</th>
+                                    <th width=14% style="display: none;">Allotted</th>
+                                    <th width=10% style="display: none;">Remaining</th>
+                                    <th width=14% style="display: none;">Paid By</th>
+                                    <th width=14% style="display: none;">Additional</th>                                    
+                                    
+                                    <th width="5%"></th>
+                                    <!-- <td class="name" style="display: none;"> </td> -->
+                                    
+                                </tr>
+                            </thead>
+
+
+
+                            <!-- <div class="tbl-content table"> -->
+                            <!-- <table id="productTable"> -->
+                            <tbody class="tbl-content table table-bordered">
+                                
+                                                {% for data in tshirt_history %}
+                                        <tr>
+                                            <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+                                                    {{ data.history_date }}</td>
+                                            <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
+                                            <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.previous_stock }}</td>
+                                            <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
+                                            <td class="name" style="padding: 2px 5px; text-align:center;">{{ data.user }}</td>
+
+                                            {% if data.history_type == "+" %}
+                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+                                            {% elif data.history_type == "~" %}
+                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+                                            {% else %}
+                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+                                            {% endif %}                                          
+                                            
+                                            <td class="name" width=10% style="display: none;">{{ data.order_date }}</td>
+                                            <td class="name" width=10% style="display: none;">{{ data.receiving_date }}</td>
+                                            <td class="name" width=10% style="display: none;">{{ data.total_quantity }}</td>
+                                            <td class="name" width=10% style="display: none;">{{ data.allotted }}</td>
+                                            <td class="name" width=12% style="display: none;">{{ data.remaining }}</td>
+                                            <td class="name" width=10% style="display: none;">{{ data.paid_by }}</td>
+                                            <td class="name" width=10% style="display: none;">{{ data.additional }}</td>
+                                            <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer;"></td>
+                                            
+
+                                </tr>
+                                {% endfor %}
+                               
+                            </tbody>
+                    
+                        </table>
+                    </section>
+                </div>
+
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+
+{% block addextra %}
+
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+<script src="{% static 'js/tshirt_history.js' %}"></script>
+
+
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+
+
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
+
+
+
+
+{% endblock addextra %}

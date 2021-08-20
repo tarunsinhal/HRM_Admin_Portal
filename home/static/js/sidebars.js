@@ -8,27 +8,24 @@
 })()
 
 
-$(document).ready(function() {
-  debugger
-  $.ajax({     
-      type: 'GET',             // initialize an AJAX request
-  url: '/home/ajax/get_notifications',
-      dataType: 'json',
-  success: function (data) {
-          debugger
-    console.log('success')
-  }
-});
+$(document).ready(function () {
+  $.ajax({
+    type: 'GET',             // initialize an AJAX request
+    url: '/home/ajax/get_notifications',
+    dataType: 'json',
+    success: function (data) {
+      console.log('success')
+    }
+  });
 
   $.ajax({                       // initialize an AJAX request
-      
-      type: 'GET',
-      url: '/home/ajax/get_notifications_count',
-      dataType: 'json',
-      success: function (data) {
-          debugger
-          $("#notification").append( "<strong>" + data.notification_count + "</strong>" );
-      }
+
+    type: 'GET',
+    url: '/home/ajax/get_notifications_count',
+    dataType: 'json',
+    success: function (data) {
+      $("#notification").append("<strong>" + data.notification_count + "</strong>");
+    }
   });
 })
 

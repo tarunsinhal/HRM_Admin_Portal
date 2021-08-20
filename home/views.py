@@ -1,3 +1,4 @@
+from operations.models import t_shirt_inventory
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -12,6 +13,8 @@ from rest_framework import status
 from django.contrib.auth.models import User
 
 
+from django.db.models import Q
+from django.urls import resolve
 # Create your views here.
 
 @login_required(login_url='/auth/login')
@@ -24,16 +27,23 @@ def home_view(request):
 
 
 def get_noitications(request):
+    
+    print('url_name:-', resolve(request.path_info))
+
     time_threshold = date.today() + timedelta(days=1)
-    n = list(notifications.objects.values('item_id'))
-    print(n)
-    item_ids = [i['item_id'] for i in n]
-    print(item_ids)
-    q = recurringItems.objects.filter(next_order_date=time_threshold.strftime('%Y-%m-%d')).values('id',
-                                                                                                  'product__product_name')
-    notification_json = [notifications(product=i['product__product_name'], item_id=i['id'],
-                                       notification_date=date.today().strftime('%Y-%m-%d'),
-                                       is_visited=False) for i in q if i['id'] not in item_ids]
+    n = list(notifications.objects.values('item_id', 'notification_type'))
+    item_ids = [(i['item_id'], i['notification_type']) for i in n]
+    q = recurringItems.objects.filter(next_order_date__lte=time_threshold.strftime('%Y-%m-%d')).values('id', 'product__product_name', 'next_order_date')  
+    notification_json = [notifications(product=i['product__product_name'], item_id=i['id'], notification_date=(i['next_order_date']-timedelta(days=1)).strftime('%Y-%m-%d'),
+                        is_visited=False, notification_type=1) for i in q if (i['id'], 1) not in item_ids]
+    
+    tshirt_qs = t_shirt_inventory.objects.values_list().order_by('-receiving_date').values('receiving_date')[0]
+    qs = t_shirt_inventory.objects.filter(receiving_date=tshirt_qs['receiving_date'].strftime('%Y-%m-%d'), remaining__lte=2).values('id', 'size', 'remaining')
+    for i in qs:
+        if (i['id'], 2) not in item_ids:
+            notification_json.append(notifications(product='T-shirt'+'-'+ i['size'], item_id=i['id'], notification_date=date.today(),
+            is_visited=False, notification_type=2))
+
     entries = notifications.objects.bulk_create(notification_json)
     return JsonResponse(notification_json, safe=False)
 
@@ -50,7 +60,12 @@ def get_active_notifications(request):
 
 
 def notifications_view(request):
-    n = list(notifications.objects.values())
+
+    time_threshold = date.today() - timedelta(days=7)
+    print(time_threshold.strftime('%Y-%m-%d'))
+
+    n = list(notifications.objects.filter(Q(is_visited=False)|Q(notification_date__gte=time_threshold.strftime('%Y-%m-%d'))))
+    print(n)
 
     selectionQuery = notifications.objects.filter(is_visited=False)
     selectionQuery.update(is_visited=True)

@@ -324,6 +324,15 @@ $('#id_price, #id_quantity, #id_discount').on('keyup', function () {
 });
 
 
+$('#price, #quantity, #discount').on('keyup', function () {
+	let mul = $("#price").val() * $("#quantity").val();
+	// let d = ($("#id_discount").val() == undefined)?0:$("#id_discount").val() ;
+	let d = $("#discount").val();
+	let totalVal = mul - d;
+	$("#amount").val(totalVal)
+});
+
+
 //...called when save and add another button on addProduct form is clicked...//
 $("#saveNew").click(function (e) {
 	e.preventDefault()
@@ -497,7 +506,9 @@ $("#id_product").change(function () {
 
 //...loading page again on closing the add new product form...//
 $('#staticBackdrop').on('hidden.bs.modal', function () {
+	debugger
 	window.location.reload();
+	
 })
 
 

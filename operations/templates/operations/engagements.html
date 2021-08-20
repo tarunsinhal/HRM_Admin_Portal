@@ -1,0 +1,40 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations {% endblock title %}
+
+
+{% block content %}
+
+<div class="row row-cols-1 row-cols-md-2 g-5 mt-3">
+
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'img/employee_onboarding.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'operations:onBoarding' %}" class="card-title">On-Boarding</a></h5>
+          <p class="card-text">Manage food Inventory, find tables and data for the available stock and requirements.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'img/employee_offboarding.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="{% url 'operations:pantry_recurring' %}" class="card-title">Off-Boarding</a></h5>
+          <p class="card-text">Manage Maintenance stuff consisting certificates, trophies, stationary, etc.</p>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="card shadow p-3 mb-5 bg-white rounded">
+        <img src="{% static 'img/party.svg' %}" class="card-img-top" alt="...">
+        <div class="card-body">
+          <h5 class="card-title"><a href="https://www.google.com" class="card-title">Office Events</Inp></a></h5>
+          <p class="card-text">Manage Inventory for the new employee joining kit, consisting T-shirts, systems, ID cards, etc.</p>
+        </div>
+      </div>
+    </div>
+
+
+{% endblock content %}

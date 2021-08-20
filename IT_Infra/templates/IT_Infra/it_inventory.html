@@ -10,10 +10,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
 <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
-<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
-<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
@@ -38,17 +35,17 @@
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
-                        <img src="{% static 'img/snack.svg' %}" height="100%" width="100%" alt="...">
+                        <img src="{% static 'img/laptop.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
-                        <h2><b>Pantry-Recurring</b></h2>
+                        <h2><b>IT-Inventory</b></h2>
                         <p>Manage food Inventory, find tables and data for the available stock and requirements.</p>
                     </div>
-                    <div class="col-sm-4" style="padding: 10px;">
+                    <!-- <div class="col-sm-4" style="padding: 10px;">
                         <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
                             data-bs-target="#staticBackdrop" style="background-color: #007bff">
                             +</button>
-                    </div>
+                    </div> -->
 
                     <form method="POST" action="{% url 'operations:addProducts' %}" id="addForm"
                         data-products-url="{% url 'operations:ajax_load_products' %}"
@@ -341,6 +338,11 @@
         </div>
     </div>
 
+    <button style="padding: 8px; float: right;" class="btn btn-primary">Add Bag</button>
+    <button style="padding: 8px; float: right;" class="btn btn-primary">Add Mouse</button>
+    <button style="padding: 8px; float: right;" class="btn btn-primary">Add Laptop</button>
+
+
 
     <div class="table-responsive">
         <div class="table-wrapper1">
@@ -351,15 +353,15 @@
             <div class="tabset">
                 <!-- Tab 1 -->
                 <input type="radio" data-tab-id ="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '1')">
-                <label for="defaultOpen">Snacks</label>
+                <label for="defaultOpen">Laptop</label>
                 <!-- Tab 2 -->
                 <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
                     onclick="openTab(event, 2)">
-                <label for="tab2">Beverages</label>
+                <label for="tab2">Mouse</label>
                 <!-- Tab 3 -->
                 <input type="radio" data-tab-id ="3" name="tabset" id="tab3" class="tablinks" aria-controls="Others"
                     onclick="openTab(event, 3)">
-                <label for="tab3">Others</label>
+                <label for="tab3">Laptop Bag</label>
 
                 <div class="tab-panels">
                     {% for product_type in product_list %}
@@ -474,8 +476,6 @@
 
 {% block addextra %}
 
-
-<!-- <script src="../assets/dist/js/bootstrap.bundle.min.js"></script> -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="{% static 'js/food_inventory.js' %}"></script>
 
@@ -483,31 +483,6 @@
 
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-
-
-<!-- <script  src=
-"https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-        </script>
-        <script src=
-"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js">
-        </script>
-        <script src="{% static 'js/fancyTable.js' %}"></script>
-        </script>
-        <script type="text/javascript">
-              
-            $(document).ready(function() {
-                $(".productTable1").fancyTable({
-                  /* Column number for initial sorting*/
-                   sortColumn:0,
-                   /* Setting pagination or enabling */
-                   pagination: true,
-                   /* Rows per page kept for display */
-                   perPage:3,
-                   globalSearch:true
-                   });
-                              
-            });
-        </script> -->
 
 
 {% endblock addextra %}

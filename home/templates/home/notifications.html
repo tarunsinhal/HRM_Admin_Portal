@@ -26,7 +26,7 @@
                     <div class="col-sm-11" id="notification-title"
                         style="justify-content: center; vertical-align: center;">
                         <h2><b>Notifications</b></h2>
-                        <p>Every notification you've ever received. Showing newest first.</p>
+                        <p>Notification you've ever received in last 7 days. Showing newest first.</p>
                     </div>
                     <!-- <div class="col-sm-4" style="padding: 10px;">
                         <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
@@ -49,6 +49,7 @@
     </div>
 
 
+    <button class="btn btn-secondary" style="padding: 5px; float: right;">Show All notifications</button>
     <div class="table-responsive">
         <div class="table-wrapper1">
             <div class="table-title">
@@ -66,17 +67,33 @@
                    <!-- <ul>
                        <li><strong>{{ rows.product }}</strong> next order date is tomorrow.</li>
                    </ul> -->
+                   <div class="table-responsive">
+                    <div class="table-wrapper" style="padding: 10px; box-shadow: 0px 0px 0px 0px;">
+                        <div class="table-title">
+            
                    <div class="row">
                     <div class="col-1">
                        </div>
-                       <div class="col-6">
+                       {% if rows.notification_type == 1 %}
+                       <div class="col-9">
                         <strong class="font-weight-bold">{{ rows.product }}</strong> next order date is tomorrow.
                        </div>
+                       {% elif rows.notification_type == 2 %}
+                       <div class="col-9">
+                        2 or less pieces remained in Tshirt Inventory of size <strong class="font-weight-bold">{{ rows.product }}</strong>
+                       </div>
+                       {% endif %}
+                       <!-- <div class="col-2">
+                        <i class="fa fa-times" style="font-size: 24px; float: right;" aria-hidden="true"></i>
+                       </div> -->
+                   </div>
+                   </div>
+                   </div>
                    </div>
                    {% endfor %}
                    
                 </div>
-                <hr>
+                <hr style="color: blue;">
                 {% endfor %}
             </div>
         </div>
@@ -97,11 +114,5 @@
 
 </div>
 
-
-<!-- {% for notification in notifications %}
-
-<p>{{ notification.product }}</p>
-
-{% endfor %} -->
 
 {% endblock content %}
