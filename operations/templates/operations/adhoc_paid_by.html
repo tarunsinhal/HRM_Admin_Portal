@@ -1,8 +1,4 @@
 <option value="">---------</option>
-<!--{% for product in products %}-->
-<!--<option value="{{ product }}">{{ product }} </option>-->
-<!--{% endfor %}-->
-{% for user in users %}
-<option value="{{ user.id }}"> {{ user.id }}</option>
+{% for name  in paid_by %}
+<option value="{{ name }}">{{ name }}</option>
 {% endfor %}
-<option value="other" class="font-weight-bold" style="color: #007bff;">Other</option>

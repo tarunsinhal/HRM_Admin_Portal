@@ -1,33 +1,33 @@
 //...called when edit button is clicked...//
 function editfunction(obj) {
 debugger;
-	document.getElementById('editFormAdhoc').style.display = 'block'
+	document.getElementById('editUserForm').style.display = 'block'
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
-	var y = document.getElementById('editFormAdhoc').getElementsByTagName('input');
-	var mySelect = document.getElementById('editFormAdhoc').getElementsByTagName('select');
-	var myText = document.getElementById('editFormAdhoc').getElementsByTagName('textarea');
-	var paid_by = x[7].textContent.split(/(\s+)/)[0]
-    var quantity_1= x[4].textContent.split(/(\s+)/)[2]
+	var y = document.getElementById('editUserForm').getElementsByTagName('input');
+//	var mySelect = document.getElementById('editFormAdhoc').getElementsByTagName('select');
+//	var myText = document.getElementById('editFormAdhoc').getElementsByTagName('textarea');
+//	var username = x[0].textContent.split(/(\s+)/)[0]
+//    var email= x[1].textContent.split(/(\s+)/)[0]
 
-	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
-				if (quantity_1 == i.value) {
-					mySelect[0].selectedIndex = j;
-					break;
-				}
-			}
-    for (var i, j = 0; i = mySelect[1].options[j]; j++) {
-				if (paid_by == i.value) {
-					mySelect[1].selectedIndex = j;
-					break;
-				}
-			}
+//	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
+//				if (quantity_1 == i.value) {
+//					mySelect[0].selectedIndex = j;
+//					break;
+//				}
+//			}
+//    for (var i, j = 0; i = mySelect[1].options[j]; j++) {
+//				if (paid_by == i.value) {
+//					mySelect[1].selectedIndex = j;
+//					break;
+//				}
+//			}
 
-	for (i = 1; i < (y.length-1); i++) {
+	for (i = 1; i < (y.length-2); i++) {
 		var str = x[i + 1].textContent.split(/(\s+)/);
 				y[i].value = str[0]
 	}
-	myText[0].value = x[8].textContent
-	document.getElementById('editFormAdhoc').action = obj.id;
+//	myText[0].value = x[8].textContent
+	document.getElementById('editUserForm').action = obj.id;
 
 
 //...function called when edit form is submitted...//
@@ -58,8 +58,8 @@ debugger;
 	xhr.send(myFormData)
 }
 
-const editFormAdhoc = document.getElementById('editFormAdhoc')
-editFormAdhoc.addEventListener("submit", handleEditProduct)
+const editUserForm = document.getElementById('editUserForm')
+editUserForm.addEventListener("submit", handleEditProduct)
 
 //...function called when delete form is submitted...//
 function handleDeleteProduct(event) {

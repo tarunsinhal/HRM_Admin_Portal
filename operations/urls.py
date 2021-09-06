@@ -4,24 +4,25 @@ from . import views
 app_name = 'operations'
 urlpatterns = [
     path('', views.operations_view, name='operations_view'),
-    path('pantry/', views.pantry_view, name='pantry_view'),
-    path('pantry/recurring/', views.pantry_recurring_view, name='pantry_recurring'),
-    path('pantry/adhoc/', views.pantry_adhoc_view, name='pantry_adhoc'),
-    path('pantry/adhoc/add/', views.addAdhocProducts, name='add_adhoc_products'),
-    path('pantry/adhoc/edit/<str:pk>', views.editAdhocProducts, name='edit_adhoc_products'),
-    path('pantry/adhoc/delete/<str:pk>', views.deleteAdhocProducts, name='delete_adhoc_products'),
+    path('inventory/', views.inventory_view, name='inventory_view'),
+    path('inventory/recurring/', views.inventory_recurring_view, name='inventory_recurring'),
+    path('inventory/adhoc/', views.inventory_adhoc_view, name='inventory_adhoc'),
+    path('inventory/adhoc/add/', views.addAdhocProducts, name='add_adhoc_products'),
+    path('inventory/adhoc/edit/<str:pk>', views.editAdhocProducts, name='edit_adhoc_products'),
+    path('inventory/adhoc/delete/<str:pk>', views.deleteAdhocProducts, name='delete_adhoc_products'),
 
     # ------------------------------------------------------------------------------------
-    path('pantry/dailyWeekly/', views.pantry_dailyWeekly_view, name='pantry_dailyWeekly'),
-    path('pantry/dailyWeekly/addItems', views.addItems, name='addItems'),
-    path('pantry/dailyWeekly/edit/<str:pk>', views.editItems, name='editItems'),
-    path('pantry/dailyWeekly/delete/<str:pk>', views.deleteItems, name='deleteItems'),
-    path('ajax/pantry/dailyWeekly/addItems', views.addItems, name='addItems'),
+    path('inventory/dailyWeekly/', views.inventory_dailyWeekly_view, name='inventory_dailyWeekly'),
+    path('inventory/dailyWeekly/addItems', views.addItems, name='addItems'),
+    path('inventory/dailyWeekly/edit/<str:pk>', views.editItems, name='editItems'),
+    path('inventory/dailyWeekly/delete/<str:pk>', views.deleteItems, name='deleteItems'),
+    path('ajax/inventory/dailyWeekly/addItems', views.addItems, name='addItems'),
     path('ajax/load_purchase_date_only', views.load_purchase_date_only, name="ajax_load_purchase_date_only"),
     # ------------------------------------------------------------------------------------
     # path('food/', views.IndexView.as_view(), name='food'),
     path('MRO/', views.mro_view, name='mro_view'),
     path('MRO/recurring/', views.mro_recurring_view, name='mro_recurring'),
+    path('MRO/recurring/', views.inventory_recurring_view, name='inventory_recurring'),
     path('engagements/', views.engagements_view, name='engagements_view'),
     path('MRO/maintenance_vendor/', views.mro_maintenance_vendor, name="mro_maintenance_vendor"),
     path('MRO/maintenance_vendor/addVendor', views.addVendor, name="addVendor"),
@@ -51,6 +52,6 @@ urlpatterns = [
     path('ajax/food/addProducts', views.addProducts, name='ajax_addProducts'),
     path('ajax/load_purchase_date', views.load_purchase_date, name="ajax_load_purchase_date"),
     path('ajax/load-users/', views.load_users, name='ajax_load_users'),
-    path('ajax/load-paidby/', views.load_paid_by, name='ajax_load_paidby'),
+    # path('ajax/load-paidby/', views.load_paid_by, name='ajax_load_paidby'),
 
 ]

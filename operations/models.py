@@ -1,20 +1,18 @@
 from django.db import models
-from django.contrib.auth.models import User
-from django.conf import settings
-from django.db.models.fields import DateField
 from django.core.validators import RegexValidator
 from simple_history.models import HistoricalRecords
 import datetime
-
+from datetime import datetime
 
 choices = [('Snacks', 'Snacks'), ('Beverages', 'Beverages'), ('Others', 'Others')]
 paid_by = [('Shreya', 'Shreya'), ('Pankaj', 'Pankaj'), ('Company', 'Company'), ('Others', 'Others')]
-unit_choices_adhoc_items = [('Set', 'Set'), ('Number', 'Number')]
 daily_weekly_choices = [('1', 'Foods'), ('2', 'Beverage'), ('3', 'Others')]
 unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'),
                 ('Ml', 'mililiter')]
 paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
-payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
+payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'),
+                        ('others', 'Others')]
+adhoc_product_types = [('1', 'Pantry'), ('2', 'Non-Pantry')]
 
 t_shirt_sizes = [('XS', 'Extra-Small'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'), ('XL', 'Extra-Large'),
                   ('XXL', 'XXL')]
@@ -79,18 +77,22 @@ class recurringItems(models.Model):
 
 
 class AdhocItems(models.Model):
+    type = models.CharField(max_length=50, choices=adhoc_product_types, default="Pantry")
     product = models.CharField(max_length=50)
     quantity = models.CharField(max_length=50)
-    price = models.PositiveIntegerField()
+    price = models.PositiveIntegerField(blank=True, null=True)
     amount = models.PositiveIntegerField()
-    paid_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    paid_by = models.CharField(max_length=100)
     purchase_date = models.DateField()
+    advance_pay = models.PositiveIntegerField(blank=True, default=0)
+    balance_amount = models.PositiveIntegerField(blank=True, default=0)
+    received_date = models.DateField(blank=True, null=True)
     additional_info = models.CharField(max_length=100, blank=True)
 
     def __str__(self):
         return str(self.product)
 
-        
+
 class dailyWeeklyItems(models.Model):
     # type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
     type = models.CharField(max_length=50, choices=daily_weekly_choices)
@@ -104,14 +106,16 @@ class dailyWeeklyItems(models.Model):
     def __str__(self):
         return str(self.product)
 
+
 class vendorContactList(models.Model):
-    phone_regex = RegexValidator(regex=r'^\d{10}$', message="Phone number must be positive intergers.Up to 10 digits allowed.")
+    phone_regex = RegexValidator(regex=r'^\d{10}$',
+                                 message="Phone number must be positive intergers.Up to 10 digits allowed.")
     service = models.CharField(max_length=50)
     vendor_name = models.CharField(max_length=100)
     contact_no = models.CharField(validators=[phone_regex], max_length=10)
-    alternate_no = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True,)
+    alternate_no = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True, )
     nominal_charges = models.PositiveIntegerField(null=True, blank=True)
-    aditional_info = models.CharField(max_length=200, blank=True, null=True,)
+    aditional_info = models.CharField(max_length=200, blank=True, null=True, )
 
     def __str__(self):
         return str(self.service)

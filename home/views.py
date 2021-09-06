@@ -11,6 +11,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.contrib.auth.models import User
+from .forms import UpdateUserForm
+# from Admin_portal.settings import EMAIL_HOST_USER
+# from django.core.mail import send_mass_mail, send_mail
 
 
 from django.db.models import Q
@@ -74,12 +77,13 @@ def notifications_view(request):
 
 @login_required(login_url='/auth/login')
 def profile(request):
+    updateUserForm = UpdateUserForm()
     serializer = UserSerializer
     if request.method == "GET":
         all_users = User.objects.all()
         serializer = UserSerializer(all_users, many=True)
     return render(request, 'home/manage_users.html', {
-        'all_users': serializer.data})
+        'all_users': serializer.data, 'updateUserForm': updateUserForm})
 
 
 @api_view(['PUT'])
@@ -127,3 +131,15 @@ def delete_user(request, pk):
 
 def add_permission(request):
     return render(request, 'home/add_permissions.html')
+
+
+# def send_email(request):
+#     email_form = SendEmail()
+#     if request.method == "POST":
+#         email_form = SendEmail(request.POST)
+#         recipient = [str(email_form['email'].value())]
+#         subject = str(email_form['subject'].value())
+#         message = str(email_form['message'].value())
+#         send_mail(subject,message,EMAIL_HOST_USER,[recipient],fail_silently=False)
+#         return render(request, 'home/success_email.html', {'recipient': recipient})
+#     return render(request, 'home/email_form.html', {'form':email_form})

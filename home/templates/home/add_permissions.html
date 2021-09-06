@@ -1,178 +1,71 @@
 {% extends 'home/base.html' %}
 {% load static %}
 
-{% block title %} Add Permissions {% endblock title %}
+{% block title %} add permissions {% endblock title %}
 
-{% block style %}
-
-
-<link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Flamenco&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
-<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
-
-<!--<link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">-->
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
-<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
-<html lang="en">
-
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-
-  <script>
-        $(document).ready(function()
-        {
-            $('.checkbox'.click(function()
-        {
-            var text= "";
-            $('.checkbox:checked').each(function()
-        {
-        text +=$(this).val()+ ',';
-        )};
-        $('#views_list'.val(text);
-      )};
-      $('#submit').click(function)
-      {
-        alert('records added successfully');
-      }
-   )};
- )};
-
-</script>
-
-{% endblock style %}
+{% block style %}{% endblock style %}
 
 {% block content %}
 
-<header class="header " >
-    <h3> Add Permissions </h3>
+<head>
+<style>
 
-    <style>
-.collapsible {
-  background-color: #578c71;
-  color: white;
-  cursor: pointer;
-  padding: 15px;
-  width: 100%;
-  border: none;
-  text-align: left;
-  outline: none;
-  font-size: 15px;
-}
-
-.active, .collapsible:hover {
-  background-color: #578c71;
-}
-
-.content {
-  padding: 0 18px;
-  display: none;
-  overflow: hidden;
-  background-color: #f1f1f1;
-}
 </style>
-</header>
+</head>
 <body>
-<div class="permission" style="margin-top:120px; "  >
-
-<form method="POST">
-    {% csrf_token %}
-<div>
-<button type="button" class="collapsible">Operations</button>
-<!--<input type="checkbox" class="collapsible">Operations</input>-->
-
-<div class="content">
-    <input type="checkbox" class="checkbox" value="operations:pantry_adhoc">  Pantry<br>
-    <li><input type="checkbox" class="checkbox" value="operations:pantry_recurring"> Pantry Daily/Weekly </li>
-    <li> <input type="checkbox" class="checkbox" value="operations:pantry_recurring"> Pantry Recurring </li>
-    <li> <input type="checkbox" class="checkbox" value="operations:pantry_recurring"> Pantry Adhoc </li>
+<div class="groups">
+<!--<body>-->
+<input type="checkbox" id="cbgroup1_master" onchange="selectAll(this,'cbg1[]')" class="master"> Operations
+<br><br>
+<!--<div class="groups">-->
+    <input type="checkbox" id="cb1_1" class="cbgroup1" name="cbg1[]" value="1"> Inventory-Recurring<br>
+    <input type="checkbox" id="cb1_2" class="cbgroup1" name="cbg1[]" value="2"> Inventory-Adhoc<br>
+    <!--<input type="checkbox" id="cb1_3" class="cbgroup1" name="cbg1[]" value="3"> Item 3<br>-->
+    <!--<input type="checkbox" id="cb1_4" class="cbgroup1" name="cbg1[]" value="4"> Item 4<br>-->
+    <br><br>
+<!--</div>-->
+<input type="checkbox" id="cbgroup2_master" onchange="selectAll2(this,'cbg2[]')" class="master"> MRO Supplies
+<br><br>
+<!--<div class="groups">-->
+    <input type="checkbox" id="cb2_1" class="cbgroup2" name="cbg2[]" value="1"> MRO-Vendor<br>
+    <input type="checkbox" id="cb2_2" class="cbgroup2" name="cbg2[]" value="2"> MRO Repair/Services<br>
+    <!--<input type="checkbox" id="cb2_3" class="cbgroup2" name="cbg2[]" value="3"> Item 3<br>-->
+    <!--<input type="checkbox" id="cb2_4" class="cbgroup2" name="cbg2[]" value="4"> Item 4<br>-->
+<!--</div>-->
 <br>
-     <input type="checkbox" class="checkbox" value="operations:pantry_recurring"> MRO Supplies <br>
-     <li><input type="checkbox" class="checkbox" value="operations:pantry_recurring"> MRO Adhoc </li>
-    <li> <input type="checkbox" class="checkbox" value="operations:pantry_recurring"> MRO Recurring </li>
-    <li> <input type="checkbox" class="checkbox" value="operations:pantry_recurring"> MRO Maintenance </li>
+<input type="checkbox" id="cbgroup3_master" onchange="selectAll3(this,'cbg3[]')" class="master"> IT Infrastructure
+<br><br>
+<!--<div class="groups">-->
+    <input type="checkbox" id="cb3_1" class="cbgroup3" name="cbg3[]" value="1"> MRO-Vendor<br>
+    <input type="checkbox" id="cb3_2" class="cbgroup3" name="cbg3[]" value="2"> MRO Repair/Services<br>
+<!--</div>-->
 <br>
-    <input type="checkbox" class="checkbox" value="operations:pantry_adhoc">  Engagements<br>
- <li><input type="checkbox" class="checkbox" value="operations:pantry_recurring"> Daily/Weekly </li>
-    <li> <input type="checkbox" class="checkbox" value="operations:pantry_recurring"> Recurring </li>
-<!--    <li> <input type="checkbox" class="checkbox" value="operations:pantry_recurring"> Ptry Adhoc </li>-->
-
-</div>
-<button type="button" class="collapsible">IT Infrastructure</button>
-    <div class="content">
-        <input type="checkbox" class="checkbox" value="operations:pantry_adhoc">  Pantry<br>
-    </div>
-    <button type="button" class="collapsible">Reports</button>
-        <div class="content">
-            <input type="checkbox" class="checkbox" value="operations:pantry_adhoc">  Pantry<br>
-        </div>
-    <button type="button" class="collapsible">Bills & Reimbursements</button>
-
-<div class="content">
-    <input type="checkbox" class="checkbox" value="operations:pantry_adhoc">  Pantry<br>
-
-</div>
-    <button type="button" class="collapsible">Suggestions</button>
-
-<div class="content">
-    <input type="checkbox" class="checkbox" value="operations:pantry_adhoc">  Pantry<br>
-
-</div>
-</div>
-<script>
-var coll = document.getElementsByClassName("collapsible");
-var i;
-
-for (i = 0; i < coll.length; i++) {
-  coll[i].addEventListener("click", function() {
-    this.classList.toggle("active");
-    var content = this.nextElementSibling;
-    if (content.style.display === "block") {
-      content.style.display = "none";
-    } else {
-      content.style.display = "block";
-    }
-  });
-}
-</script>
-    <br>
-    <br>
-
-<!--    <input type="text" id="views_list" name="list_of_allowed_views"> <br>-->
-    <input type="submit" id="submit" value="submit">
-</form>
+<input type="checkbox" id="cbgroup4_master" onchange="selectAll4(this,'cbg4[]')" class="master"> Bills & Reimbursement
+<br><br>
+<!--<div class="groups">-->
+    <input type="checkbox" id="cb4_1" class="cbgroup4" name="cbg4[]" value="1"> MRO-Vendor<br>
+    <input type="checkbox" id="cb4_2" class="cbgroup2" name="cbg4[]" value="2"> MRO Repair/Services<br>
+<!--</div>-->
+<br>
+<input type="checkbox" id="cbgroup5_master" onchange="selectAll5(this,'cbg5[]')" class="master"> Reports
+<br><br>
+<!--<div class="groups">-->
+    <input type="checkbox" id="cb5_1" class="cbgroup5" name="cbg5[]" value="1"> MRO-Vendor<br>
+    <input type="checkbox" id="cb5_2" class="cbgroup5" name="cbg5[]" value="2"> MRO Repair/Services<br>
+<!--</div>-->
+<br>
+<input type="checkbox" id="cbgroup6_master" onchange="selectAll6(this,'cbg6[]')" class="master"> Suggestions
+<br><br>
+<!--<div class="groups">-->
+    <input type="checkbox" id="cb6_1" class="cbgroup6" name="cbg6[]" value="1"> MRO-Vendor<br>
+    <input type="checkbox" id="cb6_2" class="cbgroup6" name="cbg6[]" value="2"> MRO Repair/Services<br>
 </div>
 </body>
 
-
 {% endblock content %}
 
-
 {% block addextra %}
-<script src="https://unpkg.com/ionicons@5.0.0/dist/ionicons.js"></script>
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<!--    <script src="{% static 'js/food_inventory_adhoc.js' %}"></script>-->
+<script src="{% static 'js/add_permissions.js' %}"></script>
 
-<script type="text/javascript" charset="utf8"
-        src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
-<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
 {% endblock addextra %}

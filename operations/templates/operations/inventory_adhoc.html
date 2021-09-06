@@ -1,0 +1,348 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations-Inventory-Adhoc {% endblock title %}
+
+{% block style %}
+
+
+<!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/inventory.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+<!-- <link href=
+"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+         rel="stylesheet"> -->
+
+{% endblock style %}
+
+
+{% block content %}
+
+<div class="container-lg" style="overflow-y: scroll;">
+    <div class="table-responsive">
+        <div class="table-wrapper">
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <img src="{% static 'img/pantry.svg' %}" height="100%" width="100%" alt="...">
+                    </div>
+                    <div class="col-sm-7" id="foodtitle">
+                        <h3><b>Adhoc</b></h3>
+                        <p style="font-size:15px;">Manage Inventory for the ad hoc products like electronics, furniture,
+                            crockery etc.</p>
+                    </div>
+                    <div class="col-sm-4" style="padding: 10px;">
+                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" style="background-color: #2b8c54">
+                            +
+                        </button>
+                    </div>
+
+                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addFormAdhoc"
+                                                data-users-url="{% url 'operations:ajax_load_users' %}">
+
+
+                        {% csrf_token %}
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            {% for field in addAdhocProductsForm %}
+                                            {% if field.is_hidden %}
+                                            <div class="container">
+                                                <div class="row"
+                                                     style="text-align: left; font-size: 15px; display: none;">
+                                                    <div class="col-4 font-weight-bold"
+                                                         style="margin: 5px; text-align: center;">{{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4 font-weight-bold"
+                                                         style="margin: 5px; text-align: center;">{{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                        {{ field.errors }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-secondary" name="saveButton"
+                                                value="Save and Add Another" id="saveNew">Save and Add Another
+                                        </button>
+                                        <button type="submit" name="addButton" value="Add"
+                                                class="btn btn-primary">Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" id="editFormAdhoc"
+                          data-users-url="{% url 'operations:ajax_load_users' %}">
+
+                        {% csrf_token %}
+                        <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Update Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row g-3">
+                                            {% for field in editAdhocProductsForm %}
+                                            {% if field.is_hidden %}
+                                            <div class="container">
+                                                <div class="row"
+                                                     style="text-align: left; font-size: 15px; display: none;">
+                                                    <div class="col-4" style="margin: 5px; text-align: center;">
+                                                        {{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% else %}
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4 font-weight-bold"
+                                                         style="margin: 5px; text-align: center;">{{ field.label }}
+                                                    </div>
+                                                    <div class="col-6" style="margin: 5px">
+                                                        {{ field }}
+                                                        {{ field.errors }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {% endif %}
+                                            {% endfor %}
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close
+                                        </button>
+
+
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" id="deleteForm">
+                        {% csrf_token %}
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content"
+                                     style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this product?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close
+                                        </button>
+                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="table-responsive">
+        <div class="table-wrapper1">
+            <div class="table-title">
+
+                {% regroup products|dictsort:'type' by type as product_list %}
+
+                <div class="tabset">
+                    <!-- Tab 1 -->
+                    <input type="radio" data-tab-id="1" name="tabset" id="defaultOpen" class="tablinks"
+                           onclick="openTab(event, '1')">
+                    <label for="defaultOpen">Pantry</label>
+                    <!-- Tab 2 -->
+                    <input type="radio" data-tab-id="2" name="tabset" id="tab2" class="tablinks"
+                           aria-controls="Non-Pantry"
+                           onclick="openTab(event, 2)">
+                    <label for="tab2">Non-Pantry</label>
+
+                    <div class="tab-panels">
+                        {% for product_type in product_list %}
+                        <section class="tab-panel" id="{{ product_type.grouper }}">
+                            <table class="productTable1">
+
+                                <div style="display: flex; align-items: center;">
+                                    <div class="col-md-12" style="padding-bottom: 5px;">
+                                        <span>
+                                            <span class="font-weight-bold">Purchase date: </span> <input type="date"
+                                                                                                         class="inventory_datepicker_{{ product_type.grouper }}"
+                                                                                                         id="pur_min_{{ product_type.grouper }}"
+                                                                                                         name="pur_min_{{ product_type.grouper }}"
+                                                                                                         data-attr-type="pur"/> to
+                                            <input type="date" class="inventory_datepicker_{{ product_type.grouper }}"
+                                                   id="pur_max_{{ product_type.grouper }}"
+                                                   name="pur_max_{{ product_type.grouper }}" data-attr-type="pur"/>
+                                        </span>
+
+                                        <span>
+                                            <i data-section-id="{{product_type.grouper }}"
+                                               class="daterefresh fa fa-rotate-right" aria-hidden="true"
+                                               style="margin-left: 20px;"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <thead class="table tbl-header table-hover table-bordered">
+                                <tr>
+                                    <th class="name" style="display: none;"></th>
+                                    <th class="name" style="display: none;"></th>
+                                    <th width=16% style="padding: 12px;">Purchase Date</th>
+                                    <th width=15% style="padding: 12px;">Received Date</th>
+                                    <th width=15% style="padding: 12px;">Product Name</th>
+                                    <th width=10% style="padding: 12px;">Quantity</th>
+                                    <th width=12% style="padding: 12px;">Price</th>
+                                    <th width=12% style="padding: 12px;">Amount</th>
+                                    <th width=12% style="display: none;">Advance Pay</th>
+                                    <th width=12% style="display: none;">Balance Amount</th>
+                                    <th width=12% style="padding: 12px;">Paid By</th>
+                                    <th width=12% style="padding: 12px;">Additional Info</th>
+                                    <td class="name" style="display: none;"></td>
+                                    <th width=12% style="padding: 12px;">Actions</th>
+                                </tr>
+                                </thead>
+                                <!-- </table> -->
+                                <!-- </div> -->
+
+                                <!-- <div class="tbl-content table"> -->
+                                <!-- <table id="productTable"> -->
+                                <tbody class="tbl-content table">
+                                {% for rows in product_type.list %}
+                                <tr>
+                                    <td class="name" style="display: none;"></td>
+                                    <td class="name" style="display: none;"></td>
+                                    <td class="last-date font-weight-bold" width=15% style="border-left: 2px solid #007bff; padding: 2px 5px;">{{ rows.purchase_date }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px;">{{ rows.received_date }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px;">{{ rows.product }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.quantity }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.price }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.amount }}</td>
+                                    <td class="name" width=12% style="display: none;">{{ rows.advance_pay }}</td>
+                                    <td class="name" width=12% style="display: none;">{{ rows.balance_amount }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.paid_by }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.additional_info }}</td>
+                                    <td class="name" style="display: none;">{{ product_type.grouper }}</td>
+                                    <td width=10% style="padding: 2px 5px;">
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{product_type.grouper}})
+                                           data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
+                                           style="color: #2b8c54; padding: 0px;"><i
+                                                class="material-icons">&#xE254;</i></a>
+                                        <a id='delete/{{ rows.id }}' onclick=deletefunction(this)
+                                           data-bs-toggle="modal"
+                                           data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
+                                                class="material-icons">&#xE872;</i></a>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </section>
+                        {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock content %}
+    {% block addextra %}
+
+
+    <!-- <script src="../assets/dist/js/bootstrap.bundle.min.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="{% static 'js/inventory_adhoc.js' %}"></script>
+
+    <script type="text/javascript" charset="utf8"
+            src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
+
+    <!-- <script  src=
+    "https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
+            </script>
+            <script src=
+    "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js">
+            </script>
+            <script src="{% static 'js/fancyTable.js' %}"></script>
+            </script>
+            <script type="text/javascript">
+
+                $(document).ready(function() {
+                    $(".productTable1").fancyTable({
+                      /* Column number for initial sorting*/
+                       sortColumn:0,
+                       /* Setting pagination or enabling */
+                       pagination: true,
+                       /* Rows per page kept for display */
+                       perPage:3,
+                       globalSearch:true
+                       });
+
+                });
+            </script> -->
+
+
+    {% endblock addextra %}

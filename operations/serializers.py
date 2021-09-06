@@ -1,12 +1,6 @@
-
-from django.db import models
-from django.db.models import fields
-from django.db.models.base import Model
-from django.http import request
 from rest_framework import serializers
 from .models import (FoodInventory, Item_types, Product_type, dailyWeeklyItems, recurringItems, vendorContactList,
-                     repairServices,  AdhocItems, t_shirt_inventory)
-from django.contrib.auth.models import User
+                     repairServices, AdhocItems, t_shirt_inventory)
 
 
 class ItemTypeSerializer(serializers.ModelSerializer):
@@ -53,30 +47,53 @@ class editProductSerializer(ProductSerializer):
 
 
 class AdhocItemSerializer(serializers.ModelSerializer):
+    # paid_by = serializers.ChoiceField(choices=PAID_BY)
+
     class Meta:
         model = AdhocItems
         fields = '__all__'
 
-
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
             data._mutable = True
+            data['product'] = data['product'].strip().title()
+            data['paid_by'] = data['paid_by'].strip().title()
+            data['additional_info'] = data['additional_info'].strip().capitalize()
             data['quantity'] = data['quantity_0'] + ' ' + data['quantity_1']
+            data['add_name'] = data['add_name'].strip().title()
+            if data['add_name']:
+                data['paid_by'] = data['add_name'].strip().title()
 
             data._mutable = False
             super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
-    def to_representation(self, instance):
-        rep = super(AdhocItemSerializer, self).to_representation(instance)
-        rep['paid_by'] = instance.paid_by.username
-        return rep
+    # def to_representation(self, instance):
+    #     rep = super(AdhocItemSerializer, self).to_representation(instance)
+    #     rep['paid_by'] = instance.paid_by
+    #     return rep
 
 
 class EditAdhocItemSerializer(AdhocItemSerializer):
     class Meta(AdhocItemSerializer.Meta):
-        fields = ['product', 'quantity', 'unit','price', 'amount', 'paid_by', 'purchase_date',
-                  'additional_info']
+        fields = ['product', 'quantity', 'price', 'paid_by', 'amount', 'purchase_date',
+                  'additional_info', 'received_date', 'advance_pay']
+
+    def __init__(self, *args, instance=None, data=None, **kwargs):
+        if data:
+            data._mutable = True
+            data['product'] = data['product'].strip().title()
+            data['paid_by'] = data['paid_by'].strip().title()
+            data['add_name'] = data['add_name'].strip().title()
+            data['additional_info'] = data['additional_info'].strip().capitalize()
+            data['quantity'] = data['quantity_0'] + ' ' + data['quantity_1']
+
+            if data['add_name']:
+                data['paid_by'] = data['add_name']
+
+            data._mutable = False
+            super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
+        super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
 
 class ItemSerializer(serializers.ModelSerializer):
@@ -94,7 +111,7 @@ class vendorSerializer(serializers.ModelSerializer):
     class Meta:
         model = vendorContactList
         fields = '__all__'
-        
+
     def __init__(self, *args, instance=None, data=None, **kwargs):
 
         if data:
@@ -105,7 +122,6 @@ class vendorSerializer(serializers.ModelSerializer):
             if instance:
                 data['id'] = instance.pk
             data._mutable = False
-        print(data)
         super(vendorSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
     def validate(self, data):
@@ -120,10 +136,10 @@ class vendorSerializer(serializers.ModelSerializer):
 class editVendorSerializer(vendorSerializer):
     class Meta(vendorSerializer.Meta):
         fields = '__all__'
-        
+
     def validate(self, data, instance=None):
         vendor_name = vendorContactList.objects.filter(id=instance.pk).values('vendor_name')[0]['vendor_name']
-        if vendor_name != data['vendor_name'] :
+        if vendor_name != data['vendor_name']:
             service = data['service']
             vendor_name = data['vendor_name']
             query = vendorContactList.objects.filter(vendor_name=vendor_name, service=service).values('vendor_name')
@@ -138,11 +154,10 @@ class repairServicesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
-        
         if data:
             data._mutable = True
             p = vendorContactList.objects.get(service=data['service_of'], vendor_name=data['vendor_name'])
-            data['service_of'] = p.pk 
+            data['service_of'] = p.pk
             data['service_type'] = data['service_type'].strip().title()
             data['aditional_info'] = data['aditional_info'].strip().capitalize()
             data._mutable = False
@@ -157,20 +172,6 @@ class repairServicesSerializer(serializers.ModelSerializer):
 class editRepairServicesSerializer(repairServicesSerializer):
     class Meta(repairServicesSerializer.Meta):
         fields = '__all__'
-
-
-class EditAdhocItemSerializer(serializers.ModelSerializer):
-    # paid_by = serializers.StringRelatedField()
-
-    class Meta:
-        model = AdhocItems
-        fields = ['purchase_date', 'product', 'price', 'amount', 'paid_by', 'additional_info']
-
-    # def to_representation(self, instance):
-    #     rep = super(EditAdhocItemSerializer, self).to_representation(instance)
-    #     rep['paid_by'] = instance.paid_by.username
-    #     # print('1111111111',instance.paid_by.username)
-    #     return rep
 
 
 class tshirtSerializer(serializers.ModelSerializer):
@@ -201,8 +202,10 @@ class tshirtSerializer(serializers.ModelSerializer):
 class editTshirtSerializer(serializers.ModelSerializer):
     class Meta:
         model = t_shirt_inventory
-        fields = ('size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'additional')
-    
+        fields = (
+        'size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining',
+        'paid_by', 'additional')
+
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
             print(data)
@@ -216,16 +219,14 @@ class editTshirtSerializer(serializers.ModelSerializer):
         super(editTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
 
-
 class operations_history(serializers.ModelSerializer):
     def __init__(self, model, *args, fields='__all__', **kwargs):
         self.Meta.model = model
         self.Meta.fields = fields
         super().__init__()
-    
+
     class Meta:
         pass
-
 
 # class tshirtHistorySerializer(serializers.Serializer):
 #     class Meta:
@@ -243,9 +244,5 @@ class operations_history(serializers.ModelSerializer):
 #         return serializer.data
 
 
-
-    # class Meta:
-    #     fields = ['history_date', 'size', 'receving date', 'allotted', 'remaining', 'paid_by', 'history_type']
-    
-    
-
+# class Meta:
+#     fields = ['history_date', 'size', 'receving date', 'allotted', 'remaining', 'paid_by', 'history_type']
