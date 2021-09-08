@@ -7,31 +7,14 @@
     <section >
 
         <div class="main-form">
-<!--            {% if messages %}-->
-<!--            {% for message in messages %}-->
-
-<!--                {{ message }}-->
-<!--            </div>-->
-<!--            {% endfor %}-->
-<!--            {% endif %}-->
-
-            <h2> Register User</h2>
+           <h2> Register User</h2>
             <form method="post">
                 {% csrf_token %}
                 {{ form|crispy }}
-                                <input type="submit" name="submit" value="Register" class="submitText">
+                <input type="submit" name="submit" value="Register" class="submitText">
 
              </form>
-<!--            <div class="signIn">-->
-<!--                <p> Don't have an account? </p>-->
-<!--                 <a href="signup">Sign Up </a>-->
-
-
-
             </div>
-
-        </div>
-
     </section>
 {% endblock code %}
 

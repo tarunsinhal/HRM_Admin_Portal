@@ -1,3 +1,4 @@
+{% extends "authentication/layout.html" %}
 {% load static %}
 
 <!DOCTYPE html>
@@ -13,13 +14,9 @@
     <!--Data or Content-->
     <div class="box-1">
         <div class="content-holder">
-            <!-- <h2>Hello!</h2>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
-            <button class="button-1" onclick="signup()">Sign up</button>
-            <button class="button-2" onclick="login()">Login</button> -->
-            <div class="fadeIn first"> 
+            <div class="fadeIn first">
                 <img src="{% static 'img/logo.png' %}" id="icon" alt="User Icon" />
-            </div> 
+            </div>
             <h1>ℂ𝔼ℝ𝕋𝔸𝕀ℕ𝕋𝕐</h1>
             <p style="margin: 0px;">𝐶𝑟𝑎𝑓𝑡𝑖𝑛𝑔 𝐸𝑥𝑐𝑒𝑙𝑙𝑒𝑛𝑐𝑒</p>
         </div>
@@ -27,54 +24,63 @@
 
 
     <!--Forms-->
-    <div class="box-2">
-        <div class="login-form-container">
-            <h1>Admin Login</h1>
-            <!-- <input type="text" placeholder="Username" class="input-field">
-            <br><br>
-            <input type="password" placeholder="Password" class="input-field">
-            <br><br> -->
-            <!-- <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> -->
-            <div class="fadeIn first">
-                <img src="{% static 'img/man.svg' %}" width="10%" height="50%" id="icon" alt="User Icon" />
-            </div>
+<!--    <div class="box-2">-->
+<!--        <div class="login-form-container">-->
+<!--            <h1>Admin Login</h1>-->
+<!--             <input type="text" placeholder="Username" class="input-field">-->
+<!--            <br><br>-->
+<!--            <input type="password" placeholder="Password" class="input-field">-->
+<!--            <br><br>-->
+<!--            &lt;!&ndash; <div>Icons made by <a href="https://www.freepik.com" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div> &ndash;&gt;-->
+<!--            <div class="fadeIn first">-->
+<!--                <img src="{% static 'img/man.svg' %}" width="10%" height="50%" id="icon" alt="User Icon" />-->
+<!--            </div>-->
 
 
-            {% if messages %}
-            <div class="alert alert-warning">
-                {% for message in messages %}
-                  {{ message }}
-                {% endfor %}
-            </div>
-            {% endif %}
+<!--            {% if messages %}-->
+<!--            <div class="alert alert-warning">-->
+<!--                {% for message in messages %}-->
+<!--                  {{ message }}-->
+<!--                {% endfor %}-->
+<!--            </div>-->
+<!--            {% endif %}-->
+<!--            <br>-->
+
+<!--            <form method="POST">-->
+<!--{% load crispy_forms_tags %}-->
+{% block title %} <title> Login</title>{% endblock title %}
+<!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">-->
+{% block code %}
+<section>
+
+    <div class="main-form">
+        <!--            {% if messages %}-->
+        <!--            {% for message in messages %}-->
+
+        <!--                {{ message }}-->
+        <!--            </div>-->
+        <!--            {% endfor %}-->
+        <!--            {% endif %}-->
+
+        <h2> Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
             <br>
-            
-            <form method="POST">
+            <input type="submit" name="submit" value="Login" class="submitText">
 
-                {% csrf_token %}
+        </form>
+        <br>
+        <div class="forgetPassword">
+            <!--                <p> Forgot Password? </p>-->
+            <a href="{% url 'password_reset' %}">Forgot Password ?</a>
 
-                {{ form.email }}
-                <br><br>
-                {{ form.password }}
-                <br><br>
-            <input class="login-button" type="submit" value="Login">
+
+            <!--        <a href="{% url 'password_reset' %}">Forgot Password</a>-->
         </div>
-
-        <br><br>
-        <!-- Create Container for Signup form -->
-        <!-- <div class="signup-form-container">
-            <h1>Sign Up Form</h1>
-            <input type="text" placeholder="Username" class="input-field">
-            <br><br>
-            <input type="email" placeholder="Email" class="input-field">
-            <br><br>
-            <input type="password" placeholder="Password" class="input-field">
-            <br><br>
-            <button class="signup-button" type="button">Sign Up</button>
-        </div> -->
-
-
 
     </div>
 
+</section>
+{% endblock code %}
 
