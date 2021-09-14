@@ -6,13 +6,13 @@
 
 {% block content %}
 
-<div class="row row-cols-1 row-cols-md-2 g-5 mt-3">
+<div class="row row-cols-1 row-cols-md-2 g-5 mt-3" style="overflow-y: scroll;">
 
     <div class="col">
       <div class="card shadow p-3 mb-5 bg-white rounded">
         <img src="{% static 'img/employee_onboarding.svg' %}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title"><a href="{% url 'operations:onBoarding' %}" class="card-title">On-Boarding</a></h5>
+          <h5 class="card-title"><a href="{% url 'operations:onBoarding' %}" class="card-title">T-Shirt Inventory</a></h5>
           <p class="card-text">Manage food Inventory, find tables and data for the available stock and requirements.</p>
         </div>
       </div>
@@ -21,8 +21,8 @@
       <div class="card shadow p-3 mb-5 bg-white rounded">
         <img src="{% static 'img/employee_offboarding.svg' %}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title"><a href="{% url 'operations:pantry_recurring' %}" class="card-title">Off-Boarding</a></h5>
-          <p class="card-text">Manage Maintenance stuff consisting certificates, trophies, stationary, etc.</p>
+          <h5 class="card-title"><a href="{% url 'operations:onOffBoarding' %}" class="card-title">On-Boarding & Off-Boarding</a></h5>
+          <p class="card-text">Manage Maintenance stuff consisting joining and exit formalities etc.</p>
         </div>
       </div>
     </div>

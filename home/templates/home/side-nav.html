@@ -25,9 +25,9 @@
     <a class="nav company" href="#">Company</a>
   </div> -->
 {% if request.user.is_superuser or request.user.is_staff %}
-  <a class="nav bills_and_reimbursement" href="{% url 'home:home_view' %}"><i class="fa fa-sticky-note"></i> Bills and Reimbursement</a>
+  <a class="nav bills_and_reimbursement" href="{% url 'home:home_view' %}"><i class="fa fa-inr"></i> Bills and Reimbursement</a>
 
-  <a class="nav suggestions" href="{% url 'home:home_view' %}"><i class="fa fa-gear"></i> Suggestions</a>
+  <a class="nav suggestions" href="{% url 'home:home_view' %}"><i class="fa fa-pencil-square-o"></i> Suggestions</a>
 {% endif %}
   <a class="nav notifications" href="{% url 'home:notifications' %}">
     <div class="row">

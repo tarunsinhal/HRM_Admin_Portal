@@ -22,8 +22,7 @@
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 
-<!-- <link href=
-"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+<!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
          rel="stylesheet"> -->
 
 {% endblock style %}
@@ -40,24 +39,20 @@
                         <img src="{% static 'img/pantry.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
-                        <h3><b>Adhoc</b></h3>
-                        <p style="font-size:15px;">Manage Inventory for the ad hoc products like electronics, furniture,
-                            crockery etc.</p>
+                        <h2><b>Adhoc</b></h2>
+                        <p style="color: black;">Manage Inventory for the ad hoc products like electronics, furniture, crockery etc.</p>
                     </div>
-                    <div class="col-sm-4" style="padding: 10px;">
-                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
-                                data-bs-target="#staticBackdrop" style="background-color: #2b8c54">
+                    <div class="col-sm-4" style="padding: 15px;">
+                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="background-color: #2b8c54; margin-right: 10px;">
                             +
                         </button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addFormAdhoc"
-                                                data-users-url="{% url 'operations:ajax_load_users' %}">
-
+                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addFormAdhoc" data-users-url="{% url 'operations:ajax_load_users' %}">
 
                         {% csrf_token %}
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
                                     <div class="modal-header">
@@ -109,8 +104,7 @@
                         </div>
                     </form>
 
-                    <form method="POST" id="editFormAdhoc"
-                          data-users-url="{% url 'operations:ajax_load_users' %}">
+                    <form method="POST" id="editFormAdhoc">
 
                         {% csrf_token %}
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -225,23 +219,19 @@
                         <section class="tab-panel" id="{{ product_type.grouper }}">
                             <table class="productTable1">
 
-                                <div style="display: flex; align-items: center;">
-                                    <div class="col-md-12" style="padding-bottom: 5px;">
-                                        <span>
-                                            <span class="font-weight-bold">Purchase date: </span> <input type="date"
-                                                                                                         class="inventory_datepicker_{{ product_type.grouper }}"
-                                                                                                         id="pur_min_{{ product_type.grouper }}"
-                                                                                                         name="pur_min_{{ product_type.grouper }}"
-                                                                                                         data-attr-type="pur"/> to
-                                            <input type="date" class="inventory_datepicker_{{ product_type.grouper }}"
-                                                   id="pur_max_{{ product_type.grouper }}"
-                                                   name="pur_max_{{ product_type.grouper }}" data-attr-type="pur"/>
+                                <div style="display: flex;">
+                                    <div class="col-md-12" style="padding: 15px;">
+                                        <span style="margin-left: -15px;">
+                                            <span>Purchase date:</span>
+                                            <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="pur_min_{{ product_type.grouper }}" name="pur_min_{{ product_type.grouper }}" data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="pur_max_{{ product_type.grouper }}" name="pur_max_{{ product_type.grouper }}" data-attr-type="pur"/>
                                         </span>
-
-                                        <span>
-                                            <i data-section-id="{{product_type.grouper }}"
-                                               class="daterefresh fa fa-rotate-right" aria-hidden="true"
-                                               style="margin-left: 20px;"></i>
+                                        <br>
+                                        <span style="margin-left: -15px;">
+                                            <span>Received date:</span>
+                                            <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="next_min_{{ product_type.grouper }}" name="next_min_{{ product_type.grouper }}" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="next_max_{{ product_type.grouper }}" name="next_max_{{ product_type.grouper }}" data-attr-type="next"/>
+                                        </span>
+                                        <span style="margin-left: 2px;">
+                                            <i data-section-id="{{ product_type.grouper }}" class="daterefresh fa fa-rotate-right" aria-hidden="true"></i>
                                         </span>
                                     </div>
                                 </div>
@@ -268,13 +258,13 @@
 
                                 <!-- <div class="tbl-content table"> -->
                                 <!-- <table id="productTable"> -->
-                                <tbody class="tbl-content table">
+                                <tbody class="tbl-content table table-bordered">
                                 {% for rows in product_type.list %}
                                 <tr>
                                     <td class="name" style="display: none;"></td>
                                     <td class="name" style="display: none;"></td>
-                                    <td class="last-date font-weight-bold" width=15% style="border-left: 2px solid #007bff; padding: 2px 5px;">{{ rows.purchase_date }}</td>
-                                    <td class="name" width=15% style="padding: 2px 5px;">{{ rows.received_date }}</td>
+                                    <td class="last-date font-weight-bold" width=15% style="padding: 2px 5px;">{{ rows.purchase_date }}</td>
+                                    <td class="last-date font-weight-bold" width=15% style="padding: 2px 5px;">{{ rows.received_date }}</td>
                                     <td class="name" width=15% style="padding: 2px 5px;">{{ rows.product }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.quantity }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.price }}</td>
@@ -285,13 +275,13 @@
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.additional_info }}</td>
                                     <td class="name" style="display: none;">{{ product_type.grouper }}</td>
                                     <td width=10% style="padding: 2px 5px;">
-                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{product_type.grouper}})
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }})
                                            data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
-                                           style="color: #2b8c54; padding: 0px;"><i
+                                           style="color: #6e6c64; padding: 0px;"><i
                                                 class="material-icons">&#xE254;</i></a>
                                         <a id='delete/{{ rows.id }}' onclick=deletefunction(this)
                                            data-bs-toggle="modal"
-                                           data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
+                                           data-bs-target="#deleteModal" title="Delete" style="color: #6e6c64;"><i
                                                 class="material-icons">&#xE872;</i></a>
 
                                     </td>
@@ -313,8 +303,7 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="{% static 'js/inventory_adhoc.js' %}"></script>
 
-    <script type="text/javascript" charset="utf8"
-            src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>

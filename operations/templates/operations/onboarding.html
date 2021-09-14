@@ -18,7 +18,7 @@
 
 <link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
 
-<link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">
+<link href="{% static 'css/inventory.css' %}" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 <script src="https://cdn.rawgit.com/ashl1/datatables-rowsgroup/fbd569b8768155c7a9a62568e66a64115887d7d0/dataTables.rowsGroup.js"></script>
@@ -43,17 +43,16 @@
                         <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
-                        <h2><b>On-Boarding</b></h2>
-                        <p>Manage food Inventory, find tables and data for the available stock and requirements.</p>
+                        <h2><b>T-Shirt Inventory</b></h2>
+                        <p style="color: black;">Manage food Inventory, find tables and data for the available stock and requirements.</p>
                     </div>
-                    <div class="col-sm-4" style="padding: 10px;">
+                    <div class="col-sm-4" style="padding: 15px;">
                         <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" style="background-color: #007bff">
+                            data-bs-target="#staticBackdrop" style="background-color: #2f8669; margin-left: 10px;">
                             +</button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:addTshirts' %}"  id="addTshirtForm"
-                        class="needs-validation">
+                    <form method="POST" action="{% url 'operations:addTshirts' %}"  id="addTshirtForm" class="needs-validation">
                         {% csrf_token %}
 
                         {{addTshirtFormSet.management_form}}
@@ -160,8 +159,7 @@
                                                             {{ addTshirtFormSet.0.additional }}
                                                         </div>
                                                     </div>
-                                                    
-                                                    
+                                                      
                                             </div>
 
 
@@ -371,8 +369,7 @@
                 <input type="radio" data-tab-id ="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '1')">
                 <label for="defaultOpen">T-Shirt Inventory</label>
                 <!-- Tab 2 -->
-                <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
-                    onclick="openTab(event, 2)">
+                <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Joining Formalities" onclick="openTab(event, 2)">
                 <label for="tab2">Joining Formalities</label>
               
                 <div class="tab-panels">
@@ -382,8 +379,6 @@
                         <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="float: right; margin: 2px 5px 10px 10px; padding: 8px; cursor: pointer;" class="btn btn-secondary">
                             <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
                         </button></a>
-
-
                         <table class="productTable1">
                             
                             
@@ -427,11 +422,9 @@
                             <!-- <table id="productTable"> -->
                             <tbody class="tbl-content table table-bordered">
                                 
-                                                {% for data in tshirtData %}
+                                {% for data in tshirtData %}
                                         <tr>
-
-                                                <td style="vertical-align : middle;text-align:center; border-left: 2px solid #007bff; padding: 2px 5px;" class="name font-weight-bold" width=15%>
-                                                    {{ data.receiving_date }}</td>
+                                              <td style="vertical-align : middle;text-align:center; border-left: 2px solid #007bff; padding: 2px 5px;" class="name font-weight-bold" width=15%>{{ data.receiving_date }}</td>
                                               <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
                                               <td class="name" width=12% style="display: none;">{{ data.previous_stock }}</td>
                                               <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
@@ -449,8 +442,7 @@
                                                       data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
                                                           class="material-icons">&#xE872;</i></a>
                                                         </td>
-                                      
-
+                                
                                 </tr>
                                 {% endfor %}
                                

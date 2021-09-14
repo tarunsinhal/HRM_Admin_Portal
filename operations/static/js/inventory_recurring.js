@@ -74,20 +74,21 @@ $(document).ready(function () {
 		dom: 'Bfrtip',
 		buttons: [{
 			extend: 'csv',
-			text: 'Export as CSV',
+			text: 'Export',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 6, 7, 8]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 			},
 		}
 		],
 		columnDefs: [
-			{ orderable: false, targets: 1 },
 			{ orderable: false, targets: 2 },
-			{ orderable: false, targets: 9 }
+			{ orderable: false, targets: 3 },
+			{ orderable: false, targets: 10 },
+			{ orderable: false, targets: 12 }
 		],
 		'pageLength': 8,
 		"bLengthChange": false,
-		"autoWidth": false,
+		"autoWidth": false,  
 		initComplete: function () {		
 			$.fn.dataTable.ext.search.push(
 				function (settings, data, dataIndex) {	
@@ -98,23 +99,26 @@ $(document).ready(function () {
 					let next_min =$('#next_min_'+activeTabId).val();
 					let next_max = $('#next_max_'+activeTabId).val();
 					
-					pur_min = (pur_min != "")?new Date(pur_min):null ;
+					let value = $('input[type=radio][name=radiobtn_'+activeTabId+']:checked').val();
+
+					pur_min = (pur_min != "")?new Date(pur_min):null;
 					pur_max = (pur_max != "")?new Date(pur_max):null;
-					next_min = (next_min != "")?new Date(next_min):null ;
+					next_min = (next_min != "")?new Date(next_min):null;
 					next_max = (next_max != "")?new Date(next_max):null;
 
-					let purchaseDate = new Date(data[7]);
-					let nextDate = new Date(data[8]);
-					let recordType  = data[9]
+					let purchaseDate = new Date(data[8]);
+					let nextDate = new Date(data[9]);
+					let freq = data[0];
+					let recordType  = data[11]
 
 					if(activeTabId == recordType){
-						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null )) 
+						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null ) && ((value == freq) || (value == "All"))) 
 							return true;
-						if ((pur_min == null && purchaseDate <= pur_max) && (next_min == null && nextDate <= next_max ))
+						if (((pur_min == null && purchaseDate <= pur_max) && (next_min == null && nextDate <= next_max )) && ((value == freq) || (value == "All")))
 							return true;
-						if ((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)) || (next_max == null && (next_min != null && nextDate >= next_min )))
+						if (((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)) || (next_max == null && (next_min != null && nextDate >= next_min ))) && ((value == freq) || (value == "All")))
 							return true;
-						if ((purchaseDate <= pur_max && purchaseDate >= pur_min) || ( (nextDate <= next_max && nextDate >= next_min)))
+						if (((purchaseDate <= pur_max && purchaseDate >= pur_min) ||  (nextDate <= next_max && nextDate >= next_min)) && ((value == freq) || (value == "All")))
 							return true;
 					}else{
 						return true;
@@ -124,7 +128,8 @@ $(document).ready(function () {
 		}		
 	});	
 });
-$('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3').on('change', function (e) {
+
+$('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3,.inventory_datepicker_4,.inventory_datepicker_5').on('change', function (e) {
 	let selDateType = e.target.getAttribute('data-attr-type')
 	let selDateTypeVal = (selDateType == "pur")?"next":"pur";
 	let activeTabId = $('.tablinks.active').attr('data-tab-id');
@@ -139,8 +144,12 @@ $('.daterefresh').on('click', function (e) {
 	let selSecId= e.target.getAttribute('data-section-id')
 	$('.inventory_datepicker_'+selSecId).val('');
 	dataTableRes.draw();
-
 })
+
+$('.inventory_freqpicker_1,.inventory_freqpicker_2,.inventory_freqpicker_3,.inventory_freqpicker_4,.inventory_freqpicker_5').on('change', function (e) {
+	$('[data-tab-id="+activeTabId+"]').click();
+	dataTableRes.draw();
+});
 
 //...function for switching between different tabs...//
 function openTab(evt, tabName) {
@@ -153,30 +162,73 @@ function openTab(evt, tabName) {
 	for (i = 0; i < tablinks.length; i++) {
 		tablinks[i].className = tablinks[i].className.replace(" active", "");
 	}
-	document.getElementById(tabName).style.display = "block";
+	
+	document.getElementById("section-" + tabName).style.display = 'block';
 	evt.currentTarget.className += " active";
+	
 
 	if(dataTableRes){
 		dataTableRes.draw();		
 	}		
 }
 
-
+// // Get the element with id="defaultOpen" and click on it
 $("#defaultOpen").click();
 
-// // Get the element with id="defaultOpen" and click on it
-// document.getElementById("defaultOpen").click();
+
+//...function for switching between radio buttons...//
+// $('.radiolinks').on('click', function (e) {
+// 	let selFrqType = e.target.getAttribute('data-attr-type')
+// 	dataTableRes.search(selFrqType).draw();
+// 	// dataTableRes(selFrqType).draw();
+// });
+
+
+//.... for getting products list based on selected type in add product form...//
+$("#id_type").change(function () {
+	debugger
+	var url = $("#addForm").attr("data-products-url");
+	var typeId = $(this).val();
+
+	$.ajax({                       // initialize an AJAX request
+		url: url,
+		data: {
+			'Type': typeId
+		},
+		success: function (data) {
+			$("#id_product").html(data);
+		}
+	});
+
+});
 
 
 //...called when edit button is clicked...//
 function editfunction(obj, obj2) {
+	debugger;
 	document.getElementById('editForm').style.display = 'block'
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('editForm').getElementsByTagName('input');
-	for (i = 0; i < (y.length - 3); i++) {
-		var str = x[i + 1].textContent.split(/(\s+)/);
+	var z = document.getElementById('editForm').getElementsByTagName('textarea');
+	var mySelect = document.getElementById('editForm').getElementsByTagName('select');
+	
+	var feq = x[0].textContent.split(/(\s+)/);
+	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
+		if (feq == i.value) {
+			mySelect[0].selectedIndex = j;
+			break;
+		}
+	}
+		
+	for (i = 0; i < (y.length - 5); i++) {
+		var str = x[i + 2].textContent.split(/(\s+)/);
 		y[i + 2].value = str[0]
 	}
+
+    y[7].value = x[8].textContent.split(/(\s+)/);
+	y[8].value = x[9].textContent.split(/(\s+)/);
+	z[0].value = x[10].textContent;
+
 	document.getElementById('editForm').action = obj.id;
 
 	var url = $("#addForm").attr("data-products-url");
@@ -190,24 +242,32 @@ function editfunction(obj, obj2) {
 		success: function (data) {
 			$("#product").html(data);
 			$("#product option[value='other']").remove();
-			var temp = x[0].textContent;
-			var unit = x[2].textContent.split(/(\s+)/)[2]
-			var mySelect = document.getElementById('editForm').getElementsByTagName('select');
-			for (var i, j = 0; i = mySelect[0].options[j]; j++) {
-				if (temp.trim() == i.textContent) {
-					mySelect[0].selectedIndex = j;
-					break;
-				}
-			}
 
+			var temp = x[1].textContent;
 			for (var i, j = 0; i = mySelect[1].options[j]; j++) {
-				if (unit == i.value) {
+				if (temp == i.textContent) {
 					mySelect[1].selectedIndex = j;
 					break;
 				}
 			}
 		}
 	});
+	var unit = x[3].textContent.split(/(\s+)/)[2]
+	for (var i, j = 0; i = mySelect[2].options[j]; j++) {
+		if (unit == i.value) {
+			mySelect[2].selectedIndex = j;
+			break;
+		}
+	}
+
+	var paid_by = x[7].textContent;
+	for (var i, j = 0; i = mySelect[3].options[j]; j++) {
+		if (paid_by == i.value) {
+			mySelect[3].selectedIndex = j;
+			break;
+		}
+	}
+
 }
 
 
@@ -219,25 +279,35 @@ function deletefunction(obj) {
 
 //...called when repeat button is clicked...//
 function repeatfunction(obj, obj2) {
+	debugger;
 	document.getElementById('staticBackdropLabel').textContent = 'Repeat Product';
 	document.getElementById('saveNew').remove();
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('addForm').getElementsByTagName('input');
+	var z = document.getElementById('addForm').getElementsByTagName('textarea');
 	var mySelect = document.getElementById('addForm').getElementsByTagName('select');
-
-	var unit = x[2].textContent.split(/(\s+)/)[2]
-	for (var i, j = 0; i = mySelect[2].options[j]; j++) {
-		if (unit == i.value) {
-			mySelect[2].selectedIndex = j;
-			mySelect[2].style.pointerEvents = 'none';
+    
+	var feq = x[0].textContent.split(/(\s+)/);
+    for (var i, j = 0; i = mySelect[0].options[j]; j++) {
+		if (feq == i.value) {
+			mySelect[0].selectedIndex = j;
 			break;
 		}
 	}
 
-	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
+	for (i = 0; i < (y.length - 4); i++) {
+		var str = x[i + 2].textContent.split(/(\s+)/);
+		y[i + 2].value = str[0]
+	}
+	
+    // y[7].value = x[8].textContent.split(/(\s+)/);
+	// y[8].value = x[9].textContent.split(/(\s+)/);
+	z[0].value = x[10].textContent;
+
+
+	for (var i, j = 0; i = mySelect[1].options[j]; j++) {
 		if (obj2 == i.value) {
-			mySelect[0].selectedIndex = j;
-			document.getElementById("id_type").style.pointerEvents = 'none';
+			mySelect[1].selectedIndex = j;
 			var url = $("#addForm").attr("data-products-url");
 			var typeId = i.value;
 
@@ -248,10 +318,10 @@ function repeatfunction(obj, obj2) {
 				},
 				success: function (data) {
 					$("#id_product").html(data);
-					for (var i, j = 0; i = mySelect[1].options[j]; j++) {
-						if (x[0].textContent.trim() == i.textContent) {
-							mySelect[1].selectedIndex = j;
-							document.getElementById("id_product").style.pointerEvents = 'none';
+					for (var i, j = 0; i = mySelect[2].options[j]; j++) {
+						if (x[1].textContent == i.textContent) {
+							mySelect[2].selectedIndex = j;
+							// document.getElementById("id_product").style.pointerEvents = 'none';
 
 							var url = $("#addForm").attr("data-date-url");
 							var productId = $("#id_product").val();
@@ -275,11 +345,21 @@ function repeatfunction(obj, obj2) {
 			break;
 		}
 	}
+	var unit = x[3].textContent.split(/(\s+)/)[2]
+	for (var i, j = 0; i = mySelect[3].options[j]; j++) {
+		if (unit == i.value) {
+			mySelect[3].selectedIndex = j;
+			// mySelect[3].style.pointerEvents = 'none';
+			break;
+		}
+	}
 
-	for (i = 0; i < (y.length - 5); i++) {
-		var str = x[i + 1].textContent.split(/(\s+)/);
-		y[i + 2].value = str[0]
-		y[i + 2].readOnly = true;
+	var paid_by = x[7].textContent.split(/(\s+)/); 
+	for (var i, j = 0; i = mySelect[4].options[j]; j++) {
+		if (paid_by == i.value) {
+			mySelect[4].selectedIndex = j;
+			break;
+		}
 	}
 }
 
@@ -297,23 +377,6 @@ $('#id_product').change(function () {
 });
 
 
-//.... for getting products list based on selected type in add product form...//
-$("#id_type").change(function () {
-	var url = $("#addForm").attr("data-products-url");
-	var typeId = $(this).val();
-
-	$.ajax({                       // initialize an AJAX request
-		url: url,
-		data: {
-			'Type': typeId
-		},
-		success: function (data) {
-			$("#id_product").html(data);
-		}
-	});
-
-});
-
 
 $('#id_price, #id_quantity, #id_discount').on('keyup', function () {
 	let mul = $("#id_price").val() * $("#id_quantity").val();
@@ -321,6 +384,14 @@ $('#id_price, #id_quantity, #id_discount').on('keyup', function () {
 	let d = $("#id_discount").val();
 	let totalVal = mul - d;
 	$("#id_amount").val(totalVal)
+});
+
+$('#price, #quantity, #discount').on('keyup', function () {
+	let mul = $("#price").val() * $("#quantity").val();
+	// let d = ($("#id_discount").val() == undefined)?0:$("#id_discount").val() ;
+	let d = $("#discount").val();
+	let totalVal = mul - d;
+	$("#amount").val(totalVal)
 });
 
 

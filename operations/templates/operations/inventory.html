@@ -7,22 +7,12 @@
 {% block content %}
 
 <div class="row row-cols-1 row-cols-md-2 g-5 mt-3" style="overflow-y: scroll;">
-
-<!--    <div class="col">-->
-<!--      <div class="card shadow p-3 mb-5 bg-white rounded">-->
-<!--        <img src="{% static 'img/calendar.svg' %}" class="card-img-top" alt="...">-->
-<!--        <div class="card-body">-->
-<!--          <h5 class="card-title"><a href="{% url 'operations:inventory_dailyWeekly' %}" class="card-title">Daily/Weekly</a></h5>-->
-<!--          <p class="card-text">Manage food Inventory, find tables and data for the available stock and requirements.</p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
     <div class="col">
       <div class="card shadow p-3 mb-5 bg-white rounded">
         <img src="{% static 'img/snack.svg' %}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title"><a href="{% url 'operations:inventory_recurring' %}" class="card-title">Inventory-Recurring</a></h5>
-          <p class="card-text">Manage pantry stuff consisting Foods, Stationary, Bathroomware etc.</p>
+          <h5 class="card-title"><a href="{% url 'operations:inventory_recurring' %}" class="card-title">Recurring</a></h5>
+          <p class="card-text">Manage Inventory, stuff consisting daily, recurring, stationary, cleaning etc.</p>
         </div>
       </div>
     </div>
@@ -30,10 +20,8 @@
       <div class="card shadow p-3 mb-5 bg-white rounded">
         <img src="{% static 'img/pantry.svg' %}" class="card-img-top" alt="...">
         <div class="card-body">
-          <h5 class="card-title"><a href="{% url 'operations:inventory_adhoc' %}" class="card-title">Inventory-Adhoc</Inp></a></h5>
-          <p class="card-text">Manage Inventory for the ad hoc products like electronics, furniture, crockery etc.
-
-</p>
+          <h5 class="card-title"><a href="{% url 'operations:inventory_adhoc' %}" class="card-title">Adhoc</Inp></a></h5>
+          <p class="card-text">Manage Inventory for the adhoc products like electronics, furniture, crockery etc.</p>
         </div>
       </div>
     </div>

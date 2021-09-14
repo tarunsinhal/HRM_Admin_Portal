@@ -1,6 +1,6 @@
 from rest_framework import serializers
-from .models import (FoodInventory, Item_types, Product_type, dailyWeeklyItems, recurringItems, vendorContactList,
-                     repairServices, AdhocItems, t_shirt_inventory)
+from .models import FoodInventory, Item_types, Product_type, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining
+from django.contrib.auth.models import User
 
 
 class ItemTypeSerializer(serializers.ModelSerializer):
@@ -18,6 +18,8 @@ class ProductSerializer(serializers.ModelSerializer):
         if data:
             data._mutable = True
             data['unit'] = data['unit_0'] + ' ' + data['unit_1']
+            data['new_product'] = data['new_product'].strip().title()
+            data['additional_info'] = data['additional_info'].strip().capitalize()
             if data['new_product']:
                 try:
                     p = Product_type.objects.get(product_type_id=data['type'], product_name=data['new_product'])
@@ -35,15 +37,15 @@ class ProductSerializer(serializers.ModelSerializer):
         return rep
 
     def validate(self, data):
-        if data['purchase_date'] > data['next_order_date']:
-            raise serializers.ValidationError("Next Order date should be greater than purchase date!!!")
+        if data['purchase_date'] and data['next_order_date'] :
+            if data['purchase_date'] > data['next_order_date']:
+                raise serializers.ValidationError("Next Order date should be greater than purchase date!!!")
         return data
 
 
 class editProductSerializer(ProductSerializer):
     class Meta(ProductSerializer.Meta):
-        fields = ['product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'purchase_date',
-                  'next_order_date']
+        fields = [ 'frequency', 'product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'purchase_date', 'next_order_date', 'additional_info']
 
 
 class AdhocItemSerializer(serializers.ModelSerializer):
@@ -56,6 +58,7 @@ class AdhocItemSerializer(serializers.ModelSerializer):
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
             data._mutable = True
+            print(data)
             data['product'] = data['product'].strip().title()
             data['paid_by'] = data['paid_by'].strip().title()
             data['additional_info'] = data['additional_info'].strip().capitalize()
@@ -64,6 +67,9 @@ class AdhocItemSerializer(serializers.ModelSerializer):
             if data['add_name']:
                 data['paid_by'] = data['add_name'].strip().title()
 
+            print('paid_by::', data['paid_by'])
+            # p = User.objects.get(username=data['paid_by'])
+            # data['paid_by'] = p.pk
             data._mutable = False
             super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
@@ -94,17 +100,6 @@ class EditAdhocItemSerializer(AdhocItemSerializer):
             data._mutable = False
             super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
-
-
-class ItemSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = dailyWeeklyItems
-        fields = '__all__'
-
-
-class editItemSerializer(ItemSerializer):
-    class Meta(ItemSerializer.Meta):
-        fields = ['purchase_date', 'product', 'quantity', 'unit', 'amount', 'aditional_info']
 
 
 class vendorSerializer(serializers.ModelSerializer):
@@ -138,8 +133,8 @@ class editVendorSerializer(vendorSerializer):
         fields = '__all__'
 
     def validate(self, data, instance=None):
-        vendor_name = vendorContactList.objects.filter(id=instance.pk).values('vendor_name')[0]['vendor_name']
-        if vendor_name != data['vendor_name']:
+        # vendor_name = vendorContactList.objects.filter(id=instance.pk).values('vendor_name')[0]['vendor_name']
+        if data['vendor_name'] != data['vendor_name'] :
             service = data['service']
             vendor_name = data['vendor_name']
             query = vendorContactList.objects.filter(vendor_name=vendor_name, service=service).values('vendor_name')
@@ -172,7 +167,7 @@ class repairServicesSerializer(serializers.ModelSerializer):
 class editRepairServicesSerializer(repairServicesSerializer):
     class Meta(repairServicesSerializer.Meta):
         fields = '__all__'
-
+        
 
 class tshirtSerializer(serializers.ModelSerializer):
     class Meta:
@@ -246,3 +241,26 @@ class operations_history(serializers.ModelSerializer):
 
 # class Meta:
 #     fields = ['history_date', 'size', 'receving date', 'allotted', 'remaining', 'paid_by', 'history_type']
+
+    # class Meta:
+    #     fields = ['history_date', 'size', 'receving date', 'allotted', 'remaining', 'paid_by', 'history_type']
+    
+    
+class joiningSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = engagementJoining
+        fields = '__all__'
+
+    def __init__(self, *args, instance=None, data=None, **kwargs):
+        if data:
+            data._mutable = True
+            data['employee_name'] = data['employee_name'].strip().title()
+            data._mutable = False
+        super(joiningSerializer, self).__init__(instance=instance, data=data, **kwargs)
+
+
+class editJoiningSerializer(joiningSerializer):
+    class Meta(joiningSerializer.Meta):
+        fields = '__all__'
+        # fileds = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'grant_onedrive_access', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account']
+        

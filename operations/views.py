@@ -1,17 +1,14 @@
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
-from rest_framework.decorators import api_view
-
-from .forms import AddProducts, EditProducts, addTshirtForm, editTshirtForm, AddAdhocItemsForm, EditAdhocItemsForm, AddItems, EditItems, AddVendor, EditVendor, AddRepairServices, EditRepairServices
-from .models import FoodInventory, Product_type, recurringItems, AdhocItems, dailyWeeklyItems, vendorContactList, \
-    repairServices,t_shirt_inventory
+from rest_framework import serializers
+from rest_framework.serializers import Serializer
+from .models import FoodInventory, Product_type, recurringItems, AdhocItems, t_shirt_inventory, vendorContactList, repairServices, engagementJoining
 from django.http import JsonResponse
-from .serializers import ProductSerializer, editProductSerializer, AdhocItemSerializer, EditAdhocItemSerializer, \
-    ItemSerializer, editItemSerializer, vendorSerializer, editVendorSerializer, repairServicesSerializer, \
-    editRepairServicesSerializer, tshirtSerializer, editTshirtSerializer
+from .serializers import ProductSerializer, editProductSerializer, tshirtSerializer, editTshirtSerializer, AdhocItemSerializer, EditAdhocItemSerializer, vendorSerializer, editVendorSerializer, repairServicesSerializer, editRepairServicesSerializer, joiningSerializer, editJoiningSerializer
 from rest_framework.response import Response
-from .forms import AddProducts, EditProducts, AddAdhocItemsForm, EditAdhocItemsForm, AddItems, EditItems, AddVendor, \
-    EditVendor, AddRepairServices, EditRepairServices
+from rest_framework.decorators import api_view
+import requests
+from .forms import AddProducts, EditProducts, addTshirtForm, editTshirtForm, AddAdhocItemsForm, EditAdhocItemsForm, AddVendorForm, EditVendorForm, AddRepairServicesForm, EditRepairServicesForm, AddJoiningForm, EditJoiningForm
 from django.urls import reverse
 from home.models import notifications
 from django.contrib.auth.models import User
@@ -20,10 +17,7 @@ from itertools import chain
 
 
 # from .utils import specific_user_access, test_func
-
-
 # Create your views here.
-
 
 @login_required(login_url='/auth/login')
 def operations_view(request):
@@ -69,8 +63,7 @@ def engagements_onboarding_view(request):
     qs = t_shirt_inventory.objects.all()
     serializer = tshirtSerializer(qs, many=True)
 
-    return render(request, 'operations/onBoarding.html', {'addTshirtFormSet': tshirt_formset, 
-    'tshirtData': serializer.data, 'editTshirtForm': editTshirt})
+    return render(request, 'operations/onBoarding.html', {'addTshirtFormSet': tshirt_formset, 'tshirtData': serializer.data, 'editTshirtForm': editTshirt})
 
 
 @api_view(['POST'])
@@ -103,6 +96,24 @@ def addTshirt(request):
     return Response({'error':formset.errors}, status=201)
     # return render(request, 'operations/inventory.html')
 
+@api_view(['POST'])
+def editTshirt(request, pk):
+    tshirt_id = t_shirt_inventory.objects.get(id=pk)
+    serializer = editTshirtSerializer(instance=tshirt_id, data=request.POST)
+    print(serializer)
+    if serializer.is_valid():
+        print(serializer.validated_data)
+        serializer.save()
+        return Response({}, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def deleteTshirt(request, pk):
+    tshirt_id = t_shirt_inventory.objects.get(id=pk)
+    tshirt_id.delete()
+    return Response({}, status=201)
+
 
 # @specific_user_access(test_func)
 @login_required(login_url='/auth/login')
@@ -116,21 +127,7 @@ def inventory_recurring_view(request):
         qs = recurringItems.objects.all()
         serializer = ProductSerializer(qs, many=True)
 
-    return render(request, 'operations/inventory_recurring.html',
-                  {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts})
-
-
-@login_required(login_url='/auth/login')
-def mro_recurring_view(request):
-    addProductsForm = AddProducts()
-    editProducts = EditProducts(auto_id=True)
-
-    if request.method == 'GET':
-        qs = recurringItems.objects.filter(type_id__in=(4,5,6))
-        serializer = ProductSerializer(qs, many=True)
-
-    return render(request, 'operations/mro_recurring.html', {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts})
-
+    return render(request, 'operations/inventory_recurring.html', {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts})
 
 @api_view(['POST'])
 def addProducts(request):
@@ -158,32 +155,11 @@ def editProducts(request, pk):
     print(serializer.errors)
     return Response(serializer.errors, status=400)
 
-
-@api_view(['POST'])
-def editTshirt(request, pk):
-    tshirt_id = t_shirt_inventory.objects.get(id=pk)
-    serializer = editTshirtSerializer(instance=tshirt_id, data=request.POST)
-    print(serializer)
-    if serializer.is_valid():
-        print(serializer.validated_data)
-        serializer.save()
-        return Response({}, status=201)
-    return Response(serializer.errors, status=400)
-
-
 @api_view(['POST'])
 def deleteProducts(request, pk):
     product = recurringItems.objects.get(id=pk)
     product.delete()
     return Response({}, status=201)
-
-
-@api_view(['POST'])
-def deleteTshirt(request, pk):
-    tshirt_id = t_shirt_inventory.objects.get(id=pk)
-    tshirt_id.delete()
-    return Response({}, status=201)
-
 
 def load_products(request):
     item_id = request.GET.get('Type')
@@ -204,16 +180,14 @@ def load_purchase_date(request):
 # @specific_user_access(test_func)
 @login_required(login_url='/auth/login')
 def inventory_adhoc_view(request):
-    addAdhocProductsForm = AddAdhocItemsForm()
-    editAdhocProductsForm = EditAdhocItemsForm(auto_id=True)
+    addAdhocProductsForm = AddAdhocItemsForm(auto_id=True)
+    editAdhocProductsForm = EditAdhocItemsForm()
 
     if request.method == 'GET':
         qs = AdhocItems.objects.all()
         serializer = AdhocItemSerializer(qs, many=True)
 
-    return render(request, 'operations/inventory_adhoc.html',
-                  {'products': serializer.data, 'addAdhocProductsForm': addAdhocProductsForm,
-                   'editAdhocProductsForm': editAdhocProductsForm})
+    return render(request, 'operations/inventory_adhoc.html', {'products': serializer.data, 'addAdhocProductsForm': addAdhocProductsForm, 'editAdhocProductsForm': editAdhocProductsForm})
 
 
 @api_view(['POST'])
@@ -257,81 +231,24 @@ def load_users(request):
     for value in distinct_values:
         PAID_BY.append(value)
     PAID_BY.append("Other")
-    #     print(value)
-    #     PAID_BY.append(tuple((value, value)))
-    #
-    # PAID_BY.append(tuple(('Other', 'Other')))
-    # print(PAID_BY)
-
-    return render(request, 'operations/adhoc_paid_by.html',
-                  { 'paid_by': PAID_BY})
-
-def inventory_dailyWeekly_view(request):
-    addItemsForm = AddItems()
-    editItemsForm = EditItems(auto_id=True)
-    # callApi = requests.get('http://127.0.0.1:8000/operations/food/getProducts')
-    # results = callApi.json()
-
-    if request.method == 'GET':
-        qs = dailyWeeklyItems.objects.all()
-        serializer = ItemSerializer(qs, many=True)
-
-    return render(request, 'operations/dailyWeekly_inventory.html',
-                  {'products': serializer.data, 'addItemsForm': addItemsForm, 'editItemsForm': editItemsForm})
+    return render(request, 'operations/adhoc_paid_by.html', { 'paid_by': PAID_BY})
 
 
-@api_view(['POST'])
-def addItems(request):
-    print(request.META.get('HTTP_REFERER', '/'))
-    print(request.POST)
-    serializer = ItemSerializer(data=request.POST)
-
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
-
-
-@api_view(['POST'])
-def editItems(request, pk):
-    product = dailyWeeklyItems.objects.get(id=pk)
-    serializer = editItemSerializer(instance=product, data=request.POST)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
-    return Response(serializer.errors, status=400)
-
-
-@api_view(['POST'])
-def deleteItems(request, pk):
-    product = dailyWeeklyItems.objects.get(id=pk)
-    product.delete()
-    return Response({}, status=201)
-
-
-def load_purchase_date_only(request):
-    product = request.GET.get('product')
-    try:
-        date = dailyWeeklyItems.objects.filter(product=product).order_by('-purchase_date').values('purchase_date')[0][
-            'purchase_date']
-        return JsonResponse({'data': date.strftime('%Y-%m-%d')})
-    except:
-        return JsonResponse({'data': ''})
-
+# def load_paid_by(request):
+#     # paid_by = AdhocItems.objects.all().values('paid_by').distinct()
+#     users = User.objects.all()
+#     return render(request, 'operations/adhoc_paid_by.html', {'users': users})
 
 @login_required(login_url='/auth/login')
 def mro_maintenance_vendor(request):
-    addVendorForm = AddVendor()
-    editVendorForm = EditVendor(auto_id=True)
-
+    addVendorForm = AddVendorForm()
+    editVendorForm = EditVendorForm(auto_id=True)
+    
     if request.method == 'GET':
         vs = vendorContactList.objects.all()
         serializer = vendorSerializer(vs, many=True)
-
-    return render(request, 'operations/mro_maintenance_vendor.html',
-                  {'vendor': serializer.data, 'addVendorForm': addVendorForm,
-                   'editVendorForm': editVendorForm})
-
+    
+    return render(request, 'operations/mro_maintenance_vendor.html', {'vendor':serializer.data, 'addVendorForm': addVendorForm, 'editVendorForm': editVendorForm})
 
 @api_view(['POST'])
 def addVendor(request):
@@ -368,16 +285,14 @@ def deleteVendor(request, pk):
 
 @login_required(login_url='/auth/login')
 def mro_maintenance_service(request):
-    addRepairServicesForm = AddRepairServices()
-    editRepairServicesForm = EditRepairServices(auto_id=True)
-
+    addRepairServicesForm = AddRepairServicesForm()
+    editRepairServicesForm = EditRepairServicesForm(auto_id=True)
+    
     if request.method == 'GET':
         rs = repairServices.objects.all()
         serializer = repairServicesSerializer(rs, many=True)
 
-    return render(request, 'operations/mro_maintenance_service.html',
-                  {'service': serializer.data, 'addRepairServicesForm': addRepairServicesForm,
-                   'editRepairServicesForm': editRepairServicesForm})
+    return render(request, 'operations/mro_maintenance_service.html', {'service': serializer.data, 'addRepairServicesForm': addRepairServicesForm, 'editRepairServicesForm': editRepairServicesForm})
 
 
 @api_view(['POST'])
@@ -420,13 +335,16 @@ def load_vendor_no(request):
     vendor_name = request.GET.get('vendor_name')
     service_name = request.GET.get('service_name')
     try:
-        contact_no = \
-            vendorContactList.objects.filter(vendor_name=vendor_name, service=service_name).values('contact_no')[0][
-                'contact_no']
+        contact_no = vendorContactList.objects.filter(vendor_name=vendor_name, service=service_name).values('contact_no')[0]['contact_no']
         return JsonResponse({'contact_no': contact_no})
     except:
         return JsonResponse({'contact_no': ''})
 
+
+# def users(request):
+#     if request.method=="GET":
+#         users= User.objects.all().values('user__username')
+#         return
 
 def maintenance_view(request):
     return render(request, 'operations/maintenance.html')
@@ -440,3 +358,41 @@ def tshirt_history(request):
     # serializer = tshirtHistorySerializer(history, many=True)
     # print(serializer.data)
     return render(request, 'operations/tshirt_history.html', {'tshirt_history': history})
+
+@login_required(login_url='/auth/login')
+def engagements_on_off_boarding_view(request):
+    addJoiningForm = AddJoiningForm()
+    editJoiningForm = EditJoiningForm(auto_id=True)
+    
+    if request.method == 'GET':
+        rs = engagementJoining.objects.all()
+        serializer = joiningSerializer(rs, many=True)
+    return render(request, 'operations/on_off_boarding.html', {'joiningData': serializer.data, 'addJoiningForm': addJoiningForm, 'editJoiningForm': editJoiningForm})
+
+@api_view(['POST'])
+def addJoining(request):
+    # print(request.META.get('HTTP_REFERER', '/'))
+    # print(request.POST)
+    serializer = joiningSerializer(data=request.POST)
+
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    print(serializer.errors)
+    return Response(serializer.errors, status=400)
+
+@api_view(['POST'])
+def editJoining(request, pk):
+    employee = engagementJoining.objects.get(id=pk)
+    serializer = editJoiningSerializer(instance=employee, data=request.POST)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=201)
+    return Response(serializer.errors, status=400)
+
+
+@api_view(['POST'])
+def deleteJoining(request, pk):
+    employee = engagementJoining.objects.get(id=pk)
+    employee.delete()
+    return Response({}, status=201)

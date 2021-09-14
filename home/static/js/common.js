@@ -43,7 +43,7 @@
             }
 
 
-            document.getElementsByClassName(localStorage.getItem("ddl")).style.display = "block"
+            document.getElementsByClassName(localStorage.getItem("ddl")).style.display = "block";
 
 
         });

@@ -30,22 +30,26 @@ $(document).ready(function () {
 					let activeTabId = $('.tablinks.active').attr('data-tab-id');
 					let pur_min =$('#pur_min_'+activeTabId).val();
 					let pur_max = $('#pur_max_'+activeTabId).val();
+					let next_min =$('#next_min_'+activeTabId).val();
+					let next_max = $('#next_max_'+activeTabId).val();
 
 					pur_min = (pur_min != "")?new Date(pur_min):null ;
 					pur_max = (pur_max != "")?new Date(pur_max):null;
+					next_min = (next_min != "")?new Date(next_min):null;
+					next_max = (next_max != "")?new Date(next_max):null;
 
 					let purchaseDate = new Date(data[2]);
-//					let nextDate = new Date(data[8]);
+					let nextDate = new Date(data[3]);
 					let recordType  = data[12]
 
 					if(activeTabId == recordType){
-						if (pur_min == null && pur_max == null )
+						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null )) 
 							return true;
-						if (pur_min == null && purchaseDate <= pur_max)
+						if (((pur_min == null && purchaseDate <= pur_max) && (next_min == null && nextDate <= next_max )))
 							return true;
-						if (pur_max == null && ( pur_min != null && purchaseDate >= pur_min))
+						if (((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)) || (next_max == null && (next_min != null && nextDate >= next_min ))))
 							return true;
-						if (purchaseDate <= pur_max && purchaseDate >= pur_min)
+						if (((purchaseDate <= pur_max && purchaseDate >= pur_min) ||  (nextDate <= next_max && nextDate >= next_min)))
 							return true;
 					}else{
 						return true;
@@ -75,7 +79,6 @@ $('.daterefresh').on('click', function (e) {
 });
 
 // load Paid_by dropdown
-
 $(document).ready(function () {
 	var url = $("#addFormAdhoc").attr("data-users-url");
 
@@ -85,114 +88,132 @@ $(document).ready(function () {
 		dataType: "html",
 		success: function (response) {
 		debugger;
-			$("#id_paid_by").html(response);
+			$("#paid_by").html(response);
         }
     });
 });
 
-
-
 //...function for switching between different tabs...//
 function openTab(evt, tabName) {
-debugger;
-	var i, tabcontent, tablinks;
-	tabcontent = document.getElementsByClassName("tab-panel");
-	for (i = 0; i < tabcontent.length; i++) {
-		tabcontent[i].style.display = "none";
-	}
-	tablinks = document.getElementsByClassName("tablinks");
-	for (i = 0; i < tablinks.length; i++) {
-		tablinks[i].className = tablinks[i].className.replace(" active", "");
-	}
-	document.getElementById(tabName).style.display = "block";
-	evt.currentTarget.className += " active";
-
-	if(dataTableRes){
-		dataTableRes.draw();
-	}
+	debugger;
+		var i, tabcontent, tablinks;
+		tabcontent = document.getElementsByClassName("tab-panel");
+		for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = "none";
+		}
+		tablinks = document.getElementsByClassName("tablinks");
+		for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className.replace(" active", "");
+		}
+		if(document.getElementById(tabName)){
+			document.getElementById(tabName).style.display = "block";
+			evt.currentTarget.className += " active";
+		}
+	
+		if(dataTableRes){
+			dataTableRes.draw();
+		}
 }
 
+// Amount field calculation in Update Product form
+$('#price, #quantity_0').on('keyup', function () {
+	debugger;
+	let total = $("#price").val() * $("#quantity_0").val();
+	$("#amount").val(total)
+});
 
-$("#defaultOpen").click();
+// Balance amount field calculation in Update Product Form 
+$('#amount, #advance_pay').on('keyup', function () {
+	debugger;
+	let balance = $("#amount").val() - $("#advance_pay").val();
+	$("#balance_amount").val(balance)
+});
 
-
-
+// Used to set balance amount based on received date for edit form
+$('#received_date').change('keyup', function() {
+	debugger;
+	if ($('#received_date').val()){
+		// document.getElementById('#id_balance_amount').setAttribute('max',0)
+		$('#balance_amount').attr({'max':0})
+	}
+});
+	
 
 // // Get the element with id="defaultOpen" and click on it
 // document.getElementById("defaultOpen").click();
+	
+$("#defaultOpen").click();
+	
 
 
 //...called when edit button is clicked...//
 function editfunction(obj) {
-debugger;
+	debugger;
 	document.getElementById('editFormAdhoc').style.display = 'block'
 	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('editFormAdhoc').getElementsByTagName('input');
 	var mySelect = document.getElementById('editFormAdhoc').getElementsByTagName('select');
 	var myText = document.getElementById('editFormAdhoc').getElementsByTagName('textarea');
-    var quantity_1= x[5].textContent.split(/(\s+)/)[2]
-
+    
+	var quantity_1= x[5].textContent.split(/(\s+)/)[2]
 	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
-				if (quantity_1 == i.value) {
-					mySelect[0].selectedIndex = j;
-					break;
-				}
+		if (quantity_1 == i.value) {
+			mySelect[0].selectedIndex = j;
+			break;
+		}
 	}
-//
+
 	for (i = 1; i < (y.length-2); i++) {
 		var str = x[i + 1].textContent.split(/(\s+)/);
-				y[i].value = str[0]
+		y[i].value = str[0]
 	}
 
-    y[3].value = x[4].textContent;
-	myText[0].value = x[11].textContent
+	myText[0].value = x[11].textContent;
     document.getElementById('editFormAdhoc').action = obj.id;
 
-	var url = $("#editFormAdhoc").attr("data-users-url");
-	var p = document.getElementById("id_paid_by");
-	var paidBy= p.options[p.selectedIndex].text
-
-	$.ajax({                       // initialize an AJAX request
+	var url = $("#addFormAdhoc").attr("data-users-url");
+	debugger;  
+	$.ajax({                     // initialize an AJAX request
 	    type: "GET",
 		url: url,
 		dataType: "html",
-		data: {
-			'id_paid_by': paidBy
-		},
 		success: function (response) {
-		debugger;
+			debugger;
 			$("#id_paid_by").html(response);
 
-
-
-	var paid_by = x[10].textContent.split(/(\s+)/)[0]
-    for (var i, j = 0; i = mySelect[1].options[j]; j++) {
+			var paid_by = x[10].textContent.split(/(\s+)/)[0]
+			for (var i, j = 0; i = mySelect[1].options[j]; j++) {
 				if (paid_by == i.value) {
 					mySelect[1].selectedIndex = j;
 					break;
 				}
-		    }
-		}
-        });
+			}
+        }
+    });
 }
 
-
-
-
-
-// Amount field calculation in Update Product form
-$('#price, #quantity_0').on('keyup', function () {
-debugger;
-	let total = $("#price").val() * $("#quantity_0").val();
-	$("#amount").val(total)
+// Amount field calculation in Add new Product form
+$('#id_price, #id_quantity_0').on('keyup', function () {
+	let total = $("#id_price").val() * $("#id_quantity_0").val();
+	$("#id_amount").val(total)
 });
 
-// Balance amount field calculation in Update Product Form
-$('#amount, #advance_pay').on('keyup', function () {
+// Balance amount field calculation in Add New Product Form
+$('#id_amount, #id_quantity_0').on('keyup', function () {
     debugger;
-	let balance = $("#amount").val() - $("#advance_pay").val();
-	$("#balance_amount").val(balance)
+	let balance = $("#id_amount").val() - $("#id_advance_pay").val();
+	$("#id_balance_amount").val(balance)
 });
+
+// Used to set balance amount based on received date for add form
+$('#id_received_date').on('change', function() {
+	debugger;
+	if ($('#id_received_date').val()){
+		// document.getElementById('#id_balance_amount').setAttribute('max',0)
+		$('#id_balance_amount').attr({'max':0})
+	}
+});
+
 
 //...called when delete button is clicked...//
 function deletefunction(obj) {
@@ -200,53 +221,31 @@ function deletefunction(obj) {
 }
 
 
-// Amount field calculation in Add new Product form
-$('#id_price, #id_quantity_0').on('keyup', function () {
-    debugger;
-	let total = $("#id_price").val() * $("#id_quantity_0").val();
-	$("#id_amount").val(total)
-});
-
-// Balance amount field calculation in Add New Product Form
-$('#id_amount, #id_advance_pay').on('keyup', function () {
-    debugger;
-	let balance = $("#id_amount").val() - $("#id_advance_pay").val();
-	$("#id_balance_amount").val(balance)
-});
-
 // Add Name field pops up when Other is selected in Add new Product form
-
 $('#id_paid_by').change(function(){
-if ($(this).val() == "Other"){
-debugger;
-
-    $("#id_add_name").prop({ 'type': 'text', 'required': true });
-    $("#id_add_name").parent().parent().css("display", "block");
-
- }
- else {
-    $("#id_add_name").prop({ 'required': false });
-    $("#id_add_name").parent().parent().css("display", "none");
-}
+	if ($(this).val() == "Other"){
+		debugger;
+		$("#id_add_name").prop({ 'type': 'text', 'required': true });
+		$("#id_add_name").parent().parent().css("display", "block");
+	}
+	else {
+		$("#id_add_name").prop({ 'required': false });
+		$("#id_add_name").parent().parent().css("display", "none");
+	}
 });
 
 // Add Name field pops up when Other is selected in Update Product form
-
-    $('#paid_by').change(function(){
+$('#paid_by').change(function(){
     if ($(this).val() == "Other"){
-    debugger;
-
+    	debugger;
     	$("#add_name").prop({ 'type': 'text', 'required': true });
 		$("#add_name").parent().parent().css("display", "block");
      }
      else {
-
-
 		$("#add_name").prop({ 'required': false });
 		$("#add_name").parent().parent().css("display", "none");
 	}
 });
-
 
 
 //...called when save and add another button on addProduct form is clicked...//
@@ -280,14 +279,10 @@ $("#saveNew").click(function (e) {
 				var inputVal = $(this).val();
 
 				var $parentTag = $(this).parent();
-				 if (inputVal == '') {
-				 	$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
-				 }
-
-
 				if (inputVal == '') {
 					if($parentTag[0].className!=="col-6 error"){
-					$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');}
+						$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
+					}
 				}else{
 					if($(this).nextAll().length==2){
 						$parentTag.removeClass("error");
