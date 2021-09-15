@@ -1,6 +1,7 @@
 {% extends 'home/base.html' %}
 {% load static %}
 
+
 {% block title %} Operations-Pantry-Recurring {% endblock title %}
 
 {% block style %}
@@ -14,7 +15,7 @@
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> -->
 <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script> -->
 <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script> -->
-<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
 
@@ -35,8 +36,8 @@
 {% block content %}
 
 <div class="container-lg" style="overflow-y: scroll;">
-    <div class="table-responsive">
-        <div class="table-wrapper">
+    <div>
+        <div>
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
@@ -52,7 +53,9 @@
                             +</button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:addTshirts' %}"  id="addTshirtForm" class="needs-validation">
+                    <form method="POST" action="{% url 'operations:addTshirts' %}"  id="addTshirtForm"
+                    data-edit-url="{% url 'operations:ajax_load_tshirtData' %}"
+                        class="needs-validation">
                         {% csrf_token %}
 
                         {{addTshirtFormSet.management_form}}
@@ -60,10 +63,10 @@
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                            <div class="modal-dialog modal-dialog-scrollable modal-xl">
                                 <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
+                                    <div class="modal-header" style="background-color: #1D5E3E; color: white;">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Items</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
@@ -72,16 +75,30 @@
                                             
                                         <div class="add-tshirt-container">
 
+                                                <div class="row" style="margin-left: 5px;">
+                                                    <div class="col-2 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; color: #1A9239;;">Status</div>
+                                                    <div class="col-3" style="margin-bottom: 15px; padding: 0px;">
+                                                    <select id="id_status" class="form-select" required>
+                                                        <option value selected>-------</option>
+                                                        <option value="ordered">Ordered</option>
+                                                        <option value="received">Received</option>
+                                                    </select>
+                                                </div>
+                                                </div>
+                                                
+                                                <hr class="font-weight-bold">
+                                               
+
                                                     <div class="row add-form-container" style="margin-left: 3px;">
-                                                        <div class="col" style="padding-left: 0;">
-                                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 12px;">                                                           
+                                                        <div class="col-6" style="padding-left: 0;" id="order_date">
+                                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 12px; color: #1A9239;;">                                                           
                                                                 {{ addTshirtFormSet.0.order_date.label }}</div>
                                                             <div style="margin-bottom: 15px; padding: 0px;">
                                                                 {{ addTshirtFormSet.0.order_date }}
                                                             </div>
                                                         </div>
-                                                        <div class="col">
-                                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 12px;">                                                           
+                                                        <div class="col-6" id="tshirt_receiving_date">
+                                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 12px; color: #1A9239;;">                                                           
                                                                 {{ addTshirtFormSet.0.receiving_date.label }}</div>
                                                             <div style="margin-bottom: 15px; padding: 0px;">
                                                                 {{ addTshirtFormSet.0.receiving_date }}
@@ -91,69 +108,162 @@
 
                                                     <hr class="font-weight-bold">
 
-                                                    <table class="productTable" style="height: auto;">
-                                                        <thead class="table tbl-header table-bordered">
+                                                    <div class="row">
+
+                                                    <div class="col">
+                                                    <table class="productTable" style="height: auto;" id="table1">
+                                                        <thead class="table tbl-header table-bordered" style="background-color: #EAFBE9;">
                                                             <tr>
-                                                                <th style="padding: 12px;">Size</th>
-                                                                <th style="padding: 12px;">Previous Stock</th>
-                                                                <th style="padding: 12px;">Ordered Quantity</th>
-                                                                <th style="padding: 12px;">Allotted</th>
+                                                                <th style="padding: 10px;  color: #1A9239;">Size</th>
+                                                                <th style="padding: 10px;  color: #1A9239;">Prev. Stock</th>
+                                                                <th style="padding: 10px;  color: #1A9239;">Ordered Qty</th>
+                                                                
                                                             </tr>
                                                         </thead>
 
-                                                        <tbody class="table">
+                                                        
+
+                                                        <tbody class="table" id="tbody1">
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.0.size }}</td>
                                                                 <td>{{ addTshirtFormSet.0.previous_stock }}</td>
-                                                                <td>{{ addTshirtFormSet.0.ordered_quantity }}</td>
-                                                                <td>{{ addTshirtFormSet.0.allotted }}</td>
+                                                                <td class="tshirt_ordered_quantity">{{ addTshirtFormSet.0.ordered_quantity }}</td>
+                                                                
                                                             </tr>          
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.1.size }}</td>
                                                                 <td>{{ addTshirtFormSet.1.previous_stock }}</td>
-                                                                <td>{{ addTshirtFormSet.1.ordered_quantity }}</td>
-                                                                <td>{{ addTshirtFormSet.1.allotted }}</td>
+                                                                <td class="tshirt_ordered_quantity">{{ addTshirtFormSet.1.ordered_quantity }}</td>
                                                             </tr>         
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.2.size }}</td>
                                                                 <td>{{ addTshirtFormSet.2.previous_stock }}</td>
-                                                                <td>{{ addTshirtFormSet.2.ordered_quantity }}</td>
-                                                                <td>{{ addTshirtFormSet.2.allotted }}</td>
+                                                                <td class="tshirt_ordered_quantity">{{ addTshirtFormSet.2.ordered_quantity }}</td>
                                                             </tr>          
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.3.size }}</td>
                                                                 <td>{{ addTshirtFormSet.3.previous_stock }}</td>
-                                                                <td>{{ addTshirtFormSet.3.ordered_quantity }}</td>
-                                                                <td>{{ addTshirtFormSet.3.allotted }}</td>
+                                                                <td class="tshirt_ordered_quantity">{{ addTshirtFormSet.3.ordered_quantity }}</td>
                                                             </tr>          
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.4.size }}</td>
                                                                 <td>{{ addTshirtFormSet.4.previous_stock }}</td>
-                                                                <td>{{ addTshirtFormSet.4.ordered_quantity }}</td>
-                                                                <td>{{ addTshirtFormSet.4.allotted }}</td>
+                                                                <td class="tshirt_ordered_quantity">{{ addTshirtFormSet.4.ordered_quantity }}</td>
                                                             </tr>          
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.5.size }}</td>
                                                                 <td>{{ addTshirtFormSet.5.previous_stock }}</td>
-                                                                <td>{{ addTshirtFormSet.5.ordered_quantity }}</td>
-                                                                <td>{{ addTshirtFormSet.5.allotted }}</td>
+                                                                <td class="tshirt_ordered_quantity">{{ addTshirtFormSet.5.ordered_quantity }}</td>
                                                             </tr>                                                             
                                                         </tbody>
                                                     </table>
+                                                </div>
+
+                                                <div class="col" id="tshirt_received_data">
+                                                    <table class="productTable" style="height: auto;" id="table2">
+                                                        <thead class="table tbl-header table-bordered" style="background-color: #EAFBE9;">
+                                                            <tr>
+                                                                <th style="padding: 10px;  color: #1A9239;" class="tshirt_received_quantity_header">Received Qty.</th>
+                                                                <th style="display: none;"></th>
+                                                                <th style="padding: 10px;  color: #1A9239; display: none;">Previous Stock</th>
+                                                                <th style="padding: 10px;  color: #1A9239;">Total Qty.</th>
+                                                                <th style="padding: 10px;  color: #1A9239;" class="tshirt_allotted_header">Allotted</th>
+                                                            </tr>
+                                                        </thead>
+                                                    
+
+                                                        <tbody class="table" id="tbody2">
+                                                            <tr> 
+                                                                <td class="tshirt_received_quantity">{{ addTshirtFormSet.0.received_quantity }}</td>
+                                                                <td style="display: none;">{{ addTshirtFormSet.0.previous_stock }}</td>
+                                                                <td class="tshirt_total_quantity">{{ addTshirtFormSet.0.total_quantity }}</td>
+                                                                {% if addTshirtFormSet.0.total_quantity.value  == 0 %}
+                                                                    <td class="tshirt_allotted disable_allotted">{{ addTshirtFormSet.0.allotted }}</td>
+                                                                {% else %}
+                                                                    <td class="tshirt_allotted">{{ addTshirtFormSet.0.allotted }}</td>
+                                                                {% endif %}
+                                                                <td class="tshirt_error_message">{{ addTshirtFormSet.0.error_message }}</td>
+                                                            </tr>          
+                                                            
+                                                            <tr>
+                                                                
+                                                                <td class="tshirt_received_quantity">{{ addTshirtFormSet.1.received_quantity }}</td>
+                                                                <td style="display: none;">{{ addTshirtFormSet.1.previous_stock }}</td>
+                                                                <td class="tshirt_total_quantity">{{ addTshirtFormSet.1.total_quantity }}</td>
+                                                                {% if addTshirtFormSet.1.total_quantity.value  == 0 %}
+                                                                    <td class="tshirt_allotted disable_allotted">{{ addTshirtFormSet.1.allotted }}</td>
+                                                                {% else %}
+                                                                    <td class="tshirt_allotted">{{ addTshirtFormSet.1.allotted }}</td>
+                                                                {% endif %}
+                                                                <td class="tshirt_error_message">{{ addTshirtFormSet.1.error_message }}</td>
+                                                            </tr>         
+                                                            <tr>
+                                                               
+                                                                <td class="tshirt_received_quantity">{{ addTshirtFormSet.2.received_quantity }}</td>
+                                                                <td style="display: none;">{{ addTshirtFormSet.2.previous_stock }}</td>
+                                                                <td class="tshirt_total_quantity">{{ addTshirtFormSet.2.total_quantity }}</td>
+                                                                {% if addTshirtFormSet.2.total_quantity.value  == 0 %}
+                                                                    <td class="tshirt_allotted disable_allotted">{{ addTshirtFormSet.2.allotted }}</td>
+                                                                {% else %}
+                                                                    <td class="tshirt_allotted">{{ addTshirtFormSet.2.allotted }}</td>
+                                                                {% endif %}
+                                                                <td class="tshirt_error_message">{{ addTshirtFormSet.2.error_message }}</td>
+                                                            </tr>          
+                                                            <tr>
+                                                               
+                                                                <td class="tshirt_received_quantity">{{ addTshirtFormSet.3.received_quantity }}</td>
+                                                                <td style="display: none;">{{ addTshirtFormSet.3.previous_stock }}</td>
+                                                                <td class="tshirt_total_quantity">{{ addTshirtFormSet.3.total_quantity }}</td> 
+                                                                {% if addTshirtFormSet.3.total_quantity.value  == 0 %}
+                                                                    <td class="tshirt_allotted disable_allotted">{{ addTshirtFormSet.3.allotted }}</td>
+                                                                {% else %}
+                                                                    <td class="tshirt_allotted">{{ addTshirtFormSet.3.allotted }}</td>
+                                                                {% endif %}
+                                                                <td class="tshirt_error_message">{{ addTshirtFormSet.3.error_message }}</td>
+                                                            </tr>          
+                                                            <tr>
+                                                                
+                                                                <td class="tshirt_received_quantity">{{ addTshirtFormSet.4.received_quantity }}</td>
+                                                                <td style="display: none;">{{ addTshirtFormSet.4.previous_stock }}</td>
+                                                                <td class="tshirt_total_quantity">{{ addTshirtFormSet.4.total_quantity }}</td>
+                                                                {% if addTshirtFormSet.4.total_quantity.value  == 0 %}
+                                                                    <td class="tshirt_allotted disable_allotted">{{ addTshirtFormSet.4.allotted }}</td>
+                                                                {% else %}
+                                                                    <td class="tshirt_allotted">{{ addTshirtFormSet.4.allotted }}</td>
+                                                                {% endif %}
+                                                                <td class="tshirt_error_message">{{ addTshirtFormSet.4.error_message }}</td>
+                                                            </tr>          
+                                                            <tr>
+
+                                                                <td class="tshirt_received_quantity">{{ addTshirtFormSet.5.received_quantity }}</td>
+                                                                <td style="display: none;">{{ addTshirtFormSet.5.previous_stock }}</td>
+                                                                <td class="tshirt_total_quantity">{{ addTshirtFormSet.5.total_quantity }}</td>
+                                                                {% if addTshirtFormSet.5.total_quantity.value  == 0 %}
+                                                                    <td class="tshirt_allotted disable_allotted">{{ addTshirtFormSet.5.allotted }}</td>
+                                                                {% else %}
+                                                                    <td class="tshirt_allotted">{{ addTshirtFormSet.5.allotted }}</td>
+                                                                {% endif %}
+                                                                <td class="tshirt_error_message">{{ addTshirtFormSet.5.error_message }}</td>
+                                                                </tr>                                                             
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+
+                                                </div>
 
                                                     <hr class="font-weight-bold">
                                                     <br>
 
-                                                    <div class="row" style="margin-left: 5px;">
-                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px;">                                                           
+                                                    <div class="row" style="margin-left: 5px;" id="paid_by">
+                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; color: #1A9239;;">                                                           
                                                             {{ addTshirtFormSet.0.paid_by.label }}</div>
                                                         <div class="col-3" style="margin-bottom: 15px; padding: 0px;">
                                                             {{ addTshirtFormSet.0.paid_by }}
                                                         </div>
                                                     </div>
 
-                                                    <div class="row" style="margin-left: 5px;">
-                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px;">                                                           
+                                                    <div class="row" style="margin-left: 5px;" id="additional">
+                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; color: #1A9239;;">                                                           
                                                             {{ addTshirtFormSet.0.additional.label }}</div>
                                                         <div class="col-6" style="margin-bottom: 15px; padding: 0px; height: 10px;">
                                                             {{ addTshirtFormSet.0.additional }}
@@ -262,8 +372,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" name="addButton" value="Add"
-                                            class="btn btn-primary">Add</button>
+                                        <button type="submit" name="addButton" value="Add" id="submitButton"
+                                            class="btn" style="background-color: #1C923C; color: white;">Add</button>
                                     </div>
                                 </div>
                             </div>
@@ -276,7 +386,7 @@
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-scrollable">
                                 <div class="modal-content">
-                                    <div class="modal-header">
+                                    <div class="modal-header" style="background-color: #1D5E3E; color: white;">
                                         <h5 class="modal-title" id="staticBackdropLabel">Update Item</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
@@ -315,7 +425,7 @@
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
                                             data-bs-dismiss="modal">Close</button>
-                                        <input type="submit" value="Update" class="btn btn-primary">
+                                        <input type="submit" value="Update" class="btn" style="background-color: #1C923C; color: white;">
                                     </div>
                                 </div>
                             </div>
@@ -330,12 +440,12 @@
                                 <div class="modal-content"
                                     style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete Items</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        Are you sure you want to delete this product?
+                                        Are you sure you want to delete this products?
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
@@ -361,7 +471,7 @@
 
 
 
-                <!-- {% regroup tshirtData by receiving_date as groupedData %} -->
+                {% regroup tshirtData by receiving_date as groupedData %}
 
 
             <div class="tabset">
@@ -402,6 +512,7 @@
 
                             <thead class="table tbl-header table-bordered">
                                 <tr>
+                                    <th width=15% style="padding: 12px; text-align:center;">Order Date</th>
                                     <th width=15% style="padding: 12px; text-align:center;">Receiving Date</th>
                                     <th width=5% style="padding: 12px; text-align:center;">Size</th>
                                     <th width=5% style="display: none;">Previous Stock</th>
@@ -421,10 +532,13 @@
                             <!-- <div class="tbl-content table"> -->
                             <!-- <table id="productTable"> -->
                             <tbody class="tbl-content table table-bordered">
-                                
-                                {% for data in tshirtData %}
+                                {% for group in groupedData %}
+                                                {% for data in group.list %}
                                         <tr>
-                                              <td style="vertical-align : middle;text-align:center; border-left: 2px solid #007bff; padding: 2px 5px;" class="name font-weight-bold" width=15%>{{ data.receiving_date }}</td>
+                                            <td style="vertical-align : middle;text-align:center; border-left: 2px solid #007bff; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+                                                {{ data.order_date }}</td>
+                                                <td style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+                                                    {{ data.receiving_date }}</td>
                                               <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
                                               <td class="name" width=12% style="display: none;">{{ data.previous_stock }}</td>
                                               <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
@@ -434,16 +548,23 @@
                                               <td class="name" style="display: none;">{{ data.paid_by }}</td>
                                                   <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name" width="15%">{{ data.additional }}</td>                                            
                                               <!-- <td class="name" style="display: none;"></td> -->
-                                              <td width=10% style="padding: 2px 5px;">
+
+                                              {% ifchanged data.order_date %}
+                                              <td rowspan="{{ group.list|length }}" width=10% style="padding: 2px 5px;">
                                                   <a id='onBoarding/edit/{{ data.id }}' onclick=editfunction(this)
-                                                      data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
+                                                      data-bs-toggle="modal" data-bs-target="#staticBackdrop" title="Edit"
                                                       style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
                                                   <a id='onBoarding/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
                                                       data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
                                                           class="material-icons">&#xE872;</i></a>
                                                         </td>
-                                
+                                                {% else %}
+                                                <td style="display: none"></td>
+                                                {% endifchanged %}
+
                                 </tr>
+                                {% endfor %}
+
                                 {% endfor %}
                                
                             </tbody>

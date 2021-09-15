@@ -205,10 +205,8 @@ class editTshirtSerializer(serializers.ModelSerializer):
         if data:
             print(data)
             data._mutable = True
-            data['total_quantity'] = int(data['ordered_quantity']) + int(data['previous_stock'])
-            print(data['total_quantity'])
+            data['total_quantity'] = int(data['received_quantity']) + int(data['previous_stock'])
             data['remaining'] = int(data['total_quantity']) - int(data['allotted'])
-
             data._mutable = False
             super(editTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(editTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)

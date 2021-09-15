@@ -1,3 +1,9 @@
+
+from django.core.exceptions import RequestAborted
+from django.db.models import fields
+from django.forms.utils import pretty_name
+from django.forms.widgets import DateInput
+from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from rest_framework import serializers
@@ -53,8 +59,10 @@ def engagements_onboarding_view(request):
         remaining = list(t_shirt_inventory.objects.filter(size=i).order_by('-receiving_date').values('remaining'))
         if remaining:
             data['previous_stock'] = remaining[0]['remaining']
+            data['total_quantity'] = remaining[0]['remaining']
         else:
             data['previous_stock'] = 0
+            data['total_quantity'] = 0
         initial.append(data)
 
     addTshirtFormset = modelformset_factory(t_shirt_inventory, fields="__all__", form=addTshirtForm,extra=6, max_num=6)
@@ -70,16 +78,16 @@ def engagements_onboarding_view(request):
 def addTshirt(request):
     request.POST._mutable = True
     
-    request.POST['form-0-total_quantity'] = int(request.POST['form-0-previous_stock']) + int(request.POST['form-0-ordered_quantity'])
+    request.POST['form-0-total_quantity'] = int(request.POST['form-0-previous_stock']) + int(request.POST['form-0-received_quantity'])
     request.POST['form-0-remaining'] = int(request.POST['form-0-total_quantity']) - int(request.POST['form-0-allotted'])
-    request.POST['form-0-user'] = request.user
-
+    request.POST['form-0-user_name'] = request.user
+    print(request.user)
     for i in range(1,6):
         form_id = 'form-' + str(i)
-        request.POST[form_id+'-user'] = request.user
+        request.POST[form_id+'-user_name'] = request.user
         request.POST[form_id+'-order_date'] = request.POST['form-0-order_date']
         request.POST[form_id+'-receiving_date'] = request.POST['form-0-receiving_date']
-        request.POST[form_id+'-total_quantity'] = int(request.POST[form_id+'-previous_stock']) + int(request.POST[form_id+'-ordered_quantity'])
+        request.POST[form_id+'-total_quantity'] = int(request.POST[form_id+'-previous_stock']) + int(request.POST[form_id+'-received_quantity'])
         request.POST[form_id+'-remaining'] = int(request.POST[form_id+'-total_quantity']) - int(request.POST[form_id+'-allotted'])
         request.POST[form_id+'-paid_by'] = request.POST['form-0-paid_by']
         request.POST[form_id+'-additional'] = request.POST['form-0-additional']
@@ -198,7 +206,6 @@ def addAdhocProducts(request):
         serializer.save()
         return Response(serializer.data, status=201)
     print(serializer.errors)
-
     return Response(serializer.errors, status=400)
 
 
@@ -259,20 +266,16 @@ def addVendor(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 
 @api_view(['POST'])
 def editVendor(request, pk):
     vendor = vendorContactList.objects.get(id=pk)
-    print(request.POST)
-    print(vendor.id)
     serializer = editVendorSerializer(instance=vendor, data=request.POST)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 
@@ -304,7 +307,6 @@ def addRepairServices(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 
@@ -354,9 +356,6 @@ def maintenance_view(request):
 def tshirt_history(request):
     print(request.user)
     history = t_shirt_inventory.history.all().order_by('-history_date')
-    # print(history)
-    # serializer = tshirtHistorySerializer(history, many=True)
-    # print(serializer.data)
     return render(request, 'operations/tshirt_history.html', {'tshirt_history': history})
 
 @login_required(login_url='/auth/login')
@@ -396,3 +395,47 @@ def deleteJoining(request, pk):
     employee = engagementJoining.objects.get(id=pk)
     employee.delete()
     return Response({}, status=201)
+
+
+def load_tshirt_edit_data(request):
+    orderDate = request.GET.get('order_date')
+    data = t_shirt_inventory.objects.filter(order_date=orderDate).values()
+
+    res = {}
+    for i in data:
+        d = {'id': i['id'],'previous_stock':i['previous_stock'], 'ordered_quantity': i['ordered_quantity'],
+            'received_quantity': i['received_quantity'], 'allotted': i['allotted'], 'total_quantity': i['total_quantity'],
+            'error_message': i['error_message']}
+        res[i['size']] = d
+        res['paid_by'] = i['paid_by']
+        res['additional'] = i['additional']
+        if i['receiving_date']:
+            res['receiving_date'] = i['receiving_date'].strftime('%Y-%m-%d')
+    print(res)
+    return JsonResponse({'data':res})
+
+
+def load_previous_tshirt_history(request):
+    recent_id = request.GET.get('id')
+    history_id = request.GET.get('history_id')
+    res = list(t_shirt_inventory.history.filter(id=12).order_by('-history_id').values())
+
+    a = 0
+    current_data = {}
+    for i in res:
+        if int(i['history_id']) == int(history_id):
+            current_data = i
+            a = res.index(i)
+            break
+    try:
+        data = {}
+        previous_data = res[a+1]
+        print(previous_data)
+        for i in current_data:
+            if current_data[i] != previous_data[i]:
+                data[i] = {'current': current_data[i], 'previous': previous_data[i]}
+
+        # data = res[a+1]
+        return JsonResponse({'data': data})
+    except Exception as e:
+        return JsonResponse({'data': ''})

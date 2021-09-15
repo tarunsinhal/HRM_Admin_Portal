@@ -117,19 +117,20 @@ class repairServices(models.Model):
         return str(self.service_of)
 
 
-        
 class t_shirt_inventory(models.Model):
     order_date = models.DateField()
-    receiving_date = models.DateField()
+    receiving_date = models.DateField(blank=True, null=True)
     size = models.CharField(max_length=50, choices=t_shirt_sizes)
     previous_stock = models.PositiveIntegerField()
     ordered_quantity = models.PositiveIntegerField(default=0)
+    received_quantity = models.PositiveIntegerField(default=0)
+    error_message = models.CharField(max_length=500, blank=True, null=True, default=None)
     total_quantity = models.PositiveIntegerField()
     allotted = models.PositiveIntegerField(default=0)
     remaining = models.PositiveIntegerField()
     paid_by = models.CharField(max_length=50)
     additional = models.CharField(max_length=500, blank=True, null=True)
-    user = models.CharField(max_length=50, default="Admin")
+    user_name = models.CharField(max_length=50)
     history = HistoricalRecords()
     
     class Meta:

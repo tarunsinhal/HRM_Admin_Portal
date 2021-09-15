@@ -12,7 +12,7 @@ payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_acco
 unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
 quantity_adhoc_choices = [('Set', 'set'),('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
 
-
+ 
 class UnitWidget(MultiWidget):
     def __init__(self, *args, **kwargs):
         self.widgets = [NumberInput({'type': 'number', 'class': "required form-control"}), Select(choices=unit_choices, attrs={'type': 'select', 'class': "form-select"})]
@@ -194,18 +194,21 @@ class EditRepairServicesForm(AddRepairServicesForm, ModelForm):
 class addTshirtForm(ModelForm):
     class Meta:
         model = t_shirt_inventory
-        fields = ('order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'allotted', 'paid_by', 'additional')
+        fields = ('order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted',
+                'paid_by', 'additional')
         widgets = {
-            'order_date': DateInput(attrs={'type': 'date', 'required': True, 'class': "required form-control"}),
-            'receiving_date': DateInput(attrs={'type': 'date', 'required': True, 'class': "required form-control"}),
-            'size': Select(attrs={'type': 'text', 'required': True, 'class': "form-control"}),
-            'previous_stock': NumberInput(attrs={'type': 'number', 'required': True, 'readOnly': True, 'class': "required form-control"}),
-            'ordered_quantity': NumberInput(attrs={'type': 'number', 'required': True, 'class': "required form-control"}),
-            'allotted': NumberInput(attrs={'type': 'number', 'required': True, 'class': "required form-control"}),
-            'paid_by': TextInput(attrs={'type': 'text', 'required': True, 'spellcheck': 'true', 'class': "required form-control"}),
-            'additional': Textarea(attrs={'type': 'text', 'class': "required form-control"}),
-            'total_quantity': HiddenInput(attrs={'type': 'hidden', 'required': True, 'class': "required form-control"}),
-            'remaining': HiddenInput(attrs={'type': 'hidden', 'required': True, 'class': "required form-control"})
+            'order_date': DateInput(attrs={'type':'date', 'required':True,  'class':"required form-control"}),
+            'receiving_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
+            'size': Select(attrs={'type':'text', 'required':True, 'class':"form-control"}),
+            'previous_stock': NumberInput(attrs={'type':'number', 'required':True, 'readOnly': True, 'class':"required form-control"}),
+            'ordered_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
+            'received_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
+            'allotted': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
+            'paid_by': TextInput(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-control"}),
+            'additional': Textarea(attrs={'type':'text', 'class':"required form-control"}),
+            'error_message': Textarea(attrs={'type':'text', 'class':"required form-control", "rows": 1, "cols": 1}),
+            'total_quantity': NumberInput(attrs={'type':'number', 'readOnly': True, 'required':True, 'class':"required form-control"}),
+            'remaining': HiddenInput(attrs={'type':'hidden', 'required':True, 'class':"required form-control"})
         }
 
 
