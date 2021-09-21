@@ -60,70 +60,11 @@
             <div class="table-title">
 
 
-
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-xl">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">History</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                        <table>
-                            <thead class="table tbl-header table-bordered">
-                                <tr>
-                                    <th>Order Date</th>
-                                    <th>Receiving Date</th>
-                                    <th>Size</th>
-                                    <th>Previous Stock</th>
-                                    <th>Ordered Qty.</th>
-                                    <th>Received Qty.</th>
-                                    <th>Total Qty.</th>
-                                    <th>Allotted</th>
-                                    <th>Remaining</th>
-                                    <th>Paid By</th>
-                                    <th>Additional</th>
-                                    <th>User</th>
-                                    <th>Error Message</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-
-                            </tbody>
-                        </table>
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
-
-
-
                 <!-- {% regroup tshirtData by receiving_date as groupedData %} -->
             
                 <form>
                     <i class="fa fa-arrow-left" aria-hidden="true"></i>
-                    <input type="button" class="btn btn-secondary" style="padding: 5px;" value="Go Back" onclick="history.back()">
+                    <input type="button" class="btn btn-secondary" style="padding: 5px;" value="Back" onclick="history.back()">
                 </form>
 
             <div class="tabset">
@@ -136,7 +77,6 @@
                             
                             <thead class="table tbl-header table-bordered">
                                 <tr>
-                                    <th width="2%"></th>
                                     <th width=20% style="padding: 12px; text-align:center;">History Date</th>
                                     <th width=5% style="padding: 12px; text-align:center;">Size</th>
                                     <th width=12% style="padding: 12px; text-align:center;">Previous Stock</th>
@@ -167,7 +107,6 @@
 
                                                 {% for data in tshirt_history %}
                                         <tr>
-                                            <td width="2%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
                                             <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
                                                     {{ data.history_date }}</td>
                                             <td class="name" width=13% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
@@ -192,8 +131,8 @@
                                             <td class="name" width=10% style="display: none;">{{ data.additional }}</td>
                                             <td class="name" width=10% style="display: none;">{{ data.id }}</td>
                                             <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
-                                            <td class="name" id="history_data" width=5%><button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="padding: 5px;">Changes</button></td>
-                                            
+                                            <!-- <td class="name" id="history_data" width=5%><button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="padding: 5px;">Changes</button></td> -->
+                                            <td width="2%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
                                             
 
                                 </tr>
