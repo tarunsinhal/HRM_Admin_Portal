@@ -28,7 +28,7 @@ $(document).ready(function () {
 		// 		title: 'receiving_date',
 		// 	},
 		// ],
-		'rowsGroup': [0, 8],
+		'rowsGroup': [0, 1, 9],
 		'pageLength': 12,
 		"bLengthChange": false,
 		
@@ -107,39 +107,125 @@ function openTab(evt, tabName) {
 }
 
 
+$(".disable_allotted").each(function(){
+	$(this).find('input').attr({"readOnly": true})
+})
+
+
 //...called when edit button is clicked...//
 function editfunction(obj) {
 	debugger;
-	document.getElementById('editTshirtForm').style.display = 'block'
-	var x = Array.from(document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td'));
-	var y = document.getElementById('editTshirtForm').getElementsByTagName('input');
-	var mySelect = document.getElementById('editTshirtForm').getElementsByTagName('select');
-	var txtarea = document.getElementById('editTshirtForm').getElementsByTagName('textarea')
 
-	for (var i, j = 0; i = mySelect[0].options[j]; j++) {
-		if (x[1].textContent == i.value) {
-			mySelect[0].selectedIndex = j;
-			mySelect[0].style.pointerEvents = 'none';
-			x.splice(1,1);
-			break;
+	document.getElementById("staticBackdropLabel").textContent = "Update Items";
+	document.getElementById("submitButton").textContent = "Update";
+
+	var date = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td')[0].textContent.trim()
+	var table1 = document.getElementById('table1').getElementsByTagName('tr')
+	var table2 = document.getElementById('table2').getElementsByTagName('tr')
+
+	document.getElementById('order_date').children[1].children[0].value = date
+
+	$.ajax({
+		type: 'GET',
+		url: $("#addTshirtForm").attr("data-edit-url"),
+		data: {'order_date': date},
+		dataType: 'json',
+		success: function(data){
+			debugger
+			var ids = {}
+			for (var key in data['data']){
+				if (data['data'][key] != null){
+					if(data['data'][key]['id']){
+						ids[key] =  data['data'][key]['id']
+					}
+				}
+			}
+			document.getElementById('addTshirtForm').action = 'onBoarding/edit' + '?' + $.param(ids);
+
+			if (data['data']['receiving_date']){
+				document.getElementById('tshirt_receiving_date').children[1].children[0].value = data['data']['receiving_date'];
+			}
+			document.getElementById('paid_by').children[1].children[0].value = data['data']['paid_by']
+			document.getElementById('additional').children[1].children[0].value = data['data']['additional']
+			for (i=0; i<table1.length-1; i++){
+				var size = table1[i+1].children[0].children[0].value
+				if (data['data'][size]){
+					table1[i+1].children[2].children[0].value = data['data'][size]['ordered_quantity']
+
+					table2[i+1].children[1].children[0].readonly = false;
+					table2[i+1].children[1].children[0].value = data['data'][size]['previous_stock']
+					table2[i+1].children[1].children[0].readonly = true;
+					table2[i+1].children[0].children[0].value = data['data'][size]['received_quantity'];
+					table2[i+1].children[2].children[0].value = data['data'][size]['total_quantity']
+					table2[i+1].children[3].children[0].value = data['data'][size]['allotted']
+					if (data['data'][size]['error_message']){
+						debugger
+						table2[i+1].children[4].style.display = 'block'
+						table2[i+1].children[4].children[0].value = data['data'][size]['error_message']
+					}
+				}
+				else{
+					table1[i+1].children[1].children[0].readonly = false;
+					table1[i+1].children[1].children[0].value = 0
+					table1[i+1].children[1].children[0].readonly = true;
+				}
+			}
+		},
+		error: function(data){
+			debugger
 		}
-	}
+	})
 
-	for (i = 0; i < (y.length-2); i++) {
-		var str = x[i].textContent.trim().split(/(\s+)/);
-		y[i + 1].value = str[0]
-	}
 
-	txtarea[0].textContent = x[x.length - 3].textContent.trim()
+	// document.getElementById('editTshirtForm').style.display = 'block'
+	// var x = Array.from(document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td'));
+	// var y = document.getElementById('editTshirtForm').getElementsByTagName('input');
+	// var mySelect = document.getElementById('editTshirtForm').getElementsByTagName('select');
+	// var txtarea = document.getElementById('editTshirtForm').getElementsByTagName('textarea')
 
-	document.getElementById('editTshirtForm').action = obj.id;
+	// for (var i, j = 0; i = mySelect[0].options[j]; j++) {
+	// 	if (x[1].textContent == i.value) {
+	// 		mySelect[0].selectedIndex = j;
+	// 		mySelect[0].style.pointerEvents = 'none';
+	// 		x.splice(1,1);
+	// 		break;
+	// 	}
+	// }
+
+	// for (i = 0; i < (y.length-2); i++) {
+	// 	var str = x[i].textContent.trim().split(/(\s+)/);
+	// 	y[i + 1].value = str[0]
+	// }
+
+	// txtarea[0].textContent = x[x.length - 2].textContent.trim()
+
+	// document.getElementById('editTshirtForm').action = obj.id;
 
 }
 
 
 //...called when delete button is clicked...//
 function deletefunction(obj) {
-	document.getElementById('deleteTshirtForm').action = obj.id;
+	var date = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td')[0].textContent.trim()
+	debugger
+	$.ajax({
+		type: 'GET',
+		url: $("#addTshirtForm").attr("data-edit-url"),
+		data: {'order_date': date},
+		dataType: 'json',
+		success: function(data){
+			debugger
+			var ids = {}
+			for (var key in data['data']){
+				if (data['data'][key] != null){
+					if(data['data'][key]['id']){
+						ids[key] =  data['data'][key]['id']
+					}
+				}
+			}
+			document.getElementById('deleteTshirtForm').action = 'onBoarding/delete' + '?' + $.param(ids);
+		}
+	})
 }
 
 
@@ -245,8 +331,6 @@ deleteTshirtForm.addEventListener("submit", handleDeleteProduct)
 
 
 
-
-
 function showDropdown() {
 	document.getElementById("myDropdown").classList.toggle("show");
 }
@@ -266,9 +350,111 @@ window.onclick = function(event) {
 }
 
 
+var sizes = document.getElementsByClassName("tshirt-size")
+for(var i = 0, length = sizes.length; i < length; i++) {
+	   sizes[i].style.pointerEvents = 'none';
+ }
+
+
+$('#id_status').on('change', function(){
+	debugger
+	var value = $(this).val();
+	if (value == "ordered"){
+		$("#tshirt_receiving_date, #tshirt_received_data").hide();
+		$(".tshirt_error_message").hide()
+		$("#id_form-0-receiving_date").prop({"required": false})
+		$(".tshirt_error_message").each(function(){
+			var a = $(this).find('textarea').attr({"required": false})
+		})
+	}
+	if (value == "received"){
+		$("#tshirt_receiving_date, #tshirt_received_data").show();
+		$("#id_form-0-receiving_date").prop({"required": true});
+		$(".tshirt_error_message").each(function(){
+			debugger
+			var a = $(this).find('textarea').val();
+			if (a){
+				$(this).show();
+			}
+		})
+		// $("#table1").parent('div').addClass('col-4').removeClass('col')
+	}
+})
+
+
+$('.tshirt_error_message').hide();
+
+
+$('.tshirt_ordered_quantity').on('change', function(){
+	debugger
+
+	var status = $("#id_status").val();
+	var ordered_val = $(this).find('input').val();
+	var rowIndex = $(this).parent('tr').index()
+
+	var received_val = $('#tbody2').find('tr')[rowIndex].children[0].children[0].value
+
+	if (ordered_val != received_val && status != "ordered"){
+		var error_id = $('#tbody2').find('tr')[rowIndex].children[4].children[0].id;
+		$('#'+ error_id).parent().show();
+		$('#'+ error_id).attr({"required": true});
+	}
+	else{
+		var error_id = $('#tbody2').find('tr')[rowIndex].children[4].children[0].id;
+		$('#'+ error_id).parent().hide();
+		$('#'+ error_id).val('');
+		$('#'+ error_id).attr({"required": false});
+	}
+})
 
 
 
+$('.tshirt_received_quantity').on('change', function(){
+	debugger
+	var x = $(this).find('input').val();
+
+	var rowIndex = $(this).parent('tr').index()
+	var ordered_val = $('#tbody1').find('tr')[rowIndex].children[2].children[0].value;
+
+	if (ordered_val != x){
+		var error_id = $('#tbody2').find('tr')[rowIndex].children[4].children[0].id;
+		$('#'+ error_id).parent().show();
+		$('#'+ error_id).attr({"required": true});
+	}
+	else{
+		var error_id = $('#tbody2').find('tr')[rowIndex].children[4].children[0].id;
+		$('#'+ error_id).parent().hide();
+		$('#'+ error_id).val('');
+		$('#'+ error_id).attr({"required": false});
+	}
+
+
+	var c = $(this).parent('tr').children('td')
+	var total = parseInt(x) + parseInt(c[1].children[0].value)
+	c[2].children[0].value = total;
+	
+	if (total>0){
+		var y = $(this).parent('tr').find('td')[3].children[0].id
+		$("#"+y).attr({"readOnly": false, "max": total})
+	}
+	else{
+		var y = $(this).parent('tr').find('td')[3].children[0].id
+		$("#"+y).attr({"readOnly": true, "max": total})
+	}	
+})
+
+
+$(".tshirt_allotted").each(function(){
+	var a = $(this).parent('tr').children('td')[2].firstChild.value
+	$(this).find('input').attr({"max": a})
+})
+
+
+
+//...loading page again on closing the add new product form...//
+$('#staticBackdrop').on('hidden.bs.modal', function () {
+	window.location.reload();
+})
 
 
 

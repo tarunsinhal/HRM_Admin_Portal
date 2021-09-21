@@ -418,8 +418,7 @@ def load_tshirt_edit_data(request):
 def load_previous_tshirt_history(request):
     recent_id = request.GET.get('id')
     history_id = request.GET.get('history_id')
-    res = list(t_shirt_inventory.history.filter(id=12).order_by('-history_id').values())
-
+    res = list(t_shirt_inventory.history.filter(id=recent_id).order_by('-history_id').values())
     a = 0
     current_data = {}
     for i in res:
@@ -430,12 +429,12 @@ def load_previous_tshirt_history(request):
     try:
         data = {}
         previous_data = res[a+1]
-        print(previous_data)
         for i in current_data:
-            if current_data[i] != previous_data[i]:
-                data[i] = {'current': current_data[i], 'previous': previous_data[i]}
-
-        # data = res[a+1]
-        return JsonResponse({'data': data})
+            if i not in ('history_date', 'history_id', 'history_type'):
+                if current_data[i] != previous_data[i]:
+                    data[i] = {'current': current_data[i], 'previous': previous_data[i]}
+        if data:
+            return JsonResponse({'data': data})
+        return JsonResponse({'data': None})
     except Exception as e:
-        return JsonResponse({'data': ''})
+        return JsonResponse({'data': None})
