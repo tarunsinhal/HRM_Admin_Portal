@@ -194,7 +194,7 @@ class EditRepairServicesForm(AddRepairServicesForm, ModelForm):
 class addTshirtForm(ModelForm):
     class Meta:
         model = t_shirt_inventory
-        fields = ('order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted',
+        fields = ('id', 'order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted',
                 'paid_by', 'additional')
         widgets = {
             'order_date': DateInput(attrs={'type':'date', 'required':True,  'class':"required form-control"}),

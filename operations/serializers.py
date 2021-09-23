@@ -174,6 +174,12 @@ class tshirtSerializer(serializers.ModelSerializer):
         model = t_shirt_inventory
         fields = "__all__"
 
+    def __init__(self, *args, instance=None, data=None, **kwargs):
+        if data:
+            super(tshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
+        super(tshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
+
+
     # def __init__(self, instance=None, data=None, **kwargs):
     #     if data:
     #         data._mutable = True

@@ -81,7 +81,6 @@ def addTshirt(request):
     request.POST['form-0-total_quantity'] = int(request.POST['form-0-previous_stock']) + int(request.POST['form-0-received_quantity'])
     request.POST['form-0-remaining'] = int(request.POST['form-0-total_quantity']) - int(request.POST['form-0-allotted'])
     request.POST['form-0-user_name'] = request.user
-    print(request.user)
     for i in range(1,6):
         form_id = 'form-' + str(i)
         request.POST[form_id+'-user_name'] = request.user
@@ -100,26 +99,50 @@ def addTshirt(request):
         for form in formset:
             form.save()
         return Response({}, status=201)
-    print(formset.errors)
     return Response({'error':formset.errors}, status=201)
     # return render(request, 'operations/inventory.html')
 
+
 @api_view(['POST'])
-def editTshirt(request, pk):
-    tshirt_id = t_shirt_inventory.objects.get(id=pk)
-    serializer = editTshirtSerializer(instance=tshirt_id, data=request.POST)
-    print(serializer)
-    if serializer.is_valid():
-        print(serializer.validated_data)
-        serializer.save()
-        return Response({}, status=201)
-    return Response(serializer.errors, status=400)
+def editTshirt(request):
+    # tshirt_id = t_shirt_inventory.objects.get(id=pk)
+    print(request.GET)
+    request.POST._mutable = True
+    print(request.POST)
+    for i in range(0,6):
+        res = {}
+        i = str(i)
+        res['size'] = request.POST['form-' + i + '-size']
+        res['order_date'] = request.POST['form-0-order_date']
+        if request.POST['form-0-receiving_date']:
+            res['receiving_date'] = request.POST['form-0-receiving_date']
+        else:
+            res['receiving_date'] = None
+        res['previous_stock'] = request.POST['form-' + i + '-previous_stock']
+        res['ordered_quantity'] = request.POST['form-' + i + '-ordered_quantity']
+        res['received_quantity'] = request.POST['form-' + i + '-received_quantity']
+        res['total_quantity'] = request.POST['form-' + i + '-total_quantity']
+        res['allotted'] = request.POST['form-' + i + '-allotted']
+        res['remaining'] = int(res['total_quantity']) - int(res['allotted'])
+        res['paid_by'] = request.POST['form-0-paid_by']
+        res['additional'] = request.POST['form-0-additional']
+        res['user_name'] = request.user.username
+
+        tshirt_id = t_shirt_inventory.objects.get(id=int(request.GET.get(res['size'])))
+        serializer = tshirtSerializer(instance=tshirt_id, data=res)
+
+        if serializer.is_valid():
+            print(serializer.validated_data)
+            serializer.save()
+    return Response({}, status=201)
 
 
 @api_view(['POST'])
-def deleteTshirt(request, pk):
-    tshirt_id = t_shirt_inventory.objects.get(id=pk)
-    tshirt_id.delete()
+def deleteTshirt(request):
+
+    for i in request.GET:
+        tshirt_id = t_shirt_inventory.objects.get(id=int(request.GET.get(i)))
+        tshirt_id.delete()
     return Response({}, status=201)
 
 
@@ -134,17 +157,15 @@ def inventory_recurring_view(request):
     if request.method == 'GET':
         qs = recurringItems.objects.all()
         serializer = ProductSerializer(qs, many=True)
-
     return render(request, 'operations/inventory_recurring.html', {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts})
+
 
 @api_view(['POST'])
 def addProducts(request):
-    # print(request.META.get('HTTP_REFERER', '/'))
     serializer = ProductSerializer(data=request.POST)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 
@@ -160,14 +181,15 @@ def editProducts(request, pk):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
+
 
 @api_view(['POST'])
 def deleteProducts(request, pk):
     product = recurringItems.objects.get(id=pk)
     product.delete()
     return Response({}, status=201)
+
 
 def load_products(request):
     item_id = request.GET.get('Type')
@@ -200,26 +222,20 @@ def inventory_adhoc_view(request):
 
 @api_view(['POST'])
 def addAdhocProducts(request):
-    print(request.POST)
     serializer = AdhocItemSerializer(data=request.POST)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 
 @api_view(['POST'])
 def editAdhocProducts(request, pk):
     product = AdhocItems.objects.get(id=pk)
-    print(request.POST)
     serializer = EditAdhocItemSerializer(instance=product, data=request.POST)
-    print(request.POST)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
-
     return Response(serializer.errors, status=400)
 
 
@@ -259,10 +275,7 @@ def mro_maintenance_vendor(request):
 
 @api_view(['POST'])
 def addVendor(request):
-    # print(request.META.get('HTTP_REFERER', '/'))
-    # print(request.POST)
     serializer = vendorSerializer(data=request.POST)
-
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
@@ -300,10 +313,7 @@ def mro_maintenance_service(request):
 
 @api_view(['POST'])
 def addRepairServices(request):
-    # print(request.META.get('HTTP_REFERER', '/'))
-    # print(request.POST)
     serializer = repairServicesSerializer(data=request.POST)
-
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
@@ -354,9 +364,9 @@ def maintenance_view(request):
 
 @login_required(login_url='/auth/login')
 def tshirt_history(request):
-    print(request.user)
     history = t_shirt_inventory.history.all().order_by('-history_date')
     return render(request, 'operations/tshirt_history.html', {'tshirt_history': history})
+
 
 @login_required(login_url='/auth/login')
 def engagements_on_off_boarding_view(request):
@@ -368,17 +378,17 @@ def engagements_on_off_boarding_view(request):
         serializer = joiningSerializer(rs, many=True)
     return render(request, 'operations/on_off_boarding.html', {'joiningData': serializer.data, 'addJoiningForm': addJoiningForm, 'editJoiningForm': editJoiningForm})
 
+
 @api_view(['POST'])
 def addJoining(request):
     # print(request.META.get('HTTP_REFERER', '/'))
-    # print(request.POST)
     serializer = joiningSerializer(data=request.POST)
 
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
+
 
 @api_view(['POST'])
 def editJoining(request, pk):
@@ -411,7 +421,6 @@ def load_tshirt_edit_data(request):
         res['additional'] = i['additional']
         if i['receiving_date']:
             res['receiving_date'] = i['receiving_date'].strftime('%Y-%m-%d')
-    print(res)
     return JsonResponse({'data':res})
 
 

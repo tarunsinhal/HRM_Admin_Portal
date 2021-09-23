@@ -140,7 +140,7 @@ function editfunction(obj) {
 					}
 				}
 			}
-			document.getElementById('addTshirtForm').action = 'onBoarding/edit' + '?' + $.param(ids);
+			document.getElementById('addTshirtForm').action = 'tshirt_inventory/edit' + '?' + $.param(ids);
 
 			if (data['data']['receiving_date']){
 				document.getElementById('tshirt_receiving_date').children[1].children[0].value = data['data']['receiving_date'];
@@ -148,8 +148,10 @@ function editfunction(obj) {
 			document.getElementById('paid_by').children[1].children[0].value = data['data']['paid_by']
 			document.getElementById('additional').children[1].children[0].value = data['data']['additional']
 			for (i=0; i<table1.length-1; i++){
+				debugger
 				var size = table1[i+1].children[0].children[0].value
 				if (data['data'][size]){
+					table1[i+1].children[1].children[0].value = data['data'][size]['previous_stock']
 					table1[i+1].children[2].children[0].value = data['data'][size]['ordered_quantity']
 
 					table2[i+1].children[1].children[0].readonly = false;
@@ -207,14 +209,12 @@ function editfunction(obj) {
 //...called when delete button is clicked...//
 function deletefunction(obj) {
 	var date = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td')[0].textContent.trim()
-	debugger
 	$.ajax({
 		type: 'GET',
 		url: $("#addTshirtForm").attr("data-edit-url"),
 		data: {'order_date': date},
 		dataType: 'json',
 		success: function(data){
-			debugger
 			var ids = {}
 			for (var key in data['data']){
 				if (data['data'][key] != null){
@@ -223,7 +223,7 @@ function deletefunction(obj) {
 					}
 				}
 			}
-			document.getElementById('deleteTshirtForm').action = 'onBoarding/delete' + '?' + $.param(ids);
+			document.getElementById('deleteTshirtForm').action = 'tshirt_inventory/delete' + '?' + $.param(ids);
 		}
 	})
 }
@@ -427,7 +427,6 @@ $('.tshirt_received_quantity').on('change', function(){
 		$('#'+ error_id).val('');
 		$('#'+ error_id).attr({"required": false});
 	}
-
 
 	var c = $(this).parent('tr').children('td')
 	var total = parseInt(x) + parseInt(c[1].children[0].value)

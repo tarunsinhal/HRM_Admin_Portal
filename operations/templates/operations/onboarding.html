@@ -121,14 +121,12 @@
                                                             </tr>
                                                         </thead>
 
-                                                        
 
                                                         <tbody class="table" id="tbody1">
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.0.size }}</td>
                                                                 <td>{{ addTshirtFormSet.0.previous_stock }}</td>
                                                                 <td class="tshirt_ordered_quantity">{{ addTshirtFormSet.0.ordered_quantity }}</td>
-                                                                
                                                             </tr>          
                                                             <tr>
                                                                 <td class="tshirt-size">{{ addTshirtFormSet.1.size }}</td>
@@ -539,22 +537,22 @@
                                                 {{ data.order_date }}</td>
                                                 <td style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
                                                     {{ data.receiving_date }}</td>
-                                              <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
-                                              <td class="name" width=12% style="display: none;">{{ data.previous_stock }}</td>
-                                              <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
-                                              <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.total_quantity }}</td>
-                                              <td class="name" width=10% style="padding: 2px 5px; text-align:center; display: none;">{{ data.allotted }}</td>
-                                              <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.remaining }}</td>
-                                              <td class="name" style="display: none;">{{ data.paid_by }}</td>
-                                                  <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name" width="15%">{{ data.additional }}</td>                                            
+                                                <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
+                                                <td class="name" width=12% style="display: none;">{{ data.previous_stock }}</td>
+                                                <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
+                                                <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.total_quantity }}</td>
+                                                <td class="name" width=10% style="padding: 2px 5px; text-align:center; display: none;">{{ data.allotted }}</td>
+                                                <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.remaining }}</td>
+                                                <td class="name" style="display: none;">{{ data.paid_by }}</td>
+                                                <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name" width="15%">{{ data.additional }}</td>                                            
                                               <!-- <td class="name" style="display: none;"></td> -->
 
                                               {% ifchanged data.order_date %}
                                               <td rowspan="{{ group.list|length }}" width=10% style="padding: 2px 5px;">
-                                                  <a id='onBoarding/edit/{{ data.id }}' onclick=editfunction(this)
+                                                  <a id='tshirt_inventory/edit/{{ data.id }}' onclick=editfunction(this)
                                                       data-bs-toggle="modal" data-bs-target="#staticBackdrop" title="Edit"
                                                       style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
-                                                  <a id='onBoarding/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
+                                                  <a id='tshirt_inventory/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
                                                       data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
                                                           class="material-icons">&#xE872;</i></a>
                                                         </td>
