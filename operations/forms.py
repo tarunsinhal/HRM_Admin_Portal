@@ -79,7 +79,7 @@ class EditProducts(AddProducts, ModelForm):
 
 class QuantityWidgetAdhoc(MultiWidget):
     def __init__(self, *args, **kwargs):
-        self.widgets = [NumberInput({'type': 'number', 'class': "required form-control"}), Select(choices=quantity_adhoc_choices, attrs={'type': 'select', 'class': "form-select"})]
+        self.widgets = [NumberInput({'type': 'number', 'class': "required form-control chk"}), Select(choices=quantity_adhoc_choices, attrs={'type': 'select', 'class': "form-select chk"})]
         super(QuantityWidgetAdhoc, self).__init__(self.widgets, *args, **kwargs)
 
     def decompress(self, value):
@@ -100,29 +100,24 @@ class QuantityFieldAdhoc(MultiValueField):
 
 
 class AddAdhocItemsForm(ModelForm):
-    add_name = CharField(max_length=50, widget=HiddenInput(
-        attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
-
+    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
     quantity = QuantityFieldAdhoc()
 
     class Meta:
         model = AdhocItems
-        fields = ('type', 'product', 'quantity', 'price', 'amount', 'advance_pay', 'balance_amount',
-                  'paid_by', 'add_name', 'purchase_date', 'received_date', 'additional_info')
-        # ('purchase_date','received_date', 'product', 'quantity', 'price',
-        #           'amount', 'advance_pay','paid_by','add_name', 'additional_info')
-
+        fields = ('type', 'product', 'quantity', 'price', 'amount', 'advance_pay', 'balance_amount', 'paid_by', 'add_name', 'purchase_date', 'received_date', 'additional_info')
+    
         widgets = {
-            'type': Select(attrs={'type': 'text', 'class': "required form-select"}),
-            'product': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            'price': NumberInput(attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
-            'amount': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
-            'advance_pay': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
-            'balance_amount': NumberInput(attrs={'type': 'number', 'class': "required form-control"}),
-            'paid_by': Select(attrs={'type': 'text', 'class': "required form-select"}),
-            'purchase_date': DateInput(attrs={'type': 'date', 'class': "required form-control"}),
-            'received_date': DateInput(attrs={'type': 'date', 'class': "required form-control"}),
-            'additional_info': Textarea(attrs={'type': 'text', 'class': "required form-control"}), }
+            'type': Select(attrs={'type': 'text', 'class': "required form-select chk"}),
+            'product': TextInput(attrs={'type': 'text', 'class': "required form-control chk"}),
+            'price': NumberInput(attrs={'type': 'number', 'class': "required form-control chk", "aria-describedby": "inputGroupPrepend"}),
+            'amount': NumberInput(attrs={'type': 'number', 'class': "required form-control chk"}),
+            'advance_pay': NumberInput(attrs={'type': 'number', 'class': "required form-control chk"}),
+            'balance_amount': NumberInput(attrs={'type': 'number', 'class': "required form-control chk"}),
+            'paid_by': Select(attrs={'type': 'text', 'class': "required form-select chk"}),
+            'purchase_date': DateInput(attrs={'type': 'date', 'class': "required form-control chk"}),
+            'received_date': DateInput(attrs={'type': 'date', 'class': "form-control chk"}),
+            'additional_info': Textarea(attrs={'type': 'text', 'class': "form-control chk"}), }
 
     # def __init__(self, *args, **kwargs):
     #     super().__init__(*args, **kwargs)
@@ -132,16 +127,14 @@ class AddAdhocItemsForm(ModelForm):
 
 
 class EditAdhocItemsForm(AddAdhocItemsForm, ModelForm):
-    # add_name = CharField(max_length=50, widget=HiddenInput(
-    #     attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
+   
+    class Meta(AddAdhocItemsForm.Meta):
+        fields = ['purchase_date', 'received_date', 'product', 'quantity', 'price', 'amount', 'advance_pay', 'balance_amount', 'paid_by', 'add_name', 'additional_info']
 
     def __init__(self, *args, **kwargs):
         super(EditAdhocItemsForm, self).__init__(*args, **kwargs)
         super().__init__()
         self.fields['advance_pay'].widget.attrs['readonly'] = True
-
-    class Meta(AddAdhocItemsForm.Meta):
-        fields = ['purchase_date', 'received_date', 'product', 'quantity', 'price', 'amount', 'advance_pay', 'balance_amount', 'paid_by', 'add_name', 'additional_info']
 
 
 class AddVendorForm(ModelForm):

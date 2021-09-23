@@ -4,7 +4,7 @@ from simple_history.models import HistoricalRecords
 import datetime
 from datetime import datetime
 
-freq_choices = [('Daily', 'Daily'), ('Weekly', 'Weekly'), ('Monthly', 'Monthly'), ('Yearly', 'Yearly')]
+freq_choices = [('Daily', 'Daily'), ('Weekly', 'Weekly'), ('Bimonthly', 'Bimonthly'), ('Monthly', 'Monthly')]
 unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter')]
 paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
 payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
@@ -73,7 +73,7 @@ class recurringItems(models.Model):
 
 
 class AdhocItems(models.Model):
-    type = models.CharField(max_length=50, choices=adhoc_product_types, default="Pantry")
+    type = models.CharField(max_length=50, choices=adhoc_product_types)
     product = models.CharField(max_length=50)
     quantity = models.CharField(max_length=50)
     price = models.PositiveIntegerField(blank=True, null=True)
@@ -130,7 +130,7 @@ class t_shirt_inventory(models.Model):
     remaining = models.PositiveIntegerField()
     paid_by = models.CharField(max_length=50)
     additional = models.CharField(max_length=500, blank=True, null=True)
-    user_name = models.CharField(max_length=50)
+    user_name = models.CharField(max_length=50, default="Admin")
     history = HistoricalRecords()
     
     class Meta:

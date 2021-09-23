@@ -160,7 +160,61 @@ $('.inventory_freqpicker_1,.inventory_freqpicker_2,.inventory_freqpicker_3,.inve
 // 	// dataTableRes(selFrqType).draw();
 // });
 
+$('#id_purchase_date, #id_frequency').on('change', function() {
+	debugger;
+	// var date = this.value;
+	var purDate = $('#id_purchase_date').val()
+	var date = new Date(purDate);
 
+	if ($('#id_frequency').val() == "Daily"){
+		date.setDate(date.getDate() + 1);
+		nextDate = date.toISOString().slice(0,10);
+		$("#id_next_order_date").val(nextDate);
+	}
+	if ($('#id_frequency').val() == "Weekly"){
+		date.setDate(date.getDate() + 7);
+		nextDate = date.toISOString().slice(0,10);
+		$("#id_next_order_date").val(nextDate);
+	}
+	if ($('#id_frequency').val() == "Bimonthly"){
+		date.setDate(date.getDate() + 15);
+		nextDate = date.toISOString().slice(0,10);
+		$("#id_next_order_date").val(nextDate);
+	}
+	if ($('#id_frequency').val() == "Monthly"){
+		date.setDate(date.getDate() + 30);
+		nextDate = date.toISOString().slice(0,10);
+		$("#id_next_order_date").val(nextDate);
+	}
+});
+
+$('#purchase_date, #frequency').on('change', function() {
+	debugger;
+	// var date = this.value;
+	var purDate = $('#purchase_date').val()
+	var date = new Date(purDate);
+
+	if ($('#frequency').val() == "Daily"){
+		date.setDate(date.getDate() + 1);
+		nextDate = date.toISOString().slice(0,10);
+		$("#next_order_date").val(nextDate);
+	}
+	if ($('#frequency').val() == "Weekly"){
+		date.setDate(date.getDate() + 7);
+		nextDate = date.toISOString().slice(0,10);
+		$("#next_order_date").val(nextDate);
+	}
+	if ($('#frequency').val() == "Bimonthly"){
+		date.setDate(date.getDate() + 15);
+		nextDate = date.toISOString().slice(0,10);
+		$("#next_order_date").val(nextDate);
+	}
+	if ($('#frequency').val() == "Monthly"){
+		date.setDate(date.getDate() + 30);
+		nextDate = date.toISOString().slice(0,10);
+		$("#next_order_date").val(nextDate);
+	}
+});
 //.... for getting products list based on selected type in add product form...//
 $("#id_type").change(function () {
 	debugger
@@ -281,7 +335,6 @@ function repeatfunction(obj, obj2) {
 	// y[8].value = x[9].textContent.split(/(\s+)/);
 	z[0].value = x[10].textContent;
 
-
 	for (var i, j = 0; i = mySelect[1].options[j]; j++) {
 		if (obj2 == i.value) {
 			mySelect[1].selectedIndex = j;
@@ -354,7 +407,6 @@ $('#id_product').change(function () {
 });
 
 
-
 $('#id_price, #id_quantity, #id_discount').on('keyup', function () {
 	let mul = $("#id_price").val() * $("#id_quantity").val();
 	// let d = ($("#id_discount").val() == undefined)?0:$("#id_discount").val() ;
@@ -383,6 +435,7 @@ $('#price, #quantity, #discount').on('keyup', function () {
 
 //...called when save and add another button on addProduct form is clicked...//
 $("#saveNew").click(function (e) {
+	debugger;
 	e.preventDefault()
 	var $formId = $(this).parents('form');
 	console.log($formId)
@@ -395,14 +448,27 @@ $("#saveNew").click(function (e) {
 		data: data,
 		dataType: 'json',
 		success: function (data, status) {
+			debugger;
 			if (status === "success") {
 				console.log(data)
 				document.getElementById('addForm').reset()
+
+				$('.required', $formId).each(function () {
+					var $parentTag = $(this).parent();
+					if ($(this).nextAll().length == 2) {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					} else {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					}
+				})
 			}
 			console.log(data)
 			document.getElementById('addForm').reset()
 		},
 		error: function (request, status, error) {
+			debugger;
 			// console.log(request.responseJSON['price'].responseTEXT)
 			if ('non_field_errors' in request.responseJSON) {
 				alert(request.responseJSON['non_field_errors'][0])
@@ -412,21 +478,19 @@ $("#saveNew").click(function (e) {
 				var inputVal = $(this).val();
 
 				var $parentTag = $(this).parent();
-				// if (inputVal == '') {
-				// 	$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
-				// }
-
-
 				if (inputVal == '') {
 					if($parentTag[0].className!=="col-6 error"){
-					$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');}
+					$parentTag.addClass('error').append('<span class="error" id="err" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');}
 				}else{
+					debugger;
 					if($(this).nextAll().length==2){
 						$parentTag.removeClass("error");
-						$(this).nextAll()[1].remove();
+						$(this).siblings('#err').remove();
+						// $(this).nextAll()[1].remove();
 					}else{
 						$parentTag.removeClass("error");
-						$(this).next().remove();
+						$(this).siblings('#err').remove();
+						// $(this).next().remove();
 					}
 				}
 
@@ -544,7 +608,33 @@ $("#id_product").change(function () {
 		},
 		success: function (data) {
 			if (data) {
+				debugger;
 				$("#id_purchase_date").val(data['data'])
+				if ($("#id_purchase_date").val()){
+					var purDate = $('#id_purchase_date').val()
+					var date = new Date(purDate);
+
+					if ($('#id_frequency').val() == "Daily"){
+						date.setDate(date.getDate() + 1);
+						nextDate = date.toISOString().slice(0,10);
+						$("#id_next_order_date").val(nextDate);
+					}
+					if ($('#id_frequency').val() == "Weekly"){
+						date.setDate(date.getDate() + 7);
+						nextDate = date.toISOString().slice(0,10);
+						$("#id_next_order_date").val(nextDate);
+					}
+					if ($('#id_frequency').val() == "Bimonthly"){
+						date.setDate(date.getDate() + 15);
+						nextDate = date.toISOString().slice(0,10);
+						$("#id_next_order_date").val(nextDate);
+					}
+					if ($('#id_frequency').val() == "Monthly"){
+						date.setDate(date.getDate() + 30);
+						nextDate = date.toISOString().slice(0,10);
+						$("#id_next_order_date").val(nextDate);
+					}
+				}	
 			}
 		}
 	});

@@ -58,7 +58,6 @@ class AdhocItemSerializer(serializers.ModelSerializer):
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
             data._mutable = True
-            print(data)
             data['product'] = data['product'].strip().title()
             data['paid_by'] = data['paid_by'].strip().title()
             data['additional_info'] = data['additional_info'].strip().capitalize()
@@ -67,12 +66,21 @@ class AdhocItemSerializer(serializers.ModelSerializer):
             if data['add_name']:
                 data['paid_by'] = data['add_name'].strip().title()
 
-            print('paid_by::', data['paid_by'])
-            # p = User.objects.get(username=data['paid_by'])
-            # data['paid_by'] = p.pk
             data._mutable = False
             super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
+
+    def validate(self, data):
+        if data['received_date']:
+            if data['balance_amount'] != 0:
+                raise serializers.ValidationError({"balance_amount": "Value must be Zero."})
+        if data['quantity']:
+            q = data['quantity'].split()
+            if len(q) != 2:
+                raise serializers.ValidationError({"quantity_1": "This field is required."})
+        if data['amount'] == 0:
+            raise serializers.ValidationError({"amount": "Amount should not be Zero."})  
+        return data
 
     # def to_representation(self, instance):
     #     rep = super(AdhocItemSerializer, self).to_representation(instance)
@@ -82,24 +90,7 @@ class AdhocItemSerializer(serializers.ModelSerializer):
 
 class EditAdhocItemSerializer(AdhocItemSerializer):
     class Meta(AdhocItemSerializer.Meta):
-        fields = ['product', 'quantity', 'price', 'paid_by', 'amount', 'purchase_date',
-                  'additional_info', 'received_date', 'advance_pay']
-
-    def __init__(self, *args, instance=None, data=None, **kwargs):
-        if data:
-            data._mutable = True
-            data['product'] = data['product'].strip().title()
-            data['paid_by'] = data['paid_by'].strip().title()
-            data['add_name'] = data['add_name'].strip().title()
-            data['additional_info'] = data['additional_info'].strip().capitalize()
-            data['quantity'] = data['quantity_0'] + ' ' + data['quantity_1']
-
-            if data['add_name']:
-                data['paid_by'] = data['add_name']
-
-            data._mutable = False
-            super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
-        super(AdhocItemSerializer, self).__init__(instance=instance, data=data, **kwargs)
+        fields = ['purchase_date', 'received_date', 'product', 'quantity', 'price', 'amount', 'advance_pay', 'balance_amount', 'paid_by', 'additional_info']
 
 
 class vendorSerializer(serializers.ModelSerializer):
@@ -209,7 +200,6 @@ class editTshirtSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
-            print(data)
             data._mutable = True
             data['total_quantity'] = int(data['received_quantity']) + int(data['previous_stock'])
             data['remaining'] = int(data['total_quantity']) - int(data['allotted'])

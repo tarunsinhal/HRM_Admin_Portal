@@ -58,6 +58,7 @@ $(document).ready(function () {
 			)
 		}
 	});
+	$('#quantity_0').attr({'min':0});
 });
 $('.inventory_datepicker_1,.inventory_datepicker_2').on('change', function (e) {
 debugger;
@@ -115,28 +116,34 @@ function openTab(evt, tabName) {
 		}
 }
 
-// Amount field calculation in Update Product form
+// Amount field calculation in Add Product form
 $('#price, #quantity_0').on('keyup', function () {
 	debugger;
 	let total = $("#price").val() * $("#quantity_0").val();
 	$("#amount").val(total)
 });
 
-// Balance amount field calculation in Update Product Form 
+// Balance amount field calculation in Add Product Form 
 $('#amount, #advance_pay').on('keyup', function () {
 	debugger;
 	let balance = $("#amount").val() - $("#advance_pay").val();
 	$("#balance_amount").val(balance)
 });
 
-// Used to set balance amount based on received date for edit form
-$('#received_date').change('keyup', function() {
-	debugger;
-	if ($('#received_date').val()){
-		// document.getElementById('#id_balance_amount').setAttribute('max',0)
-		$('#balance_amount').attr({'max':0})
-	}
-});
+// Used to set balance amount based on received date for Add form
+// $('#addBtn').on('click', function() {
+// 	debugger;
+// 	if ($('#received_date').val() == ''){
+// 		$('#balance_amount').removeAttr('max');	
+// 	} else {
+// 		$('#balance_amount').attr({'max':0});
+// 	}
+// 	if($('#balance_amount').val() == 0){
+// 		$('#received_date').prop('required',true);
+// 	} else {
+// 		$('#received_date').prop('required',false);
+// 	}
+// });
 	
 
 // // Get the element with id="defaultOpen" and click on it
@@ -164,10 +171,12 @@ function editfunction(obj) {
 	}
 
 	for (i = 1; i < (y.length-2); i++) {
-		var str = x[i + 1].textContent.split(/(\s+)/);
-		y[i].value = str[0]
+		var str = x[i + 1].textContent;
+		y[i].value = str;
 	}
-
+	var str = x[5].textContent.split(/(\s+)/);
+	y[4].value = str[0];
+	
 	myText[0].value = x[11].textContent;
     document.getElementById('editFormAdhoc').action = obj.id;
 
@@ -192,27 +201,33 @@ function editfunction(obj) {
     });
 }
 
-// Amount field calculation in Add new Product form
+// Amount field calculation in Update new Product form
 $('#id_price, #id_quantity_0').on('keyup', function () {
 	let total = $("#id_price").val() * $("#id_quantity_0").val();
 	$("#id_amount").val(total)
 });
 
-// Balance amount field calculation in Add New Product Form
+// Balance amount field calculation in Update New Product Form
 $('#id_amount, #id_quantity_0').on('keyup', function () {
     debugger;
 	let balance = $("#id_amount").val() - $("#id_advance_pay").val();
 	$("#id_balance_amount").val(balance)
 });
 
-// Used to set balance amount based on received date for add form
-$('#id_received_date').on('change', function() {
-	debugger;
-	if ($('#id_received_date').val()){
-		// document.getElementById('#id_balance_amount').setAttribute('max',0)
-		$('#id_balance_amount').attr({'max':0})
-	}
-});
+// Used to set balance amount based on received date for Update form
+// $('#updateBtn').on('click', function() {
+// 	debugger;
+// 	if ($('#id_received_date').val() == ''){
+// 		$('#id_balance_amount').removeAttr('max');	
+// 	} else {
+// 		$('#id_balance_amount').attr({'max':0});
+// 	}
+// 	if($('#id_balance_amount').val() == 0){
+// 		$('#id_received_date').prop('required',true);
+// 	} else {
+// 		$('#id_received_date').prop('required',false);
+// 	}
+// });
 
 
 //...called when delete button is clicked...//
@@ -250,12 +265,12 @@ $('#paid_by').change(function(){
 
 //...called when save and add another button on addProduct form is clicked...//
 $("#saveNew").click(function (e) {
+	debugger;
 	e.preventDefault()
 	var $formId = $(this).parents('form');
-	console.log($formId)
 	var url = $("#addFormAdhoc").attr("action");
 	var data = $("#addFormAdhoc").serialize();
-
+	
 	$.ajax({
 		type: "POST",
 		url: url,
@@ -265,6 +280,18 @@ $("#saveNew").click(function (e) {
 			if (status === "success") {
 				console.log(data)
 				document.getElementById('addFormAdhoc').reset()
+
+				$('.chk', $formId).each(function () {
+					var $parentTag = $(this).parent();
+					if ($(this).nextAll().length == 2) {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					} else {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					}
+				})
+
 			}
 			console.log(data)
 			document.getElementById('addFormAdhoc').reset()
@@ -274,26 +301,43 @@ $("#saveNew").click(function (e) {
 			if ('non_field_errors' in request.responseJSON) {
 				alert(request.responseJSON['non_field_errors'][0])
 			}
-			$('.required', $formId).each(function () {
-				console.log(request)
-				var inputVal = $(this).val();
+			Inval = request.responseJSON
+			$('.chk', $formId).each(function () {
+				var ipVal = $(this).attr('name');
 
 				var $parentTag = $(this).parent();
-				if (inputVal == '') {
-					if($parentTag[0].className!=="col-6 error"){
-						$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
+				if (Inval[ipVal]) {
+					if ($parentTag[0].className != "col-6 error") {
+						$parentTag.addClass('error').append('<span class="error" id="err" style="color: red; font-size: 15px">' + Inval[ipVal] + '</span>')
 					}
-				}else{
-					if($(this).nextAll().length==2){
+				} else {
+					if ($(this).nextAll().length == 2) {
 						$parentTag.removeClass("error");
-						$(this).nextAll()[1].remove();
-					}else{
+						$(this).siblings('#err').remove();
+					} else {
 						$parentTag.removeClass("error");
-						$(this).next().remove();
+						$(this).siblings('#err').remove();
 					}
 				}
+			});
+			// $('.required', $formId).each(function () {
+			// 	var inputVal = $(this).val();
 
-			})
+			// 	var $parentTag = $(this).parent();
+			// 	if (inputVal == '') {
+			// 		if($parentTag[0].className!=="col-6 error"){
+			// 			$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
+			// 		}
+			// 	}else{
+			// 		if($(this).nextAll().length==2){
+			// 			$parentTag.removeClass("error");
+			// 			$(this).nextAll()[1].remove();
+			// 		}else{
+			// 			$parentTag.removeClass("error");
+			// 			$(this).next().remove();
+			// 		}
+			// 	}
+			// })
 		}
 	});
 });
@@ -321,6 +365,32 @@ debugger;
 			const newProduct = xhr.response
 			myForm.reset()
 			window.location.reload();
+		}
+		else if (xhr.status === 400) {
+			var Inval = xhr.response
+			if (Inval['non_field_errors']) {
+				//alert("Name already exists.");
+				$('#add-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + Inval['non_field_errors'] + '</span></center>')
+			}
+			$('.chk', myForm).each(function () {
+				var ipVal = $(this).attr('name');
+
+				var $parentTag = $(this).parent();
+				if (Inval[ipVal]) {
+					if ($parentTag[0].className != "col-6 error") {
+						$parentTag.addClass('error').append('<span class="error" id="err" style="color: red; font-size: 12px">' + Inval[ipVal] + '</span>')
+					}
+				}
+				else {
+					if ($(this).nextAll().length == 2) {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					} else {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					}
+				}
+			});	
 		}
 
 	}
@@ -352,6 +422,32 @@ debugger;
 		if (xhr.status === 201) {
 			const newProduct = xhr.response
 			window.location.reload();
+		}
+		else if (xhr.status === 400) {
+			var Inval = xhr.response
+			if (Inval['non_field_errors']) {
+				//alert("Name already exists.");
+				$('#add-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + Inval['non_field_errors'] + '</span></center>')
+			}
+			$('.chk', myForm).each(function () {
+				var ipVal = $(this).attr('name');
+
+				var $parentTag = $(this).parent();
+				if (Inval[ipVal]) {
+					if ($parentTag[0].className != "col-6 error") {
+						$parentTag.addClass('error').append('<span class="error" id="err" style="color: red; font-size: 12px">' + Inval[ipVal] + '</span>')
+					}
+				}
+				else {
+					if ($(this).nextAll().length == 2) {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					} else {
+						$parentTag.removeClass("error");
+						$(this).siblings('#err').remove();
+					}
+				}
+			});	
 		}
 
 	}
