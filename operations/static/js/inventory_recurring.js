@@ -364,6 +364,31 @@ function repeatfunction(obj, obj2) {
 								success: function (data) {
 									if (data) {
 										$("#id_purchase_date").val(data['data'])
+										if ($("#id_purchase_date").val()){
+											var purDate = $('#id_purchase_date').val()
+											var date = new Date(purDate);
+						
+											if ($('#id_frequency').val() == "Daily"){
+												date.setDate(date.getDate() + 1);
+												nextDate = date.toISOString().slice(0,10);
+												$("#id_next_order_date").val(nextDate);
+											}
+											if ($('#id_frequency').val() == "Weekly"){
+												date.setDate(date.getDate() + 7);
+												nextDate = date.toISOString().slice(0,10);
+												$("#id_next_order_date").val(nextDate);
+											}
+											if ($('#id_frequency').val() == "Bimonthly"){
+												date.setDate(date.getDate() + 15);
+												nextDate = date.toISOString().slice(0,10);
+												$("#id_next_order_date").val(nextDate);
+											}
+											if ($('#id_frequency').val() == "Monthly"){
+												date.setDate(date.getDate() + 30);
+												nextDate = date.toISOString().slice(0,10);
+												$("#id_next_order_date").val(nextDate);
+											}
+										}	
 									}
 								}
 							});
