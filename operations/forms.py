@@ -1,13 +1,14 @@
 from datetime import date
 from itertools import chain
 from django.db.models import fields
-from django.forms import forms, ModelForm, TextInput, MultiWidget,  CharField, IntegerField, ChoiceField, MultiValueField, RegexField
+from django.forms import forms, ModelForm, TextInput, MultiWidget,  CharField, IntegerField, ChoiceField, MultiValueField, RegexField, ComboField
 from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget, Textarea, RadioSelect
-from .models import FoodInventory, Product_type, recurringItems, t_shirt_inventory, AdhocItems, vendorContactList, repairServices, engagementJoining
+from .models import FoodInventory, Product_type, recurringItems, t_shirt_inventory, AdhocItems, vendorContactList, repairServices, engagementJoining, officeEvents
 from django.contrib.auth.models import User
+from django import forms
+from django.core.validators import FileExtensionValidator
 
 choices = [(True, 'Yes'), (False, 'No')]
-paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
 payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
 unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
 quantity_adhoc_choices = [('Set', 'set'),('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
@@ -37,11 +38,12 @@ class UnitField(MultiValueField):
 
 class AddProducts(ModelForm):
     new_product = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter product"}))
+    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
     unit = UnitField()
 
     class Meta:
         model = recurringItems
-        fields = ( 'frequency', 'type', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'purchase_date', 'next_order_date', 'additional_info')
+        fields = ( 'frequency', 'type', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'add_name', 'purchase_date', 'next_order_date', 'additional_info')
         widgets = {
             'frequency': Select(attrs={'type':'text', 'class':"required form-select"}),
             'type': Select(attrs={'type':'text', 'class':"required form-select"}),
@@ -157,9 +159,10 @@ class EditVendorForm(AddVendorForm, ModelForm):
 
 
 class AddRepairServicesForm(ModelForm):
+    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
     class Meta:
         model = repairServices
-        fields = ('service_date', 'service_of', 'service_type', 'charges', 'vendor_name', 'contact_no', 'paid_by', 'payment_mode', 'next_service_date', 'aditional_info')
+        fields = ('service_date', 'service_of', 'service_type', 'charges', 'vendor_name', 'contact_no', 'paid_by', 'add_name', 'payment_mode', 'next_service_date', 'aditional_info')
         widgets = {
             'service_date': TextInput(attrs={'type': 'date', 'class': "required form-control"}),
             'service_of': Select(attrs={'type': 'text', 'class': "required form-select", 'options_value': ''}),
@@ -167,7 +170,7 @@ class AddRepairServicesForm(ModelForm):
             'charges': NumberInput(attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
             'vendor_name': Select(attrs={'type': 'text', 'class': "required form-select"}),
             'contact_no': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            'paid_by': Select(choices=paid_by_choices, attrs={'type': 'select', 'class': "form-select"}),
+            'paid_by': Select(attrs={'type': 'select', 'class': "required form-select"}),
             'payment_mode': Select(choices=payment_mode_choices, attrs={'type': 'select', 'class': "required form-select"}),
             'next_service_date': TextInput(attrs={'type': 'date', 'class': "required form-control"}),
             'aditional_info': Textarea(attrs={'type': 'textarea', 'class': "form-control"})
@@ -177,7 +180,7 @@ class AddRepairServicesForm(ModelForm):
         super().__init__(*args, **kwargs)
         # self.fields['service_of'].queryset = vendorContactList.objects.values('service').distinct()
         self.fields['service_of'].queryset = vendorContactList.objects.values_list('service', flat=True).distinct()
-
+        self.fields['vendor_name'].queryset = vendorContactList.objects.none()
 
 class EditRepairServicesForm(AddRepairServicesForm, ModelForm):
     class Meta(AddRepairServicesForm.Meta):
@@ -252,3 +255,67 @@ class AddJoiningForm(ModelForm):
 class EditJoiningForm(AddJoiningForm, ModelForm):
     class Meta(AddJoiningForm.Meta):
         exclude = ['details']
+
+
+# import form
+class ImportForm(forms.Form):
+    import_file = forms.FileField(allow_empty_file=False,validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls', 'xlsx'])], label="")
+
+
+class ItemWidget(MultiWidget):
+    def __init__(self, *args, **kwargs):
+        self.widgets = [TextInput(attrs={'type':'text', 'class':"required form-control", 'placeholder':'Enter Item for Activity'}), NumberInput({'type': 'number', 'class': "required form-control", 'placeholder':'Enter Price'})]
+        super(ItemWidget, self).__init__(self.widgets, *args, **kwargs)
+
+    def decompress(self, value):
+        if value:
+            return value.split(' : ')
+        return [None, None]
+
+
+class ItemField(MultiValueField):
+    widget = ItemWidget
+
+    def __init__(self, *args, **kwargs):
+        fields = (CharField(max_length=50), IntegerField())
+        super(ItemField, self).__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        return ' : '.join(data_list)
+
+class FoodWidget(MultiWidget):
+    def __init__(self, *args, **kwargs):
+        self.widgets = [TextInput(attrs={'type':'text', 'class':"required form-control", 'placeholder':'Enter Food Item'}), NumberInput({'type': 'number', 'class': "required form-control", 'placeholder':'Enter Price'})]
+        super(FoodWidget, self).__init__(self.widgets, *args, **kwargs)
+
+    def decompress(self, value):
+        if value:
+            return value.split(' : ')
+        return [None, None]
+
+
+class FoodField(MultiValueField):
+    widget = FoodWidget
+
+    def __init__(self, *args, **kwargs):
+        fields = (CharField(max_length=50), IntegerField())
+        super(FoodField, self).__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        return ' : '.join(data_list)
+
+
+class AddEventForm(ModelForm):
+    new_event = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter event"}))
+    item = ItemField()
+    food = FoodField()
+    
+    class Meta:
+        model = officeEvents
+        fields = ('date', 'event_name', 'new_event', 'activity_planned', 'item', 'food', 'remarks')
+        widgets = {
+            'date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
+            'event_name': Select(attrs={'type':'select', 'class': "required form-select"}),
+            'activity_planned': TextInput(attrs={'type':'text', 'class':"required form-control"}),
+            'remarks': Textarea(attrs={'type':'textarea', 'class':"form-control"})
+        }

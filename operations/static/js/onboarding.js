@@ -7,7 +7,7 @@ $(document).ready(function () {
 		dom: 'Bfrtip',
 		buttons: [{
 			extend: 'csv',
-			text: 'Export as CSV',
+			text: 'Export',
 			exportOptions: {
 				columns: [0, 1, 2, 3, 4, 5]
 			},
@@ -106,6 +106,8 @@ function openTab(evt, tabName) {
 	}		
 }
 
+// // Get the element with id="defaultOpen" and click on it
+$("#defaultOpen").click();
 
 $(".disable_allotted").each(function(){
 	$(this).find('input').attr({"readOnly": true})

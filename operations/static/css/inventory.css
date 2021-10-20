@@ -25,7 +25,8 @@ table{
 
 .tbl-header{
   /* background-color: #007bff; */
-  background-color: #007bff;
+  background-color: #F0F0F0;
+  /* background-color: #EAFBE9; */
   /* margin-bottom: 0px; */
   }
 
@@ -45,18 +46,20 @@ table tr th{
   /* text-align: left; */
   font-weight: 600;
   font-size: 14px;
-  color:white;
+  /* color:white; */
+  color:black;
+  /* color: #1A9239; */
   text-transform: capitalize;
 }
 
 td, th{
   /* padding: 5px; */
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
-  /* text-align: center; */
   vertical-align:middle !important;
   font-weight: 500;
   font-size: 12px;
   padding: 5px 5px;
+  text-align: center;
 }
 
 
@@ -214,6 +217,10 @@ section{
   display: block;
 }
 
+#boardingTable2::-webkit-scrollX {
+  display: block;
+}
+
 /* 
 .details-control:after{
   content: "\002B";
@@ -233,10 +240,10 @@ tr.details td.details-control:after {
 }
 
 
-.buttons-csv{
+/* .buttons-csv{
   float: right;
   background-color: red;
-}
+} */
 
 
 .three-dots:after {

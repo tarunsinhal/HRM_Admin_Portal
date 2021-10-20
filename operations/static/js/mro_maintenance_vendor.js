@@ -7,6 +7,7 @@ $(document).ready(function () {
 		buttons: [{
 			extend: 'csv',
 			text: 'Export as CSV',
+			title: 'Vendor Details',
 			exportOptions: {
 				columns: [0, 1, 2, 3, 4, 5]
 			},
@@ -82,7 +83,6 @@ function deletefunction(obj) {
 
 //...called when save and add another button on addProduct form is clicked...//
 $("#saveNew").click(function (e) {
-	debugger;
 	e.preventDefault()
 	var $formId = $(this).parents('form');
 	console.log($formId)
@@ -116,8 +116,8 @@ $("#saveNew").click(function (e) {
 		},
 		error: function (request, status, error) {
 			if (request.responseJSON['non_field_errors']){
-				// alert(request.responseJSON['non_field_errors'])
-				$('#add-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + request.responseJSON['non_field_errors'] + '</span></center>')
+				alert(request.responseJSON['non_field_errors'])
+				// $('#add-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + request.responseJSON['non_field_errors'] + '</span></center>')
 			}
 			// $('.required', $formId).each(function () {
 			// 	console.log(request)
@@ -187,8 +187,8 @@ function handleaddnewProduct(event) {
 		else if (xhr.status === 400) {
 			var Inval = xhr.response
 			if (Inval['non_field_errors']) {
-				//alert("Name already exists.");
-				$('#add-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + Inval['non_field_errors'] + '</span></center>')
+				alert("Name already exists.");
+				// $('#add-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + Inval['non_field_errors'] + '</span></center>')
 			}
 			$('.chk', myForm).each(function () {
 				var ipVal = $(this).attr('name');
@@ -196,7 +196,7 @@ function handleaddnewProduct(event) {
 				var $parentTag = $(this).parent();
 				if (Inval[ipVal]) {
 					if ($parentTag[0].className != "col-6 error") {
-						$parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 12px">' + Inval[ipVal] + '</span>')
+						$parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 13px">' + Inval[ipVal] + '</span>')
 					}
 				}
 				else {
@@ -243,8 +243,8 @@ function handleEditProduct(event) {
 		else if (xhr.status === 400) {
 			var Inval = xhr.response
 			if (Inval['non_field_errors']) {
-				// alert("Name already exists.");
-				$('#edit-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + Inval['non_field_errors'] + '</span></center>')
+				alert("Name already exists.");
+				// $('#edit-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + Inval['non_field_errors'] + '</span></center>')
 		    }
 		    $('.chk', myForm).each(function () {
 				var ipVal = $(this).attr('name');
@@ -252,7 +252,7 @@ function handleEditProduct(event) {
 				var $parentTag = $(this).parent();
 				if (Inval[ipVal]) {
 					if ($parentTag[0].className != "col-6 error") {
-						$parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 12px">' + Inval[ipVal] + '</span>')
+						$parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 13px">' + Inval[ipVal] + '</span>')
 					}
 				}
 				else {
@@ -303,6 +303,42 @@ function handleDeleteProduct(event) {
 
 const deleteForm = document.getElementById('deleteForm')
 deleteForm.addEventListener("submit", handleDeleteProduct)
+
+
+//...function called when import form is submitted...//
+function handleImportVendor(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else if (xhr.status === 400){
+			debugger;
+			// alert('Wrong Formate, Try again.')
+			var $parentTag = $('#id_import_file').parent();
+			if ($parentTag[0].className != "form-group mb-0 files error") {
+				$parentTag.addClass('error').prepend('<span class="error" style="color: red; font-size=12px;">Wrong Format, Try again !!!</span>');
+			}				
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const importVendorForm = document.getElementById('importVendorForm')
+importVendorForm.addEventListener("submit", handleImportVendor)
 
 
 //...loading page again on closing the add new product form...//

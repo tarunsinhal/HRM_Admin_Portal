@@ -48,7 +48,7 @@
                         </button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addFormAdhoc" data-users-url="{% url 'operations:ajax_load_users' %}">
+                    <form method="POST" action="{% url 'operations:add_adhoc_products' %}" id="addFormAdhoc" data-users-url="{% url 'operations:ajax_load_adhoc_users' %}">
 
                         {% csrf_token %}
 
@@ -95,7 +95,7 @@
                                         <button type="submit" class="btn btn-secondary" name="saveButton"
                                                 value="Save and Add Another" id="saveNew">Save and Add Another
                                         </button>
-                                        <button type="submit" name="addButton" value="Add"
+                                        <button type="submit" name="addButton" value="Add" id="addBtn"
                                                 class="btn btn-primary">Add
                                         </button>
                                     </div>
@@ -156,7 +156,7 @@
                                         </button>
 
 
-                                        <input type="submit" value="Update" class="btn btn-primary">
+                                        <input type="submit" value="Update" class="btn btn-primary" id="updateBtn">
                                     </div>
                                 </div>
                             </div>
@@ -188,7 +188,37 @@
                             </div>
                         </div>
                     </form>
-
+                     
+                    <form method="POST" enctype="multipart/form-data" id="importAdhocForm" action="{% url 'operations:import_adhoc' %}">
+                        {% csrf_token %}
+                        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content"
+                                    style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Import</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {%for field in importForm%}
+                                            {%if field.field.widget.input_type == 'file'%}
+                                                <div class="form-group mb-0 files">
+                                                    {{field}}
+                                                </div>
+                                            {%else%}
+                                                {{field}}
+                                            {%endif%}
+                                        {%endfor%}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-secondary" id="submitBtn">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
 
                 </div>
             </div>
@@ -213,6 +243,11 @@
                            aria-controls="Non-Pantry"
                            onclick="openTab(event, 2)">
                     <label for="tab2">Non-Pantry</label>
+                    <!-- Import Button -->
+                    <!-- Import Button -->
+                    <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                        <span>Import as CSV</span>
+                    </button>
 
                     <div class="tab-panels">
                         {% for product_type in product_list %}

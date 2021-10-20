@@ -174,7 +174,36 @@
                         </div>
                     </form>
 
-
+                    <form method="POST" enctype="multipart/form-data" id="importVendorForm" action="{% url 'operations:import_vendor' %}">
+                        {% csrf_token %}
+                        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content"
+                                    style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Import</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {%for field in importForm%}
+                                            {%if field.field.widget.input_type == 'file'%}
+                                                <div class="form-group mb-0 files">
+                                                    {{field}}
+                                                </div>
+                                            {%else%}
+                                                {{field}}
+                                            {%endif%}
+                                        {%endfor%}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-secondary" id="submitBtn">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
@@ -190,6 +219,10 @@
                     <h2 class="font-weight-bold" style="color: black; text-align: center; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: 30px;">Vendor Contact List</h2>
 
                     <div class="tab-panels">
+                        <!-- Import Button -->
+                    <button data-bs-toggle="modal" data-bs-target="#importModal" style="float: left;margin: 5px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                        <span>Import as CSV</span>
+                    </button>
                         {% for vendor_details in vendor_list %}
                         <section class="tab-panel" id="{{ vendor_details.grouper }}">
                             <table class="productTable1">

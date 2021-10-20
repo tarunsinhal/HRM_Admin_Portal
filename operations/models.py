@@ -6,7 +6,6 @@ from datetime import datetime
 
 freq_choices = [('Daily', 'Daily'), ('Weekly', 'Weekly'), ('Bimonthly', 'Bimonthly'), ('Monthly', 'Monthly')]
 unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter')]
-paid_by_choices = [('shreya', 'Shreya'), ('pankaj', 'Pankaj'), ('company', 'Company'), ('others', 'Others')]
 payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
 t_shirt_sizes = [('XS', 'Extra-Small'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'), ('XL', 'Extra-Large'), ('XXL', 'XXL')]
 adhoc_product_types = [('1', 'Pantry'), ('2', 'Non-Pantry')]
@@ -52,7 +51,7 @@ class recurringItems(models.Model):
     price = models.PositiveIntegerField()
     discount = models.PositiveIntegerField(default=0)
     amount = models.PositiveIntegerField(null=True)
-    paid_by = models.CharField(max_length=50, choices=paid_by_choices)
+    paid_by = models.CharField(max_length=50)
     purchase_date = models.DateField()
     next_order_date = models.DateField(null=True, blank=True)
     history = HistoricalRecords()
@@ -71,9 +70,15 @@ class recurringItems(models.Model):
     def __str__(self):
         return str(self.product)
 
+class Adhoc_types(models.Model):
+    type_name = models.CharField(max_length=50)
+    type_id = models.IntegerField(primary_key=True)
+
+    def __str__(self):
+        return str(self.type_name)
 
 class AdhocItems(models.Model):
-    type = models.CharField(max_length=50, choices=adhoc_product_types)
+    type = models.ForeignKey(Adhoc_types, on_delete=models.CASCADE)
     product = models.CharField(max_length=50)
     quantity = models.CharField(max_length=50)
     price = models.PositiveIntegerField(blank=True, null=True)
@@ -83,7 +88,7 @@ class AdhocItems(models.Model):
     advance_pay = models.PositiveIntegerField(blank=True, default=0)
     balance_amount = models.PositiveIntegerField(blank=True, default=0)
     received_date = models.DateField(blank=True, null=True)
-    additional_info = models.CharField(max_length=100, blank=True)
+    additional_info = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
         return str(self.product)
@@ -108,7 +113,7 @@ class repairServices(models.Model):
     charges = models.PositiveIntegerField()
     vendor_name = models.CharField(max_length=50)
     contact_no = models.CharField(max_length=10)
-    paid_by = models.CharField(max_length=50, choices=paid_by_choices)
+    paid_by = models.CharField(max_length=50)
     payment_mode = models.CharField(max_length=50, choices=payment_mode_choices)
     next_service_date = models.DateField()
     aditional_info = models.CharField(max_length=200, blank=True)
@@ -179,3 +184,12 @@ class engagementJoining(models.Model):
 
     def __str__(self):
         return str(self.employee_name)
+
+
+class officeEvents(models.Model):
+    date = models.DateField()
+    event_name = models.CharField(max_length=100)
+    activity_planned = models.CharField(max_length=100)
+    item = models.CharField(max_length=100)
+    food = models.CharField(max_length=100)
+    remarks = models.CharField(max_length=200, blank=True)

@@ -8,18 +8,24 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from rest_framework import serializers
 from rest_framework.serializers import Serializer
-from .models import FoodInventory, Product_type, recurringItems, AdhocItems, t_shirt_inventory, vendorContactList, repairServices, engagementJoining
+from .models import FoodInventory, Item_types, Product_type, recurringItems, AdhocItems, t_shirt_inventory, vendorContactList, repairServices, engagementJoining, officeEvents
 from django.http import JsonResponse
 from .serializers import ProductSerializer, editProductSerializer, tshirtSerializer, editTshirtSerializer, AdhocItemSerializer, EditAdhocItemSerializer, vendorSerializer, editVendorSerializer, repairServicesSerializer, editRepairServicesSerializer, joiningSerializer, editJoiningSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import requests
-from .forms import AddProducts, EditProducts, addTshirtForm, editTshirtForm, AddAdhocItemsForm, EditAdhocItemsForm, AddVendorForm, EditVendorForm, AddRepairServicesForm, EditRepairServicesForm, AddJoiningForm, EditJoiningForm
+from .forms import AddProducts, EditProducts, addTshirtForm, editTshirtForm, AddAdhocItemsForm, EditAdhocItemsForm, AddVendorForm, EditVendorForm, AddRepairServicesForm, EditRepairServicesForm, AddJoiningForm, EditJoiningForm, ImportForm, AddEventForm
 from django.urls import reverse
 from home.models import notifications
 from django.contrib.auth.models import User
 from django.forms import formset_factory, modelformset_factory
 from itertools import chain
+
+from django.contrib import messages
+from django.views import View
+from .resources import RecurringResource, AdhocResource, JoiningResource, VendorResource
+import pandas as pd
+from tablib import Dataset
 
 
 # from .utils import specific_user_access, test_func
@@ -151,13 +157,14 @@ def deleteTshirt(request):
 def inventory_recurring_view(request):
     addProductsForm = AddProducts()
     editProducts = EditProducts(auto_id=True)
+    importForm = ImportForm()
     # callApi = requests.get('http://127.0.0.1:8000/operations/food/getProducts')
     # results = callApi.json()
 
     if request.method == 'GET':
         qs = recurringItems.objects.all()
         serializer = ProductSerializer(qs, many=True)
-    return render(request, 'operations/inventory_recurring.html', {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts})
+    return render(request, 'operations/inventory_recurring.html', {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts, 'importForm': importForm})
 
 
 @api_view(['POST'])
@@ -206,18 +213,67 @@ def load_purchase_date(request):
     except:
         return JsonResponse({'data': ''})
 
+# import-export function code 
+class ImportrecurringView(View):
+    context = {}
+
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
+        return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        print(data_set)
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = RecurringResource()
+
+            if extension == 'csv' or extension == 'xlsx' or extension == 'xls':
+                data = data_set.load(file.read().decode('utf-8'), format=extension)
+                for x in range(len(data)):
+                    type_id = Item_types.objects.filter(type_name=data['type'][x]).values('type_id')[0]['type_id']
+                    try:
+                        p = Product_type.objects.get(product_type_id=type_id, product_name=data['product'][x])
+                        print('p', p)
+                    except:
+                        p = Product_type.objects.create(product_type_id=type_id, product_name=data['product'][x])
+                        print((p))
+                        p.save()
+                # print('data :',data['type'][0])
+                # print(len(data))
+            else:
+                data = data_set.load(file.read(), format=extension)
+                print(data)
+            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
+            if result.has_validation_errors() or result.has_errors():
+                print("error", result.invalid_rows)
+                self.context['result'] = result
+            else:
+                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
+                self.context['result'] = None
+                return JsonResponse({}, status=201)
+            print(result)
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({},status=400)
+        return JsonResponse({}, status=201)
+
 
 # @specific_user_access(test_func)
 @login_required(login_url='/auth/login')
 def inventory_adhoc_view(request):
     addAdhocProductsForm = AddAdhocItemsForm(auto_id=True)
     editAdhocProductsForm = EditAdhocItemsForm()
+    importForm = ImportForm()
 
     if request.method == 'GET':
         qs = AdhocItems.objects.all()
         serializer = AdhocItemSerializer(qs, many=True)
 
-    return render(request, 'operations/inventory_adhoc.html', {'products': serializer.data, 'addAdhocProductsForm': addAdhocProductsForm, 'editAdhocProductsForm': editAdhocProductsForm})
+    return render(request, 'operations/inventory_adhoc.html', {'products': serializer.data, 'addAdhocProductsForm': addAdhocProductsForm, 'editAdhocProductsForm': editAdhocProductsForm, 'importForm': importForm})
 
 
 @api_view(['POST'])
@@ -245,8 +301,52 @@ def deleteAdhocProducts(request, pk):
     product.delete()
     return Response({}, status=201)
 
+# import-export function code 
+class ImportadhocView(View):
+    context = {}
 
-def load_users(request):
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
+        return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = AdhocResource()
+
+            if extension == 'csv':
+                data = data_set.load(file.read().decode('utf-8'), format=extension)
+            else:
+                data = data_set.load(file.read(), format=extension)
+            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
+            if result.has_validation_errors() or result.has_errors():
+                print("error", result.invalid_rows)
+                self.context['result'] = result
+            else:
+                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
+                self.context['result'] = None
+                return JsonResponse({}, status=201)
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({},status=400)
+        return JsonResponse({}, status=201)
+
+
+def load_recurring_users(request):
+    users = User.objects.all().values_list('username', flat=True)
+    paid_by_names = recurringItems.objects.all().values_list('paid_by', flat=True)
+    distinct_values = set(chain(users, paid_by_names))
+    PAID_BY = []
+    for value in distinct_values:
+        PAID_BY.append(value)
+    PAID_BY.append("Other")
+    return render(request, 'operations/paid_by.html', { 'paid_by': PAID_BY})
+
+def load_adhoc_users(request):
     users = User.objects.all().values_list('username', flat=True)
     paid_by_names = AdhocItems.objects.all().values_list('paid_by', flat=True)
     distinct_values = set(chain(users, paid_by_names))
@@ -254,7 +354,17 @@ def load_users(request):
     for value in distinct_values:
         PAID_BY.append(value)
     PAID_BY.append("Other")
-    return render(request, 'operations/adhoc_paid_by.html', { 'paid_by': PAID_BY})
+    return render(request, 'operations/paid_by.html', { 'paid_by': PAID_BY})
+
+def load_mro_users(request):
+    users = User.objects.all().values_list('username', flat=True)
+    paid_by_names = repairServices.objects.all().values_list('paid_by', flat=True)
+    distinct_values = set(chain(users, paid_by_names))
+    PAID_BY = []
+    for value in distinct_values:
+        PAID_BY.append(value)
+    PAID_BY.append("Other")
+    return render(request, 'operations/paid_by.html', { 'paid_by': PAID_BY})
 
 
 # def load_paid_by(request):
@@ -266,12 +376,13 @@ def load_users(request):
 def mro_maintenance_vendor(request):
     addVendorForm = AddVendorForm()
     editVendorForm = EditVendorForm(auto_id=True)
+    importForm = ImportForm()
     
     if request.method == 'GET':
         vs = vendorContactList.objects.all()
         serializer = vendorSerializer(vs, many=True)
     
-    return render(request, 'operations/mro_maintenance_vendor.html', {'vendor':serializer.data, 'addVendorForm': addVendorForm, 'editVendorForm': editVendorForm})
+    return render(request, 'operations/mro_maintenance_vendor.html', {'vendor':serializer.data, 'addVendorForm': addVendorForm, 'editVendorForm': editVendorForm, 'importForm': importForm})
 
 @api_view(['POST'])
 def addVendor(request):
@@ -298,17 +409,52 @@ def deleteVendor(request, pk):
     vendor.delete()
     return Response({}, status=201)
 
+# import-export function code 
+class ImportvendorView(View):
+    context = {}
+
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
+        return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = VendorResource()
+
+            if extension == 'csv':
+                data = data_set.load(file.read().decode('utf-8'), format=extension)
+            else:
+                data = data_set.load(file.read(), format=extension)
+            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
+            if result.has_validation_errors() or result.has_errors():
+                print("error", result.invalid_rows)
+                self.context['result'] = result
+            else:
+                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
+                self.context['result'] = None
+                return JsonResponse({}, status=201)
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({},status=400)
+        return JsonResponse({}, status=201)
+
 
 @login_required(login_url='/auth/login')
 def mro_maintenance_service(request):
     addRepairServicesForm = AddRepairServicesForm()
     editRepairServicesForm = EditRepairServicesForm(auto_id=True)
+    importForm = ImportForm()
     
     if request.method == 'GET':
         rs = repairServices.objects.all()
         serializer = repairServicesSerializer(rs, many=True)
 
-    return render(request, 'operations/mro_maintenance_service.html', {'service': serializer.data, 'addRepairServicesForm': addRepairServicesForm, 'editRepairServicesForm': editRepairServicesForm})
+    return render(request, 'operations/mro_maintenance_service.html', {'service': serializer.data, 'addRepairServicesForm': addRepairServicesForm, 'editRepairServicesForm': editRepairServicesForm, 'importForm': importForm})
 
 
 @api_view(['POST'])
@@ -353,13 +499,39 @@ def load_vendor_no(request):
         return JsonResponse({'contact_no': ''})
 
 
-# def users(request):
-#     if request.method=="GET":
-#         users= User.objects.all().values('user__username')
-#         return
+# import-export function code 
+class ImportserviceView(View):
+    context = {}
 
-def maintenance_view(request):
-    return render(request, 'operations/maintenance.html')
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
+        return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = JoiningResource()
+
+            if extension == 'csv':
+                data = data_set.load(file.read().decode('utf-8'), format=extension)
+            else:
+                data = data_set.load(file.read(), format=extension)
+            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
+            if result.has_validation_errors() or result.has_errors():
+                print("error", result.invalid_rows)
+                self.context['result'] = result
+            else:
+                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
+                self.context['result'] = None
+                return JsonResponse({}, status=201)
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({},status=400)
+        return JsonResponse({}, status=201)
 
 
 @login_required(login_url='/auth/login')
@@ -372,11 +544,12 @@ def tshirt_history(request):
 def engagements_on_off_boarding_view(request):
     addJoiningForm = AddJoiningForm()
     editJoiningForm = EditJoiningForm(auto_id=True)
+    importForm = ImportForm()
     
     if request.method == 'GET':
-        rs = engagementJoining.objects.all()
+        rs = engagementJoining.objects.all().order_by('-details_id')
         serializer = joiningSerializer(rs, many=True)
-    return render(request, 'operations/on_off_boarding.html', {'joiningData': serializer.data, 'addJoiningForm': addJoiningForm, 'editJoiningForm': editJoiningForm})
+    return render(request, 'operations/boarding.html', {'joiningData': serializer.data, 'addJoiningForm': addJoiningForm, 'editJoiningForm': editJoiningForm, 'importForm': importForm})
 
 
 @api_view(['POST'])
@@ -406,6 +579,40 @@ def deleteJoining(request, pk):
     employee.delete()
     return Response({}, status=201)
 
+# import-export function code 
+class ImportJoiningView(View):
+    context = {}
+
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
+        return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = JoiningResource()
+
+            if extension == 'csv':
+                data = data_set.load(file.read().decode('utf-8'), format=extension)
+            else:
+                data = data_set.load(file.read(), format=extension)
+            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
+            if result.has_validation_errors() or result.has_errors():
+                print("error", result.invalid_rows)
+                self.context['result'] = result
+            else:
+                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
+                self.context['result'] = None
+                return JsonResponse({}, status=201)
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({},status=400)
+        return JsonResponse({}, status=201)
+        
 
 def load_tshirt_edit_data(request):
     orderDate = request.GET.get('order_date')
@@ -447,3 +654,11 @@ def load_previous_tshirt_history(request):
         return JsonResponse({'data': None})
     except Exception as e:
         return JsonResponse({'data': None})
+
+
+@login_required(login_url='/auth/login')
+def office_events_view(request):
+    addEventForm = AddEventForm()
+    return render(request, 'operations/office_events.html',{'addEventForm': addEventForm})
+
+

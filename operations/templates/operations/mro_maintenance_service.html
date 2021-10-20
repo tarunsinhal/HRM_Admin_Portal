@@ -48,7 +48,7 @@
                             +</button>
                     </div>
 
-                    <form method="POST" action="{% url 'operations:addRepairServices' %}" data-vendor-url="{% url 'operations:ajax_load_vendor' %}" data-vendor-no-url="{% url 'operations:ajax_load_vendor_no' %}" id="addForm" class="needs-validation">
+                    <form method="POST" action="{% url 'operations:addRepairServices' %}" data-vendor-url="{% url 'operations:ajax_load_vendor' %}" data-vendor-no-url="{% url 'operations:ajax_load_vendor_no' %}" data-users-url="{% url 'operations:ajax_load_mro_users' %}" id="addForm" class="needs-validation">
                         {% csrf_token %}
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"

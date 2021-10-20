@@ -9,6 +9,7 @@ $(document).ready(function () {
 		buttons: [{
 			extend: 'csv',
 			text: 'Export',
+			title: 'Adhoc Inventory',
 			exportOptions: {
 				columns: [ 2, 3, 4, 5, 6, 7, 8, 9, 10,11]
 			},
@@ -278,7 +279,6 @@ $("#saveNew").click(function (e) {
 		dataType: 'json',
 		success: function (data, status) {
 			if (status === "success") {
-				console.log(data)
 				document.getElementById('addFormAdhoc').reset()
 
 				$('.chk', $formId).each(function () {
@@ -293,8 +293,19 @@ $("#saveNew").click(function (e) {
 				})
 
 			}
-			console.log(data)
 			document.getElementById('addFormAdhoc').reset()
+			var url = $("#addFormAdhoc").attr("data-users-url");
+
+			$.ajax({                       // initialize an AJAX request
+				type: "GET",
+				url: url,
+				dataType: "html",
+				success: function (response) {
+				debugger;
+					$("#paid_by").html(response);
+				}
+			});
+			$("#add_name").parent().parent().css("display", "none");
 		},
 		error: function (request, status, error) {
 			// console.log(request.responseJSON['price'].responseTEXT)
@@ -487,6 +498,41 @@ function handleDeleteProduct(event) {
 
 const deleteForm = document.getElementById('deleteForm')
 deleteForm.addEventListener("submit", handleDeleteProduct)
+
+//...function called when import form is submitted...//
+function handleImportAdhoc(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else if (xhr.status === 400){
+			debugger;
+			// alert('Wrong Formate, Try again.')
+			var $parentTag = $('#id_import_file').parent();
+			if ($parentTag[0].className != "form-group mb-0 files error") {
+				$parentTag.addClass('error').prepend('<span class="error" style="color: red; font-size=12px;">Wrong Format, Try again !!!</span>');
+			}				
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const importAdhocForm = document.getElementById('importAdhocForm')
+importAdhocForm.addEventListener("submit", handleImportAdhoc)
 
 
 //...loading page again on closing the add new product form...//

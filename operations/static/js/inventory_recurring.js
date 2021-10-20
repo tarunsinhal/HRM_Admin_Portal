@@ -75,6 +75,7 @@ $(document).ready(function () {
 		buttons: [{
 			extend: 'csv',
 			text: 'Export',
+			title: 'Recurring Inventory',
 			exportOptions: {
 				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 			},
@@ -151,6 +152,20 @@ $('.inventory_freqpicker_1,.inventory_freqpicker_2,.inventory_freqpicker_3,.inve
 	dataTableRes.draw();
 });
 
+// load Paid_by dropdown
+$(document).ready(function () {
+	var url = $("#addForm").attr("data-users-url");
+
+	$.ajax({                       // initialize an AJAX request
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+		debugger;
+			$("#id_paid_by").html(response);
+        }
+    });
+});
 
 
 //...function for switching between radio buttons...//
@@ -230,7 +245,6 @@ $("#id_type").change(function () {
 			$("#id_product").html(data);
 		}
 	});
-
 });
 
 
@@ -291,15 +305,60 @@ function editfunction(obj, obj2) {
 		}
 	}
 
-	var paid_by = x[7].textContent;
-	for (var i, j = 0; i = mySelect[3].options[j]; j++) {
-		if (paid_by == i.value) {
-			mySelect[3].selectedIndex = j;
-			break;
-		}
-	}
+	var url = $("#addForm").attr("data-users-url");
+	debugger;  
+	$.ajax({                     // initialize an AJAX request
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+			debugger;
+			$("#paid_by").html(response);
+
+			var paid_by = x[7].textContent.split(/(\s+)/)[0]
+			for (var i, j = 0; i = mySelect[3].options[j]; j++) {
+				if (paid_by == i.value) {
+					mySelect[3].selectedIndex = j;
+					break;
+				}
+			}
+        }
+    });
+	// var paid_by = x[7].textContent;
+	// for (var i, j = 0; i = mySelect[3].options[j]; j++) {
+	// 	if (paid_by == i.value) {
+	// 		mySelect[3].selectedIndex = j;
+	// 		break;
+	// 	}
+	// }
 
 }
+
+// Add Name field pops up when Other is selected in Add new Product form
+$('#id_paid_by').change(function(){
+	if ($(this).val() == "Other"){
+		debugger;
+		$("#id_add_name").prop({ 'type': 'text', 'required': true });
+		$("#id_add_name").parent().parent().css("display", "block");
+	}
+	else {
+		$("#id_add_name").prop({ 'required': false });
+		$("#id_add_name").parent().parent().css("display", "none");
+	}
+});
+
+// Add Name field pops up when Other is selected in Update Product form
+$('#paid_by').change(function(){
+    if ($(this).val() == "Other"){
+    	debugger;
+    	$("#add_name").prop({ 'type': 'text', 'required': true });
+		$("#add_name").parent().parent().css("display", "block");
+     }
+     else {
+		$("#add_name").prop({ 'required': false });
+		$("#add_name").parent().parent().css("display", "none");
+	}
+});
 
 
 //...called when delete button is clicked...//
@@ -449,21 +508,11 @@ $('#price, #quantity, #discount').on('keyup', function () {
 });
 
 
-$('#price, #quantity, #discount').on('keyup', function () {
-	let mul = $("#price").val() * $("#quantity").val();
-	// let d = ($("#id_discount").val() == undefined)?0:$("#id_discount").val() ;
-	let d = $("#discount").val();
-	let totalVal = mul - d;
-	$("#amount").val(totalVal)
-});
-
-
 //...called when save and add another button on addProduct form is clicked...//
 $("#saveNew").click(function (e) {
 	debugger;
 	e.preventDefault()
 	var $formId = $(this).parents('form');
-	console.log($formId)
 	var url = $("#addForm").attr("action");
 	var data = $("#addForm").serialize();
 
@@ -475,7 +524,6 @@ $("#saveNew").click(function (e) {
 		success: function (data, status) {
 			debugger;
 			if (status === "success") {
-				console.log(data)
 				document.getElementById('addForm').reset()
 
 				$('.required', $formId).each(function () {
@@ -489,8 +537,19 @@ $("#saveNew").click(function (e) {
 					}
 				})
 			}
-			console.log(data)
 			document.getElementById('addForm').reset()
+			var url = $("#addForm").attr("data-users-url");
+
+			$.ajax({                       // initialize an AJAX request
+				type: "GET",
+				url: url,
+				dataType: "html",
+				success: function (response) {
+				debugger;
+					$("#id_paid_by").html(response);
+				}
+			});
+			$("#id_add_name").parent().parent().css("display", "none");
 		},
 		error: function (request, status, error) {
 			debugger;
@@ -620,6 +679,41 @@ function handleDeleteProduct(event) {
 const deleteForm = document.getElementById('deleteForm')
 deleteForm.addEventListener("submit", handleDeleteProduct)
 
+//...function called when import form is submitted...//
+function handleImportRecurring(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else if (xhr.status === 400){
+			debugger;
+			// alert('Wrong Formate, Try again.')
+			var $parentTag = $('#id_import_file').parent();
+			if ($parentTag[0].className != "form-group mb-0 files error") {
+				$parentTag.addClass('error').prepend('<span class="error" style="color: red; font-size=12px;">Wrong Format, Try again !!!</span>');
+			}				
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const importJoiningForm = document.getElementById('importRecurringForm')
+importRecurringForm.addEventListener("submit", handleImportRecurring)
+
 
 //...called for loading the purchase date in addProduct form...//
 $("#id_product").change(function () {
@@ -673,8 +767,6 @@ $('#staticBackdrop').on('hidden.bs.modal', function () {
 	window.location.reload();
 	
 })
-
-
 
 
 //...function for switching between different tabs...//

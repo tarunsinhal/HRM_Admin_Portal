@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import FoodInventory, Item_types, Product_type, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining
+from .models import FoodInventory, Item_types, Product_type, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining, officeEvents
 from django.contrib.auth.models import User
 
 
@@ -18,8 +18,12 @@ class ProductSerializer(serializers.ModelSerializer):
         if data:
             data._mutable = True
             data['unit'] = data['unit_0'] + ' ' + data['unit_1']
+            data['paid_by'] = data['paid_by'].strip().title()
             data['new_product'] = data['new_product'].strip().title()
             data['additional_info'] = data['additional_info'].strip().capitalize()
+            data['add_name'] = data['add_name'].strip().title()
+            if data['add_name']:
+                data['paid_by'] = data['add_name'].strip().title()
             if data['new_product']:
                 try:
                     p = Product_type.objects.get(product_type_id=data['type'], product_name=data['new_product'])
@@ -82,10 +86,11 @@ class AdhocItemSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"amount": "Amount should not be Zero."})  
         return data
 
-    # def to_representation(self, instance):
-    #     rep = super(AdhocItemSerializer, self).to_representation(instance)
-    #     rep['paid_by'] = instance.paid_by
-    #     return rep
+    def validate(self, data):
+        if data['purchase_date'] and data['received_date'] :
+            if data['purchase_date'] > data['received_date']:
+                raise serializers.ValidationError("Received date should be greater than purchase date!!!")
+        return data
 
 
 class EditAdhocItemSerializer(AdhocItemSerializer):
@@ -99,7 +104,6 @@ class vendorSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
-
         if data:
             data._mutable = True
             data['service'] = data['service'].strip().title()
@@ -115,7 +119,7 @@ class vendorSerializer(serializers.ModelSerializer):
         vendor_name = data['vendor_name']
         query = vendorContactList.objects.filter(vendor_name=vendor_name, service=service).values('vendor_name')
         if query:
-            raise serializers.ValidationError("Vendor Name already exists.")
+            raise serializers.ValidationError({"vendor_name" : "Vendor Name already exists."})
         return data
 
 
@@ -123,14 +127,26 @@ class editVendorSerializer(vendorSerializer):
     class Meta(vendorSerializer.Meta):
         fields = '__all__'
 
+    def __init__(self, *args, instance=None, data=None, **kwargs):
+        self.vendorName = vendorContactList.objects.filter(id=instance.pk).values('vendor_name')[0]['vendor_name']
+        if data:
+            data._mutable = True
+            data['service'] = data['service'].strip().title()
+            data['vendor_name'] = data['vendor_name'].strip().title()
+            data['aditional_info'] = data['aditional_info'].strip().capitalize()
+            if instance:
+                data['id'] = instance.pk
+            data._mutable = False
+        super(vendorSerializer, self).__init__(instance=instance, data=data, **kwargs)
+
+
     def validate(self, data, instance=None):
-        # vendor_name = vendorContactList.objects.filter(id=instance.pk).values('vendor_name')[0]['vendor_name']
-        if data['vendor_name'] != data['vendor_name'] :
+        if data['vendor_name'] != self.vendorName :
             service = data['service']
             vendor_name = data['vendor_name']
             query = vendorContactList.objects.filter(vendor_name=vendor_name, service=service).values('vendor_name')
             if query:
-                raise serializers.ValidationError("Vendor Name already exists.")
+                raise serializers.ValidationError({"vendor_name" : "Vendor Name already exists."})
         return data
 
 
@@ -142,10 +158,16 @@ class repairServicesSerializer(serializers.ModelSerializer):
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
             data._mutable = True
-            p = vendorContactList.objects.get(service=data['service_of'], vendor_name=data['vendor_name'])
-            data['service_of'] = p.pk
+            # print(data)
+            if data['vendor_name']:
+                p = vendorContactList.objects.get(service=data['service_of'], vendor_name=data['vendor_name'])
+                data['service_of'] = p.pk
             data['service_type'] = data['service_type'].strip().title()
+            data['paid_by'] = data['paid_by'].strip().title()
             data['aditional_info'] = data['aditional_info'].strip().capitalize()
+            data['add_name'] = data['add_name'].strip().title()
+            if data['add_name']:
+                data['paid_by'] = data['add_name'].strip().title()
             data._mutable = False
         super(repairServicesSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
@@ -154,6 +176,11 @@ class repairServicesSerializer(serializers.ModelSerializer):
         rep['service_of'] = instance.service_of.service
         return rep
 
+    def validate(self, data):
+        if data['service_date'] and data['next_service_date'] :
+            if data['service_date'] > data['next_service_date']:
+                raise serializers.ValidationError("Next Service date should be greater than  Service date!!!")
+        return data
 
 class editRepairServicesSerializer(repairServicesSerializer):
     class Meta(repairServicesSerializer.Meta):
@@ -194,8 +221,7 @@ class tshirtSerializer(serializers.ModelSerializer):
 class editTshirtSerializer(serializers.ModelSerializer):
     class Meta:
         model = t_shirt_inventory
-        fields = (
-        'size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining',
+        fields = ('size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining',
         'paid_by', 'additional')
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
@@ -258,3 +284,24 @@ class editJoiningSerializer(joiningSerializer):
         fields = '__all__'
         # fileds = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'grant_onedrive_access', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account']
         
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = officeEvents
+        fields = '__all__'
+
+    def __init__(self, *args, instance=None, data=None, **kwargs):
+
+        if data:
+            data._mutable = True
+            data['item'] = data['item_0'] + ' : ' + data['item_1']
+            data['food'] = data['food_0'] + ' : ' + data['food_1']
+            if data['new_event']:
+                try:
+                    p = officeEvents.objects.get(event_name=data['new_event'])
+                except:
+                    p = officeEvents.objects.create(event_name=data['new_event'])
+                    p.save()
+            data._mutable = False
+            super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
+        super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)

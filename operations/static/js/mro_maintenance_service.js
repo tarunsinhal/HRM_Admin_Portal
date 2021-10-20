@@ -7,6 +7,7 @@ $(document).ready(function () {
 		buttons: [{
 			extend: 'csv',
 			text: 'Export as CSV',
+			title: 'Service/Repair Details',
 			exportOptions: {
 				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 			},
@@ -49,6 +50,26 @@ $(document).ready(function () {
 			)	
 		}		
 	});	
+	select = document.getElementById('id_vendor_name');
+	var opt = document.createElement('option');
+    opt.value = "";
+    opt.innerHTML = "---------";
+    select.appendChild(opt);
+});
+
+// load Paid_by dropdown
+$(document).ready(function () {
+	var url = $("#addForm").attr("data-users-url");
+
+	$.ajax({                       // initialize an AJAX request
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+		debugger;
+			$("#id_paid_by").html(response);
+        }
+    });
 });
 
 
@@ -90,6 +111,33 @@ $("#id_vendor_name").change(function () {
 		}
 	});
 });
+
+// Add Name field pops up when Other is selected in Add new Product form
+$('#id_paid_by').change(function(){
+	if ($(this).val() == "Other"){
+		debugger;
+		$("#id_add_name").prop({ 'type': 'text', 'required': true });
+		$("#id_add_name").parent().parent().css("display", "block");
+	}
+	else {
+		$("#id_add_name").prop({ 'required': false });
+		$("#id_add_name").parent().parent().css("display", "none");
+	}
+});
+
+// Add Name field pops up when Other is selected in Update Product form
+$('#paid_by').change(function(){
+    if ($(this).val() == "Other"){
+    	debugger;
+    	$("#add_name").prop({ 'type': 'text', 'required': true });
+		$("#add_name").parent().parent().css("display", "block");
+     }
+     else {
+		$("#add_name").prop({ 'required': false });
+		$("#add_name").parent().parent().css("display", "none");
+	}
+});
+
 
 //...called when edit button is clicked...//
 function editfunction(obj) {
@@ -168,14 +216,34 @@ function editfunction(obj) {
 	});
     
 	y[4].value = x[5].textContent;
+
+	var url = $("#addForm").attr("data-users-url");
+	debugger;  
+	$.ajax({                     // initialize an AJAX request
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+			debugger;
+			$("#paid_by").html(response);
+
+			var paid_by = x[6].textContent.split(/(\s+)/)[0]
+			for (var i, j = 0; i = mySelect[2].options[j]; j++) {
+				if (paid_by == i.value) {
+					mySelect[2].selectedIndex = j;
+					break;
+				}
+			}
+        }
+    });
 				
-	var paid_by = x[6].textContent
-	for (var i, j = 0; i = mySelect[2].options[j]; j++) {
-		if (paid_by === i.value) {
-			mySelect[2].selectedIndex = j;
-			break;
-		}
-	}
+	// var paid_by = x[6].textContent
+	// for (var i, j = 0; i = mySelect[2].options[j]; j++) {
+	// 	if (paid_by === i.value) {
+	// 		mySelect[2].selectedIndex = j;
+	// 		break;
+	// 	}
+	// }
 
 	var payment = x[7].textContent
 	for (var i, j = 0; i = mySelect[3].options[j]; j++) {
@@ -241,15 +309,40 @@ $("#saveNew").click(function (e) {
 			if (status === "success") {
 				console.log(data)
 				document.getElementById('addForm').reset()
+
+				$('.required', $formId).each(function () {
+					var $parentTag = $(this).parent();
+					if ($(this).nextAll().length == 2) {
+						$parentTag.removeClass("error");
+						$(this).nextAll()[1].remove();
+					} else {
+						$parentTag.removeClass("error");
+						$(this).next().remove();
+					}
+				})
 			}
 			console.log(data)
 			document.getElementById('addForm').reset()
+			var url = $("#addForm").attr("data-users-url");
+
+			$.ajax({                       // initialize an AJAX request
+				type: "GET",
+				url: url,
+				dataType: "html",
+				success: function (response) {
+				debugger;
+					$("#id_paid_by").html(response);
+				}
+			});
+			$("#id_add_name").parent().parent().css("display", "none");
 		},
 		error: function (request, status, error) {
-			// console.log(request.responseJSON['price'].responseTEXT)
 			if ('non_field_errors' in request.responseJSON) {
 				alert(request.responseJSON['non_field_errors'][0])
 			}
+			// if (request.responseJSON['non_field_errors']){
+			// 	alert(request.responseJSON['non_field_errors'])
+			// }
 			$('.required', $formId).each(function () {
 				console.log(request)
 				var inputVal = $(this).val();
@@ -267,7 +360,6 @@ $("#saveNew").click(function (e) {
 						$(this).next().remove();
 					}
 				}
-
 			})
 		}
 	});
@@ -336,7 +428,7 @@ function handleEditProduct(event) {
 			window.location.reload();
 		}
 		else {
-			alert('Next order should be greater than purchase date.')
+			alert('There is some problem in updating the product.')
 		}
 	}
 	xhr.send(myFormData)
