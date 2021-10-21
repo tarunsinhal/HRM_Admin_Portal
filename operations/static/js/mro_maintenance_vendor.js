@@ -6,7 +6,7 @@ $(document).ready(function () {
 		dom: 'Bfrtip',
 		buttons: [{
 			extend: 'csv',
-			text: 'Export as CSV',
+			text: 'Export',
 			title: 'Vendor Details',
 			exportOptions: {
 				columns: [0, 1, 2, 3, 4, 5]
@@ -325,7 +325,7 @@ function handleImportVendor(event) {
 		if (xhr.status === 201) {
 			window.location.reload();
 		}
-		else if (xhr.status === 400){
+		else {
 			debugger;
 			// alert('Wrong Formate, Try again.')
 			var $parentTag = $('#id_import_file').parent();

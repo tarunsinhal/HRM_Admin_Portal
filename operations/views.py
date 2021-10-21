@@ -23,7 +23,7 @@ from itertools import chain
 
 from django.contrib import messages
 from django.views import View
-from .resources import RecurringResource, AdhocResource, JoiningResource, VendorResource
+from .resources import RecurringResource, AdhocResource, JoiningResource, VendorResource, TshirtResource
 import pandas as pd
 from tablib import Dataset
 
@@ -77,7 +77,9 @@ def engagements_onboarding_view(request):
     qs = t_shirt_inventory.objects.all()
     serializer = tshirtSerializer(qs, many=True)
 
-    return render(request, 'operations/onBoarding.html', {'addTshirtFormSet': tshirt_formset, 'tshirtData': serializer.data, 'editTshirtForm': editTshirt})
+    importForm = ImportForm()
+
+    return render(request, 'operations/onBoarding.html', {'addTshirtFormSet': tshirt_formset, 'tshirtData': serializer.data, 'editTshirtForm': editTshirt, 'importForm': importForm})
 
 
 @api_view(['POST'])
@@ -213,7 +215,7 @@ def load_purchase_date(request):
     except:
         return JsonResponse({'data': ''})
 
-# import-export function code 
+# import-export function for recurring inventory 
 class ImportrecurringView(View):
     context = {}
 
@@ -245,12 +247,14 @@ class ImportrecurringView(View):
                 # print('data :',data['type'][0])
                 # print(len(data))
             else:
-                data = data_set.load(file.read(), format=extension)
-                print(data)
+                return JsonResponse({},status=400)
+                # data = data_set.load(file.read(), format=extension)
+                # print(data)
             result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
             if result.has_validation_errors() or result.has_errors():
                 print("error", result.invalid_rows)
                 self.context['result'] = result
+                return JsonResponse({},status=400)
             else:
                 result = resource.import_data(data_set, dry_run=False, raise_errors=False)
                 self.context['result'] = None
@@ -301,7 +305,7 @@ def deleteAdhocProducts(request, pk):
     product.delete()
     return Response({}, status=201)
 
-# import-export function code 
+# import-export function for adhoc inventory
 class ImportadhocView(View):
     context = {}
 
@@ -321,11 +325,13 @@ class ImportadhocView(View):
             if extension == 'csv':
                 data = data_set.load(file.read().decode('utf-8'), format=extension)
             else:
-                data = data_set.load(file.read(), format=extension)
+                return JsonResponse({},status=400)
+                # data = data_set.load(file.read(), format=extension)
             result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
             if result.has_validation_errors() or result.has_errors():
                 print("error", result.invalid_rows)
                 self.context['result'] = result
+                return JsonResponse({},status=400)
             else:
                 result = resource.import_data(data_set, dry_run=False, raise_errors=False)
                 self.context['result'] = None
@@ -409,7 +415,7 @@ def deleteVendor(request, pk):
     vendor.delete()
     return Response({}, status=201)
 
-# import-export function code 
+# import-export function for vendor details 
 class ImportvendorView(View):
     context = {}
 
@@ -429,11 +435,13 @@ class ImportvendorView(View):
             if extension == 'csv':
                 data = data_set.load(file.read().decode('utf-8'), format=extension)
             else:
-                data = data_set.load(file.read(), format=extension)
+                return JsonResponse({},status=400)
+                # data = data_set.load(file.read(), format=extension)
             result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
             if result.has_validation_errors() or result.has_errors():
                 print("error", result.invalid_rows)
                 self.context['result'] = result
+                return JsonResponse({},status=400)
             else:
                 result = resource.import_data(data_set, dry_run=False, raise_errors=False)
                 self.context['result'] = None
@@ -499,41 +507,6 @@ def load_vendor_no(request):
         return JsonResponse({'contact_no': ''})
 
 
-# import-export function code 
-class ImportserviceView(View):
-    context = {}
-
-    def get(self,request, id):
-        form = ImportForm()
-        self.context['form'] =form
-        return JsonResponse({}, status=201)
-
-    def post(self, request):
-        form = ImportForm(request.POST , request.FILES)
-        data_set = Dataset()
-        if form.is_valid():
-            file = request.FILES['import_file']
-            extension = file.name.split(".")[-1].lower()
-            resource = JoiningResource()
-
-            if extension == 'csv':
-                data = data_set.load(file.read().decode('utf-8'), format=extension)
-            else:
-                data = data_set.load(file.read(), format=extension)
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
-            if result.has_validation_errors() or result.has_errors():
-                print("error", result.invalid_rows)
-                self.context['result'] = result
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
-                return JsonResponse({}, status=201)
-        else:
-            self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
-        return JsonResponse({}, status=201)
-
-
 @login_required(login_url='/auth/login')
 def tshirt_history(request):
     history = t_shirt_inventory.history.all().order_by('-history_date')
@@ -579,7 +552,7 @@ def deleteJoining(request, pk):
     employee.delete()
     return Response({}, status=201)
 
-# import-export function code 
+# import-export function for on-boarding & off-boarding
 class ImportJoiningView(View):
     context = {}
 
@@ -596,14 +569,16 @@ class ImportJoiningView(View):
             extension = file.name.split(".")[-1].lower()
             resource = JoiningResource()
 
-            if extension == 'csv':
+            if extension == 'csv' :
                 data = data_set.load(file.read().decode('utf-8'), format=extension)
             else:
-                data = data_set.load(file.read(), format=extension)
+                return JsonResponse({},status=400)
+                # data = data_set.load(file.read(), format=extension)
             result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
             if result.has_validation_errors() or result.has_errors():
                 print("error", result.invalid_rows)
                 self.context['result'] = result
+                return JsonResponse({},status=400)
             else:
                 result = resource.import_data(data_set, dry_run=False, raise_errors=False)
                 self.context['result'] = None
@@ -655,6 +630,41 @@ def load_previous_tshirt_history(request):
     except Exception as e:
         return JsonResponse({'data': None})
 
+# import function for Tshirt_inventory
+class ImportTshirtView(View):
+    context = {}
+
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
+        return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = TshirtResource()
+
+            if extension == 'csv':
+                data = data_set.load(file.read().decode('utf-8'), format=extension)
+            else:
+                return JsonResponse({},status=400)
+                # data = data_set.load(file.read(), format=extension)
+            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
+            if result.has_validation_errors() or result.has_errors():
+                print("error", result.invalid_rows)
+                self.context['result'] = result
+                return JsonResponse({},status=400)
+            else:
+                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
+                self.context['result'] = None
+                return JsonResponse({}, status=201)
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({},status=400)
+        return JsonResponse({}, status=201)
 
 @login_required(login_url='/auth/login')
 def office_events_view(request):

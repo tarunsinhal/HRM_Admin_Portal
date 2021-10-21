@@ -8,8 +8,9 @@ $(document).ready(function () {
 		buttons: [{
 			extend: 'csv',
 			text: 'Export',
+			title: 'Tshirt Inventory',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 			},
 		}
 		],
@@ -331,6 +332,41 @@ function handleDeleteProduct(event) {
 const deleteTshirtForm = document.getElementById('deleteTshirtForm')
 deleteTshirtForm.addEventListener("submit", handleDeleteProduct)
 
+
+//...function called when import form is submitted...//
+function handleImportTshirt(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else {
+			debugger;
+			// alert('Wrong Formate, Try again.')
+			var $parentTag = $('#id_import_file').parent();
+			if ($parentTag[0].className != "form-group mb-0 files error") {
+				$parentTag.addClass('error').prepend('<span class="error" style="color: red; font-size=10px;">Wrong Format, Please Try again !</span>');
+			}				
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const importTshirtForm = document.getElementById('importTshirtForm')
+importTshirtForm.addEventListener("submit", handleImportTshirt)
 
 
 function showDropdown() {

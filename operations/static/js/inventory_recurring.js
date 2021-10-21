@@ -539,7 +539,9 @@ $("#saveNew").click(function (e) {
 			}
 			document.getElementById('addForm').reset()
 			var url = $("#addForm").attr("data-users-url");
-
+            
+			$('#id_new_product').parent().parent().css("display", "none");
+			
 			$.ajax({                       // initialize an AJAX request
 				type: "GET",
 				url: url,
@@ -699,7 +701,7 @@ function handleImportRecurring(event) {
 		if (xhr.status === 201) {
 			window.location.reload();
 		}
-		else if (xhr.status === 400){
+		else {
 			debugger;
 			// alert('Wrong Formate, Try again.')
 			var $parentTag = $('#id_import_file').parent();

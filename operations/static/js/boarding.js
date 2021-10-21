@@ -593,12 +593,12 @@ function handleImportJoining(event) {
 		if (xhr.status === 201) {
 			window.location.reload();
 		}
-		else if (xhr.status === 400){
+		else{
 			debugger;
 			// alert('Wrong Formate, Try again.')
 			var $parentTag = $('#id_import_file').parent();
 			if ($parentTag[0].className != "form-group mb-0 files error") {
-				$parentTag.addClass('error').prepend('<span class="error" style="color: red; font-size=12px;">Wrong Format, Try again !!!</span>');
+				$parentTag.addClass('error').prepend('<span class="error" style="color: red; font-size=12px;">Wrong Format,Please Try again !!!</span>');
 			}				
 		}
 	}

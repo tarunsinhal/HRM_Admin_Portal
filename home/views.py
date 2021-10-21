@@ -37,14 +37,17 @@ def get_noitications(request):
     q = recurringItems.objects.filter(next_order_date__lte=time_threshold.strftime('%Y-%m-%d')).values('id', 'product__product_name', 'next_order_date')  
     notification_json = [notifications(product=i['product__product_name'], item_id=i['id'], notification_date=(i['next_order_date']-timedelta(days=1)).strftime('%Y-%m-%d'),
                         is_visited=False, notification_type=1) for i in q if (i['id'], 1) not in item_ids]
-    
-    tshirt_qs = t_shirt_inventory.objects.values_list().order_by('-receiving_date').values('receiving_date')[0]
-    if (tshirt_qs['receiving_date']):
+    try:
+        tshirt_qs = t_shirt_inventory.objects.values_list().order_by('-receiving_date').values('receiving_date')[0]
         qs = t_shirt_inventory.objects.filter(receiving_date=tshirt_qs['receiving_date'].strftime('%Y-%m-%d'), remaining__lte=2).values('id', 'size', 'remaining')
         for i in qs:
             if (i['id'], 2) not in item_ids:
                 notification_json.append(notifications(product='T-shirt'+'-'+ i['size'], item_id=i['id'], notification_date=date.today(),
                 is_visited=False, notification_type=2))
+    
+    except:
+        pass
+    
 
     entries = notifications.objects.bulk_create(notification_json)
     return JsonResponse(notification_json, safe=False)

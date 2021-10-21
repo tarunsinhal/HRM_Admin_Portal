@@ -21,3 +21,7 @@ class JoiningResource(resources.ModelResource):
 class VendorResource(resources.ModelResource):
     class Meta:
         model = vendorContactList
+
+class TshirtResource(resources.ModelResource):
+    class Meta:
+        model = t_shirt_inventory
