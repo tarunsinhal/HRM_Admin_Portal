@@ -33,7 +33,7 @@
 
 <div class="container-lg" style="overflow-y: scroll;">
     <div class="table-responsive">
-        <div class="table-wrapper">
+        <div>
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
@@ -242,21 +242,6 @@
                                             aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <!-- <div class="row g-3">
-                                            {% for field in editProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="col-sm"
-                                                style="text-align: left; font-size: 12px; display: none;">
-                                                {{ field }}
-                                            </div>
-                                            {% else %}
-                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
-                                                {{ field.label }}
-                                                {{ field }}
-                                            </div>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </div> -->
 
                                         <div class="row g-3">
                                             {% for field in editProductsForm %}
@@ -360,6 +345,11 @@
         </div>
     </div>
 
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn" style="padding: 5px; background-color: #5f4266; color: white;" value="Back" onclick="history.back()">
+    </form>
+
 
     <div class="table-responsive">
         <div class="table-wrapper1">
@@ -384,18 +374,22 @@
                 <input type="radio" data-tab-id ="5" name="tabset" id="tab5" class="tablinks" aria-controls="Others" onclick="openTab(event, 5)">
                 <label for="tab5">Others</label>
 
+                <a type="button" href="{% url 'operations:inventory_recurring_history' %}">
+                <button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                    <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+                </button></a>
+
                 <!-- Import Button -->
                 <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
                     <span>Import</span>
                 </button>
 
+                
+
                 <div class="tab-panels">
                     {% for product_type in product_list %}
                     <section class="tab-panel" id="section-{{ product_type.grouper }}">
                         <table class="productTable1">
-                            
-                            <!-- <div class="tbl-header table-hover"> -->
-                            <!-- <table class="table table-hover table-bordered"> -->
 
                             <div style="display: flex;">
                                 <!-- <div class="col-md-12">
@@ -438,11 +432,7 @@
                                         <input type="radio" id="Monthly" name="radiobtn_{{ product_type.grouper }}" class="inventory_freqpicker_{{ product_type.grouper }}" value="Monthly"/>
                                         <label for="Yearly">Monthly</label>
                                     </span>
-                                    <!-- <span style="margin-left: 282px;">
-                                        <select>
-                                            <option value="">Select Frequency</option>
-                                        </select>
-                                    </span> -->
+                                 
                                     <br>
                                     <span style="margin-left: -12px;">
                                         <span>Next date:</span>
@@ -471,11 +461,7 @@
                                     <th width=12% style="padding: 12px;">Actions</th>
                                 </tr>
                             </thead>
-                            <!-- </table> -->
-                            <!-- </div> -->
-
-                            <!-- <div class="tbl-content table"> -->
-                            <!-- <table id="productTable"> -->
+                          
                             <tbody class="tbl-content table table-bordered">
                                 {% for rows in product_type.list %}
                                 <tr>
@@ -499,8 +485,7 @@
                                 </tr>
                                 {% endfor %}
                             </tbody>
-                            <!-- </table> -->
-                            <!-- </div> -->
+                           
                         </table>
                     </section>
                     {% endfor %}
@@ -520,7 +505,6 @@
 {% block addextra %}
 
 
-<!-- <script src="../assets/dist/js/bootstrap.bundle.min.js"></script> -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="{% static 'js/inventory_recurring.js' %}"></script>
 
@@ -528,29 +512,6 @@
 
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-
-
-<!-- <script  src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js">
-        </script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js">
-        </script>
-        <script src="{% static 'js/fancyTable.js' %}"></script>
-        </script>
-        <script type="text/javascript">
-              
-            $(document).ready(function() {
-                $(".productTable1").fancyTable({
-                  /* Column number for initial sorting*/
-                   sortColumn:0,
-                   /* Setting pagination or enabling */
-                   pagination: true,
-                   /* Rows per page kept for display */
-                   perPage:3,
-                   globalSearch:true
-                   });
-                              
-            });
-        </script> -->
 
 
 {% endblock addextra %}

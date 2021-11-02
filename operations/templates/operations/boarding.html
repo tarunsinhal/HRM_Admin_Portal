@@ -1,7 +1,7 @@
 {% extends 'home/base.html' %}
 {% load static %}
 
-{% block title %} Engagements-on-off-boarding {% endblock title %}
+{% block title %} OnBoarding-offBoarding {% endblock title %}
 
 {% block style %}
 
@@ -36,12 +36,12 @@
 {% block content %}
 
 <div class="container-lg" style="overflow-y: scroll;">
-    <div class="table-responsive">
-        <div class="table-wrapper" style="padding-bottom: 0px;">
+    <div>
+        <div>
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
-                        <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
+                        <img src="{% static 'img/employee_offboarding.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
                         <h2><b>On-Boarding & Off-Boarding</b></h2>
@@ -135,15 +135,8 @@
                                                 <div class="container">
                                                     <div class="row" style="text-align: left; font-size: 15px;">
                                                         <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.grant_onedrive_access.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.grant_onedrive_access }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
                                                             {{ addJoiningForm.onedrive_access.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
+                                                        <div class="col-7 commonC" style="margin: 5px">
                                                             {{ addJoiningForm.onedrive_access }}
                                                         </div>
                                                     </div>
@@ -402,15 +395,8 @@
                                                 <div class="container">
                                                     <div class="row" style="text-align: left; font-size: 15px;">
                                                         <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.grant_onedrive_access.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.grant_onedrive_access }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
                                                             {{ addJoiningForm.onedrive_access.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
                                                             {{ addJoiningForm.onedrive_access }}
                                                         </div>
                                                     </div>
@@ -652,6 +638,12 @@
         </div>
     </div>
 
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn" style="padding: 5px; background-color: #5f4266; color: white;" value="Back" onclick="history.back()">
+    </form>
+
+
     <div class="table-responsive">
         <div class="table-wrapper1">
             <div class="table-title">
@@ -666,15 +658,16 @@
                 <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Exit Formalities" onclick="openTab(event, 2)" data-toggle="tab">
                 <label for="tab2">Exit Formalities</label>
                 
+                <a type="button" href="{% url 'operations:Boarding_history' %}"><button style="background-color: #5f4266; color: white; float: right; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; cursor: pointer;" class="btn">
+                    <span><i class="fa fa-history" aria-hidden="true"></i></span><span style="margin-left: 5px;">Version History</span>
+                </button></a>
+
                 <div class="tab-panels">
                 {% for details_type in details_list %}
                 {% if details_type.grouper == 1 %}
                     <section class="tab-panel" id='{{ details_type.grouper }}'>
-                
-                        <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="float: right; margin: 2px 5px 10px 10px; padding: 8px; cursor: pointer;" class="btn btn-secondary">
-                            <span><i class="fa fa-history" aria-hidden="true"></i></span><span style="margin-left: 5px;">Version History</span>
-                        </button></a>
-                        <button data-bs-toggle="modal" data-bs-target="#importModal" style="float: left; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+
+                        <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: left; margin-bottom: 2px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
                             <span>Import</span>
                         </button>
                         <table class="productTable1" id="boardingTable">
@@ -689,11 +682,10 @@
                                     <th style="padding: 12px; background-color: white; border-left: 2px solid #143d0c;" rowspan="2">Actions</th>
                                 </tr>
                                 <tr>
-                                    <!-- <th width=25% style="padding: 12px;">Employee Name</th> -->
                                     <th style="padding: 12px;">Email Account</th>
                                     <th style="padding: 12px;">Upwork Account-Add to Team</th>
                                     <th style="padding: 12px;">Upwork Account-Add Account</th>
-                                    <th style="padding: 12px; border-left: 2px solid #143d0c;">Grant Onedrive Access</th>
+                                    <th style="padding: 12px; border-left: 2px solid #143d0c;">Onedrive Access</th>
                                     <th style="padding: 12px;">Microsoft Account Created</th>
                                     <th style="padding: 12px;">Gmail Account</th>
                                     <th style="padding: 12px;">Skype Id</th>
@@ -712,7 +704,6 @@
                                     <th style="padding: 12px;">Add to Skype Group</tdh>
                                     <th style="padding: 12px;">Add to Whatsapp Group</th>
                                     <td class="name" style="display: none;"> </td>
-                                    <!-- <th width=30% style="padding: 12px;">Actions</th> -->
                                 </tr>
                             </thead>
                 
@@ -723,7 +714,7 @@
                                             <td class="name" style="padding: 2px 5px;">{{ data.email_account }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.upwork_account_Add_to_team }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.upwork_account_Add_account }}</td>
-                                            <td class="name" style="padding: 2px 5px; border-left: 2px solid #143d0c;">{{ data.grant_onedrive_access }}</td>
+                                            <td class="name" style="padding: 2px 5px; border-left: 2px solid #143d0c;">{{ data.onedrive_access }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.microsoft_account_created }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.gmail_account }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.skype_id }}</td>
@@ -753,11 +744,8 @@
                     </section>
                 {% else %}
                     <section class="tab-panel" id='{{ details_type.grouper }}'>
-                
-                        <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="float: right; margin: 2px 5px 10px 10px; padding: 8px; cursor: pointer;" class="btn btn-secondary">
-                            <span><i class="fa fa-history" aria-hidden="true"></i></span><span style="margin-left: 5px;">Version History</span>
-                        </button></a>
-                        <button data-bs-toggle="modal" data-bs-target="#importModal"  style="float: left; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+
+                        <button data-bs-toggle="modal" data-bs-target="#importModal"  style="background-color: #5f4266; color: white; float: left; margin-bottom: 2px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
                             <span>Import</span>
                         </button>
                         <table class="productTable2" id="boardingTable2">
@@ -772,7 +760,6 @@
                                     <th style="padding: 12px; background-color: white; border-left: 2px solid #143d0c;" rowspan="2">Actions</th>
                                 </tr>
                                 <tr>
-                                    <!-- <th width=25% style="padding: 12px;">Employee Name</th> -->
                                     <th style="padding: 12px;">Email Account</th>
                                     <th style="padding: 12px;">Upwork Account-Remove from Team</th>
                                     <th style="padding: 12px;">Upwork Account-Close Account</th>
@@ -791,7 +778,6 @@
                                     <th style="padding: 12px;">Remove from Skype Group</th>
                                     <th style="padding: 12px;">Remove from Whatsapp Group</th>
                                     <td class="name" style="display: none;"> </td>
-                                    <!-- <th width=30% style="padding: 12px;">Actions</th> -->
                                 </tr>
                             </thead>
             

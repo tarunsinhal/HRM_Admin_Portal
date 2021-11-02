@@ -32,7 +32,7 @@
 
 <div class="container-lg" style="overflow-y: scroll;">
     <div class="table-responsive">
-        <div class="table-wrapper">
+        <div>
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
@@ -228,6 +228,13 @@
     </div>
 
 
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn" style="padding: 5px; background-color: #5f4266; color: white;" value="Back" onclick="history.back()">
+    </form>
+
+
+
     <div class="table-responsive">
         <div class="table-wrapper1">
             <div class="table-title">
@@ -246,6 +253,14 @@
                     <label for="tab2">Non-Pantry</label>
                     <!-- Import Button -->
                     <!-- Import Button -->
+
+                    <a type="button" href="{% url 'operations:inventory_adhoc_history' %}">
+                        <button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                            <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+                        </button>
+                    </a>
+
+
                     <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
                         <span>Import</span>
                     </button>

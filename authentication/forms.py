@@ -17,8 +17,9 @@ class RegistrationForm(UserCreationForm):
             raise ValidationError("Email already registered !")
         return self.cleaned_data
 
-class LoginForm(forms.Form):
 
+# login form for user login
+class LoginForm(forms.Form):
     email = forms.EmailField(widget=forms.TextInput(attrs={'class':'fadeIn second input-field', 'placeholder': 'Enter your email'}))
     password = forms.CharField(widget=forms.TextInput(attrs={'type':'password', 'class':'fadeIn third input-field', 'placeholder': 'Enter your password'}))
 

@@ -1,33 +1,23 @@
 function format ( d ) {
     return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold">Additional Parameters:</p></div>'+
-	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Order Date: </span>'+d[6]+'</div><br>'+
-	'<div class="col-6" style="text-align: left"><span class="font-weight-bold">Receiving Date: </span>'+d[7]+'</div></div><br>'+
-        '<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Total quantity: </span>'+d[8]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Allotted: </span>'+d[9]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Remaining: </span>'+d[10]+'</div></div><br>'+
-		'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[12]+'</div></div><br>'+
+	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Alternate No.: </span>'+d[6]+'</div><br>'+
+	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Nominal Charges: </span>'+d[7]+'</div></div><br>'+
+        '<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[8]+'</div></div><br>'+
         '</div></div>';
 }
 
 function format_and_diff(d,res){
-	debugger
 
 	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold">Additional Parameters:</p></div>'+
-	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Order Date: </span>'+d[6]+'</div><br>'+
-	'<div class="col-6" style="text-align: left"><span class="font-weight-bold">Receiving Date: </span>'+d[7]+'</div></div><br>'+
-        '<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Total quantity: </span>'+d[8]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Allotted: </span>'+d[9]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Remaining: </span>'+d[10]+'</div></div><br>'+
-		'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[12]+'</div></div><br>'+
+	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Alternate No.: </span>'+d[6]+'</div><br>'+
+	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Nominal Charges: </span>'+d[7]+'</div></div><br>'+
+        '<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[8]+'</div></div><br>'+
         '</div>'+
 		'<div style=" background: #FF6666; margin-bottom: 10px; padding: 10px">'+
 			'<div><p class="font-weight-bold">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
 	for (let key in res){
-		// d = '<div class="col-8"><span class="font-weight-bold">'+ key + ' ' + '</span>' + '<span>' + res[key]['previous'] + '<span class="font-weight-bold">----></span>' + res[key]['current'] + ' </span></div><br>'
 		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
 		b += d
 	}
@@ -51,13 +41,10 @@ $(document).ready(function () {
 		}
 		],
 		columnDefs: [
-			{ orderable: false, targets: 1 },
-			{ orderable: false, targets: 2 },
-			{ orderable: false, targets: 3 },
 			{ orderable: false, targets: 4 },
-			{ orderable: false, targets: 5 },
-			{ orderable: false, targets: 6 },
-			{ orderable: false, targets: 13 }
+			{ orderable: false, targets: 7 },
+			{ orderable: false, targets: 8 },
+			{ orderable: false, targets: 9 }
 		],
 		
 		'pageLength': 12,
@@ -105,33 +92,6 @@ $(document).ready(function () {
 	 var detailRows = [];
 
 
-	// $('#history_data').on('click', function(){
-	// 	debugger
-	// 	var res
-	// 	var tr = $(this).closest('tr');
-	// 	var row = dataTableRes.row( tr );
-
-	// 	var id = tr[0].children[13].innerText;
-	// 	var url = $("#productTable1").attr("data-previous-url");
-	// 	$.ajax({
-	// 		url: url,
-	// 		async: false,
-	// 		type: 'GET',
-	// 		data: {"id": id},
-	// 		dataType: 'json',
-	// 		success: function(data){
-	// 			debugger
-	// 			if (data['data']){
-	// 				res = data['data'];
-	// 			}
-	// 			else{
-	// 				res = null
-	// 			}
-	// 		}
-	// 	})
-	// })
-
-
 	$('#productTable1 tbody').on( 'click', 'tr td.details-control', function () {
 		debugger
 		var res
@@ -139,8 +99,8 @@ $(document).ready(function () {
 
 		var row = dataTableRes.row( tr );
  
-		var id = tr[0].children[13].innerText;
-		var history_id = tr[0].children[14].innerText;
+		var id = tr[0].children[9].innerText;
+		var history_id = tr[0].children[10].innerText;
 		var url = $("#productTable1").attr("data-previous-url");
 		$.ajax({
 			url: url,

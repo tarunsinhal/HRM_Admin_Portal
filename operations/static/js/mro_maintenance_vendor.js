@@ -27,13 +27,7 @@ $(document).ready(function () {
 				function (settings, data, dataIndex) {
 					debugger;
 					let activeTabId = $('.tablinks.active').attr('data-tab-id');
-					// let pur_min =$('#pur_min_'+activeTabId).val();
-					// let pur_max = $('#pur_max_'+activeTabId).val();
-
-					// pur_min = (pur_min != "")?new Date(pur_min):null ;
-					// pur_max = (pur_max != "")?new Date(pur_max):null;
-
-					// let purchaseDate = new Date(data[0]);
+					
 					let recordType = data[6]
 
 					if (activeTabId == recordType) {
@@ -119,24 +113,7 @@ $("#saveNew").click(function (e) {
 				alert(request.responseJSON['non_field_errors'])
 				// $('#add-form-body').prepend('<center><span style="color: red; font-size: 15px; padding-bottom: 30px;">' + request.responseJSON['non_field_errors'] + '</span></center>')
 			}
-			// $('.required', $formId).each(function () {
-			// 	console.log(request)
-			// 	var inputVal = $(this).val();
-
-			// 	var $parentTag = $(this).parent();
-			// 	if (inputVal == '') {
-			// 		if($parentTag[0].className!=="col-6 error"){
-			// 		$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');}
-			// 	}else{
-			// 		if($(this).nextAll().length==2){
-			// 			$parentTag.removeClass("error");
-			// 			$(this).nextAll()[1].remove();
-			// 		}else{
-			// 			$parentTag.removeClass("error");
-			// 			$(this).next().remove();
-			// 		}
-			// 	}
-			// });
+			
 			Inval = request.responseJSON
 			$('.chk', $formId).each(function () {
 				var ipVal = $(this).attr('name');

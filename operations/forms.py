@@ -3,7 +3,7 @@ from itertools import chain
 from django.db.models import fields
 from django.forms import forms, ModelForm, TextInput, MultiWidget,  CharField, IntegerField, ChoiceField, MultiValueField, RegexField, ComboField
 from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget, Textarea, RadioSelect
-from .models import FoodInventory, Product_type, recurringItems, t_shirt_inventory, AdhocItems, vendorContactList, repairServices, engagementJoining, officeEvents
+from .models import Product_type, recurringItems, t_shirt_inventory, AdhocItems, vendorContactList, repairServices, engagementJoining, officeEvents
 from django.contrib.auth.models import User
 from django import forms
 from django.core.validators import FileExtensionValidator
@@ -13,7 +13,7 @@ payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_acco
 unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
 quantity_adhoc_choices = [('Set', 'set'),('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
 
- 
+
 class UnitWidget(MultiWidget):
     def __init__(self, *args, **kwargs):
         self.widgets = [NumberInput({'type': 'number', 'class': "required form-control"}), Select(choices=unit_choices, attrs={'type': 'select', 'class': "form-select"})]
@@ -188,6 +188,7 @@ class EditRepairServicesForm(AddRepairServicesForm, ModelForm):
 
 
 class addTshirtForm(ModelForm):
+    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
     class Meta:
         model = t_shirt_inventory
         fields = ('id', 'order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted',
@@ -200,7 +201,7 @@ class addTshirtForm(ModelForm):
             'ordered_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
             'received_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
             'allotted': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
-            'paid_by': TextInput(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-control"}),
+            'paid_by': Select(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-select"}),
             'additional': Textarea(attrs={'type':'text', 'class':"required form-control"}),
             'error_message': Textarea(attrs={'type':'text', 'class':"required form-control", "rows": 1, "cols": 1}),
             'total_quantity': NumberInput(attrs={'type':'number', 'readOnly': True, 'required':True, 'class':"required form-control"}),
@@ -210,13 +211,13 @@ class addTshirtForm(ModelForm):
 
 class editTshirtForm(addTshirtForm, ModelForm):
     class Meta(addTshirtForm.Meta):
-        fields = ('size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'additional')
+        fields = ('size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'add_name', 'additional')
 
     
 class AddJoiningForm(ModelForm):
     class Meta:
         model = engagementJoining
-        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'grant_onedrive_access', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account')
+        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account')
         widgets = {
             'employee_name': TextInput(attrs={'type':'text', 'class':"required form-control"}),
             'details': Select(attrs={'type': 'select', 'class': "form-select"}), 
@@ -237,7 +238,6 @@ class AddJoiningForm(ModelForm):
             'add_to_whatsapp_group': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'remove_from_skype_group': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'remove_from_whatsapp_group': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'grant_onedrive_access': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'onedrive_access': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'microsoft_account_created': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'microsoft_account_deleted': TextInput(attrs={'type':'text', 'class':"form-control"}),

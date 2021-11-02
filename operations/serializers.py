@@ -1,13 +1,15 @@
 from rest_framework import serializers
-from .models import FoodInventory, Item_types, Product_type, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining, officeEvents
+from .models import Item_types, Product_type, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining, officeEvents
 from django.contrib.auth.models import User
 
 
+# serializer class for item type in recurring section
 class ItemTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Item_types
 
 
+# serializer class for 
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = recurringItems
@@ -53,7 +55,6 @@ class editProductSerializer(ProductSerializer):
 
 
 class AdhocItemSerializer(serializers.ModelSerializer):
-    # paid_by = serializers.ChoiceField(choices=PAID_BY)
 
     class Meta:
         model = AdhocItems
@@ -158,7 +159,6 @@ class repairServicesSerializer(serializers.ModelSerializer):
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
             data._mutable = True
-            # print(data)
             if data['vendor_name']:
                 p = vendorContactList.objects.get(service=data['service_of'], vendor_name=data['vendor_name'])
                 data['service_of'] = p.pk
@@ -194,6 +194,10 @@ class tshirtSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
+            print(data)
+            data['form-0-paid_by'] = data['form-0-paid_by'].strip().title()
+            if data['form-0-add_name']:
+                data['form-0-paid_by'] = data['form-0-add_name'].strip().title()
             super(tshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(tshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
@@ -226,10 +230,7 @@ class editTshirtSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
-            data._mutable = True
-            data['total_quantity'] = int(data['received_quantity']) + int(data['previous_stock'])
-            data['remaining'] = int(data['total_quantity']) - int(data['allotted'])
-            data._mutable = False
+            print(data)
             super(editTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(editTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
@@ -305,3 +306,11 @@ class EventSerializer(serializers.ModelSerializer):
             data._mutable = False
             super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
+
+
+# class recurring_history_serializer(serializers.Serializer):
+    
+#     def to_representation(self, instance):
+#         rep = super(recurring_history_serializer, self).to_representation(instance)
+#         rep['product'] = instance.product_id.product_name
+#         return rep

@@ -17,43 +17,53 @@ from django.urls import resolve
 from django.contrib.auth.models import Permission
 # Create your views here.
 
+
 @login_required(login_url='/auth/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home_view(request):
     return render(request, 'home/dashboard.html')
 
 
+# To fetch the notifications from differnt modules depending on certain conditions
+@login_required(login_url='/auth/login')
 def get_noitications(request):
     
-    print('url_name:-', resolve(request.path_info))
-    
-    # print(request.user.get_user_permissions())
-    # permission = Permission.objects.get(codename='add_repairservices')
-    # request.user.user_permissions.add(permission)
+    # print('url_name:-', resolve(request.path_info))
 
     time_threshold = date.today() + timedelta(days=1)
     n = list(notifications.objects.values('item_id', 'notification_type'))
     item_ids = [(i['item_id'], i['notification_type']) for i in n]
+
+    # filtering from the DB where next order date is less than or equal to time threshold
     q = recurringItems.objects.filter(next_order_date__lte=time_threshold.strftime('%Y-%m-%d')).values('id', 'product__product_name', 'next_order_date')  
+    
+    # creating the list of notifications objects and if that notification is already in notification table or not
     notification_json = [notifications(product=i['product__product_name'], item_id=i['id'], notification_date=(i['next_order_date']-timedelta(days=1)).strftime('%Y-%m-%d'),
                         is_visited=False, notification_type=1) for i in q if (i['id'], 1) not in item_ids]
+    
     try:
+        # getting the latest record's receiving date from the tshirt inventory model
         tshirt_qs = t_shirt_inventory.objects.values_list().order_by('-receiving_date').values('receiving_date')[0]
+
+        # filering the records based on conditions from the tshirt inventory model
         qs = t_shirt_inventory.objects.filter(receiving_date=tshirt_qs['receiving_date'].strftime('%Y-%m-%d'), remaining__lte=2).values('id', 'size', 'remaining')
         for i in qs:
             if (i['id'], 2) not in item_ids:
                 notification_json.append(notifications(product='T-shirt'+'-'+ i['size'], item_id=i['id'], notification_date=date.today(),
                 is_visited=False, notification_type=2))
-    
     except:
         pass
     
-
+    # bulk creating notifications from notification json in notifications table
     entries = notifications.objects.bulk_create(notification_json)
     return JsonResponse(notification_json, safe=False)
 
 
+# To get the active notifications count from notification table
+@login_required(login_url='/auth/login')
 def get_active_notifications(request):
+
+    # filtering the data from notifications table which has not been visited to get the active notifications count
     n = list(notifications.objects.filter(is_visited=False))
 
     if len(n) > 0 and len(n) <= 9:
@@ -64,17 +74,29 @@ def get_active_notifications(request):
         return JsonResponse({'notification_count': ''})
 
 
+# For showing the last 7 days notifications on the notification page 
+@login_required(login_url='/auth/login') 
 def notifications_view(request):
 
     time_threshold = date.today() - timedelta(days=7)
     print(time_threshold.strftime('%Y-%m-%d'))
 
+    # creating list of last 7 days notifications from notification table to display on notifications page
     n = list(notifications.objects.filter(Q(is_visited=False)|Q(notification_date__gte=time_threshold.strftime('%Y-%m-%d'))))
-    print(n)
 
     selectionQuery = notifications.objects.filter(is_visited=False)
+
+    # updating the is_visited parameter of notifications to True when the user visits the notification page
     selectionQuery.update(is_visited=True)
     return render(request, 'home/notifications.html', {'notifications': n})
+
+
+# For showing all the notification that has been received till date
+@login_required(login_url='/auth/login')
+def all_notifications(request):
+    # ordering all the notifications based on the notification date
+    n = notifications.objects.all().order_by('-notification_date').values()
+    return render(request, 'home/all_notifications.html', {'notifications': n})
 
 
 @login_required(login_url='/auth/login')

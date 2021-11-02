@@ -2,7 +2,7 @@
 {% load static %}
 
 
-{% block title %} Operations-Pantry-Recurring {% endblock title %}
+{% block title %} Operations-T-shirt-Inventory {% endblock title %}
 
 {% block style %}
 
@@ -54,7 +54,7 @@
                     </div>
 
                     <form method="POST" action="{% url 'operations:addTshirts' %}"  id="addTshirtForm"
-                    data-edit-url="{% url 'operations:ajax_load_tshirtData' %}"
+                    data-edit-url="{% url 'operations:ajax_load_tshirtData' %}" data-users-url="{% url 'operations:ajax_load_tshirt_inventory_users' %}"
                         class="needs-validation">
                         {% csrf_token %}
 
@@ -260,6 +260,14 @@
                                                         </div>
                                                     </div>
 
+                                                    <div class="row" style="margin-left: 5px; display: none;" id="add_name">
+                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; color: #1A9239;;">                                                           
+                                                            {{ addTshirtFormSet.0.add_name.label }}</div>
+                                                        <div class="col-3" style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addTshirtFormSet.0.add_name }}
+                                                        </div>
+                                                    </div>
+
                                                     <div class="row" style="margin-left: 5px;" id="additional">
                                                         <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; color: #1A9239;;">                                                           
                                                             {{ addTshirtFormSet.0.additional.label }}</div>
@@ -267,6 +275,7 @@
                                                             {{ addTshirtFormSet.0.additional }}
                                                         </div>
                                                     </div>
+                                                    
                                                       
                                             </div>
 
@@ -495,6 +504,12 @@
     </div>
 
 
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn" style="padding: 5px; background-color: #5f4266; color: white;" value="Back" onclick="history.back()">
+    </form>
+
+
     <div class="table-responsive">
         <div class="table-wrapper1">
             <div class="table-title">
@@ -505,43 +520,21 @@
 
 
             <div class="tabset">
-                <!-- Tab 1 -->
-                <input type="radio" data-tab-id ="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '1')">
-                <label for="defaultOpen">T-Shirt Inventory</label>
-                <!-- Tab 2 -->
-                <!-- <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Joining Formalities" onclick="openTab(event, 2)">
-                <label for="tab2">Joining Formalities</label> -->
               
-                <div class="tab-panels">
+                <div>
                     
-                    <section class="tab-panel" id='1'>
+                    <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e;" class="btn">
+                        <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+                    </button>
+                    </a>
 
-                        <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="float: right; margin: 2px 5px 10px 10px; padding: 8px; cursor: pointer;" class="btn btn-secondary">
-                            <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
-                        </button></a>
-                        <button data-bs-toggle="modal" data-bs-target="#importModal" style="float: left; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
-                            <span>Import</span>
-                        </button>
+                    <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                        <span>Import</span>
+                    </button>
+
+                    <section id='1'>
+
                         <table class="productTable1">
-                            
-                            
-                            <!-- <div style="display: flex;">
-                            
-                                <div class="col-md-12" style="padding-bottom: 5px;">
-                                    <span>
-                                        <span class="font-weight-bold">Purchase date: </span> <input type="date"
-                                            class="inventory_datepicker_{{ product_type.grouper }}" id="pur_min_{{ product_type.grouper }}"
-                                            name="pur_min_{{ product_type.grouper }}" data-attr-type="pur" /> to <input type="date"
-                                            class="inventory_datepicker_{{ product_type.grouper }}" id="pur_max_{{ product_type.grouper }}"
-                                            name="pur_max_{{ product_type.grouper }}" data-attr-type="pur" />
-                                    </span>
-                                    <span>
-                                        <i data-section-id="{{product_type.grouper }}" class="daterefresh fa fa-refresh" aria-hidden="true"
-                                            style="margin-left: 20px;"></i>
-                            
-                                    </span>
-                                </div>
-                            </div> -->
 
                             <thead class="table tbl-header table-bordered">
                                 <tr>
@@ -555,7 +548,6 @@
                                     <th width=10% style="padding: 12px; text-align:center;">Remaining</th>
                                     <th width=18% style="display: none;">Paid By</td>
                                     <th width=18% style="padding: 12px; text-align:center;">Additional Info</td>
-                                    <!-- <td class="name" style="display: none;"> </td> -->
                                     <th width=10% style="padding: 12px;">Actions</th>
                                 </tr>
                             </thead>

@@ -15,9 +15,10 @@ from django.views.decorators.cache import cache_control, never_cache
 
 # Create your views here.
 
-
+# for redirecting user directly to the login page when the user hits the URL
 def auth_redirect(request):
     return redirect('auth/login/')
+
 
 def register(request):
     if request.method == 'POST':
@@ -36,7 +37,7 @@ def register(request):
     return render(request, 'authentication/register.html', {'form': form})
 
 
-
+# function for authenicating the user login and then redirecting it to the homepage
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_login(request):
     form = LoginForm()
@@ -69,10 +70,4 @@ class EmailValidationForm(PasswordResetForm):
             raise ValidationError(error_messages['not_registered'], code='not_registered')
         return email
 
-
-# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
-# def logout_view(request):
-#     request.session.flush()
-#     logout(request)
-#     return HttpResponseRedirect('/login')
 

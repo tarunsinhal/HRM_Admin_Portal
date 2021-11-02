@@ -32,7 +32,7 @@
 
 <div class="container-lg" style="overflow-y: scroll;">
     <div class="table-responsive">
-        <div class="table-wrapper">
+        <div>
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
@@ -44,7 +44,7 @@
                     </div>
                     <div class="col-sm-4" style="padding: 10px;">
                         <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" style="background-color: #2f8669;">
+                            data-bs-target="#staticBackdrop" style="background-color: #2f8669; margin: 10px;">
                             +</button>
                     </div>
 
@@ -181,39 +181,32 @@
         </div>
     </div>
 
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn" style="padding: 5px; background-color: #5f4266; color: white;" value="Back" onclick="history.back()">
+    </form>
+
 
     <div class="table-responsive">
         <div class="table-wrapper1">
             <div class="table-title">
                 {% regroup service|dictsort:'service_of' by service as service_list %}
-                <div class="tabset">
-                    <h2 class="font-weight-bold" style="color: black; text-align: center; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: 30px;">Service/Repair List</h2>
+                <div>
+                    <!-- <h2 class="font-weight-bold" style="color: black; text-align: center; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: 30px;">Service/Repair List</h2> -->
+                    <a type="button" href="{% url 'operations:mro_service_history' %}">
+                        <button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                            <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+                        </button>
+                    </a>
+    
+                    <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right; margin: 5px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                        <span>Import</span>
+                    </button>
 
-                    <div class="tab-panels">
+                    <div>
                         {% for service_details in service_list %}
-                        <section class="tab-panel" id="{{ vendor_details.grouper }}">
+                        <section id="{{ vendor_details.grouper }}">
                             <table class="productTable1">
-
-                                <!-- <div style="display: flex;">
-                                    <div class="col-md-12" style="padding-bottom: 5px;">
-                                        <span>
-                                            <span class="font-weight-bold">Purchase date: </span> <input type="date"
-                                                class="inventory_datepicker_{{ product_type.grouper }}"
-                                                id="pur_min_{{ product_type.grouper }}"
-                                                name="pur_min_{{ product_type.grouper }}" data-attr-type="pur" /> to
-                                            <input type="date" class="inventory_datepicker_{{ product_type.grouper }}"
-                                                id="pur_max_{{ product_type.grouper }}"
-                                                name="pur_max_{{ product_type.grouper }}" data-attr-type="pur" />
-                                        </span>
-                                        
-                                        <span>
-                                            <i data-section-id="{{product_type.grouper }}"
-                                                class="daterefresh fa fa-rotate-right" aria-hidden="true"
-                                                style="margin-left: 20px;"></i>
-                                        </span>
-                                    </div>
-                                </div> -->
-
 
                                 <thead class="table tbl-header table-hover table-bordered">
                                     <tr>

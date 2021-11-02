@@ -1,3 +1,4 @@
+
 {% extends 'home/base.html' %}
 {% load static %}
 
@@ -46,17 +47,11 @@
                         <h2><b>Version History</b></h2>
                     </div>
                     
-                    
-
-                    
                 </div>
             </div>
 
         </div>
     </div>
-
-
-
 
     <div class="table-responsive">
         <div class="table-wrapper1">
@@ -76,28 +71,23 @@
                     
                     <section class="tab-panel">
 
-                        <table class="productTable1" id="productTable1" data-previous-url="{% url 'operations:ajax_load_previous_history' %}">
-                            
+                        <table class="productTable1" id="productTable1" data-previous-url="{% url 'operations:ajax_load_previous_vendor_history' %}">
+                             
                             <thead class="table tbl-header table-bordered">
                                 <tr>
                                     <th width=20% style="padding: 12px; text-align:center;">History Date</th>
-                                    <th width=5% style="padding: 12px; text-align:center;">Size</th>
-                                    <th width=12% style="padding: 12px; text-align:center;">Previous Stock</th>
-                                    <th width=12% style="padding: 12px; text-align:center;">Ordered Qty</th>
-                                    <th width=18% style="padding: 12px; text-align:center;">User</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Action</th>
-                                    <th width=14% style="display: none;">Order Date</th>
-                                    <th width=14% style="display: none;">Receiving Date</th>
-                                    <th width=14% style="display: none;">Total Quantity</th>
-                                    <th width=14% style="display: none;">Allotted</th>
-                                    <th width=10% style="display: none;">Remaining</th>
-                                    <th width=14% style="display: none;">Paid By</th>
-                                    <th width=14% style="display: none;">Additional</th>                                    
+                                    <th width=10% style="padding: 12px; text-align:center;">Service</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">Vendor Name</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">Contact No.</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Action</th> 
+                                    <th width=8% style="display: none;">Alternate No</th>
+                                    <th width=8% style="display: none;">Nominal Charges</th>
+                                    <th width=8% style="display: none;">Additional Info</th>                              
                                     <th id="rowId" style="display: none;">Id</th>
                                     <th id="rowHistoryId" style="display: none;">History Id</th>
                                     <th width="5%"></th>
-                                    
-                                    <!-- <td class="name" style="display: none;"> </td> -->
+
                                     
                                 </tr>
                             </thead>
@@ -108,41 +98,37 @@
                             <!-- <table id="productTable"> -->
                             <tbody class="tbl-content table table-bordered" >
 
-                                                {% for data in tshirt_history %}
+                                                {% for data in vendor_history %}
                                         <tr>
-                                            <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+                                            <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
                                                     {{ data.history_date }}</td>
-                                            <td class="name" width=13% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
-                                            <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.previous_stock }}</td>
-                                            <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
-                                            <td class="name" style="padding: 2px 5px; text-align:center;">{{ data.user_name }}</td>
+                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.service }}</td>
+                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.vendor_name }}</td>
+                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.contact_no }}</td>
+                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
 
                                             {% if data.history_type == "+" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="12%">Created</td>  
+                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
                                             {% elif data.history_type == "~" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="12%">Updated</td> 
+                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
                                             {% else %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="12%">Deleted</td>   
+                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
                                             {% endif %}                                          
                                             
-                                            <td class="name" width=10% style="display: none;">{{ data.order_date }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.receiving_date }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.total_quantity }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.allotted }}</td>
-                                            <td class="name" width=12% style="display: none;">{{ data.remaining }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.paid_by }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.additional }}</td>
+                                            <td class="name" width=8% style="display: none;">{{ data.alternate_no }}</td>
+                                            <td class="name" width=8% style="display: none;">{{ data.nominal_charges }}</td>
+                                            <td class="name" width=8% style="display: none;">{{ data.additional_info }}</td>
                                             <td class="name" width=10% style="display: none;">{{ data.id }}</td>
                                             <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
-                                            <!-- <td class="name" id="history_data" width=5%><button class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" style="padding: 5px;">Changes</button></td> -->
-                                            <td width="2%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
+
+                                            <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
                                             
 
                                 </tr>
                                 {% endfor %}
                                
                             </tbody>
-                    
+
                         </table>
                     </section>
                 </div>
@@ -163,7 +149,7 @@
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-<script src="{% static 'js/tshirt_history.js' %}"></script>
+<script src="{% static 'js/vendor_history.js' %}"></script>
 
 
 

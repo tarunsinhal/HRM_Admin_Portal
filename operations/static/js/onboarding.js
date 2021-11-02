@@ -10,7 +10,7 @@ $(document).ready(function () {
 			text: 'Export',
 			title: 'Tshirt Inventory',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 			},
 		}
 		],
@@ -23,12 +23,7 @@ $(document).ready(function () {
 			{ orderable: false, targets: 6 },
 			{ orderable: false, targets: 7 }
 		],
-		// columns: [
-		// 	{
-		// 		name: 'first',
-		// 		title: 'receiving_date',
-		// 	},
-		// ],
+		
 		'rowsGroup': [0, 1, 9],
 		'pageLength': 12,
 		"bLengthChange": false,
@@ -86,6 +81,36 @@ $('.daterefresh').on('click', function (e) {
 	dataTableRes.draw();
 
 })
+
+
+// load Paid_by dropdown
+$(document).ready(function () {
+	var url = $("#addTshirtForm").attr("data-users-url");
+
+	$.ajax({                       // initialize an AJAX request
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+		debugger;
+			$("#id_form-0-paid_by").html(response);
+        }
+    });
+});
+
+
+// Add Name field pops up when Other is selected in Add new Product form
+$('#id_form-0-paid_by').change(function(){
+	if ($(this).val() == "Other"){
+		debugger;
+		$("#id_form-0-add_name").prop({ 'type': 'text', 'required': true });
+		$("#id_form-0-add_name").parent().parent().css("display", "block");
+	}
+	else {
+		$("#id_form-0-add_name").prop({ 'required': false });
+		$("#id_form-0-add_name").parent().parent().css("display", "none");
+	}
+});
 
 
 //...function for switching between different tabs...//
@@ -182,29 +207,26 @@ function editfunction(obj) {
 	})
 
 
-	// document.getElementById('editTshirtForm').style.display = 'block'
-	// var x = Array.from(document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td'));
-	// var y = document.getElementById('editTshirtForm').getElementsByTagName('input');
-	// var mySelect = document.getElementById('editTshirtForm').getElementsByTagName('select');
-	// var txtarea = document.getElementById('editTshirtForm').getElementsByTagName('textarea')
+	// var url = $("#addForm").attr("data-users-url");
+	// debugger;  
+	// $.ajax({                     // initialize an AJAX request
+	//     type: "GET",
+	// 	url: url,
+	// 	dataType: "html",
+	// 	success: function (response) {
+	// 		debugger;
+	// 		$("#paid_by").html(response);
 
-	// for (var i, j = 0; i = mySelect[0].options[j]; j++) {
-	// 	if (x[1].textContent == i.value) {
-	// 		mySelect[0].selectedIndex = j;
-	// 		mySelect[0].style.pointerEvents = 'none';
-	// 		x.splice(1,1);
-	// 		break;
-	// 	}
-	// }
+	// 		var paid_by = x[7].textContent.split(/(\s+)/)[0]
+	// 		for (var i, j = 0; i = mySelect[3].options[j]; j++) {
+	// 			if (paid_by == i.value) {
+	// 				mySelect[3].selectedIndex = j;
+	// 				break;
+	// 			}
+	// 		}
+    //     }
+    // });
 
-	// for (i = 0; i < (y.length-2); i++) {
-	// 	var str = x[i].textContent.trim().split(/(\s+)/);
-	// 	y[i + 1].value = str[0]
-	// }
-
-	// txtarea[0].textContent = x[x.length - 2].textContent.trim()
-
-	// document.getElementById('editTshirtForm').action = obj.id;
 
 }
 

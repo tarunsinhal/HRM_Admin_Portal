@@ -27,19 +27,18 @@ class Product_type(models.Model):
         return str(self.product_name)
 
 
-class FoodInventory(models.Model):
-    # type = models.CharField(max_length=50, choices=choices, default='Snacks')
-    type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product_type, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField()
-    price = models.PositiveIntegerField()
-    amount = models.PositiveIntegerField(null=True)
-    last_order_date = models.DateField()
-    expected_order_date = models.DateField()
-    history = HistoricalRecords()
+# class FoodInventory(models.Model):
+#     type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
+#     product = models.ForeignKey(Product_type, on_delete=models.CASCADE)
+#     quantity = models.PositiveIntegerField()
+#     price = models.PositiveIntegerField()
+#     amount = models.PositiveIntegerField(null=True)
+#     last_order_date = models.DateField()
+#     expected_order_date = models.DateField()
+#     history = HistoricalRecords()
 
-    def __str__(self):
-        return str(self.product)
+#     def __str__(self):
+#         return str(self.product)
 
 
 class recurringItems(models.Model):
@@ -55,18 +54,8 @@ class recurringItems(models.Model):
     purchase_date = models.DateField()
     next_order_date = models.DateField(null=True, blank=True)
     history = HistoricalRecords()
-    _history_date=models.DateField()
     additional_info = models.CharField(max_length=200, blank=True)
 
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = datetime.now().date()
-        print(self._history_date)
-        
     def __str__(self):
         return str(self.product)
 
@@ -76,6 +65,7 @@ class Adhoc_types(models.Model):
 
     def __str__(self):
         return str(self.type_name)
+
 
 class AdhocItems(models.Model):
     type = models.ForeignKey(Adhoc_types, on_delete=models.CASCADE)
@@ -89,9 +79,11 @@ class AdhocItems(models.Model):
     balance_amount = models.PositiveIntegerField(blank=True, default=0)
     received_date = models.DateField(blank=True, null=True)
     additional_info = models.CharField(max_length=200, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return str(self.product)
+
 
 class vendorContactList(models.Model):
     phone_regex = RegexValidator(regex=r'^\d{10}$', message="Phone number must be positive intergers.Up to 10 digits allowed.")
@@ -101,6 +93,7 @@ class vendorContactList(models.Model):
     alternate_no = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True, )
     nominal_charges = models.PositiveIntegerField(null=True, blank=True)
     aditional_info = models.CharField(max_length=200, blank=True, null=True, )
+    history = HistoricalRecords()
 
     def __str__(self):
         return str(self.service)
@@ -117,6 +110,7 @@ class repairServices(models.Model):
     payment_mode = models.CharField(max_length=50, choices=payment_mode_choices)
     next_service_date = models.DateField()
     aditional_info = models.CharField(max_length=200, blank=True)
+    history = HistoricalRecords()
 
     def __str__(self):
         return str(self.service_of)
@@ -168,7 +162,6 @@ class engagementJoining(models.Model):
     add_to_whatsapp_group = models.CharField(max_length=100, blank=True)
     remove_from_skype_group = models.CharField(max_length=100, blank=True)
     remove_from_whatsapp_group = models.CharField(max_length=100, blank=True)
-    grant_onedrive_access = models.CharField(max_length=100, blank=True)
     onedrive_access = models.CharField(max_length=100, blank=True)
     microsoft_account_created = models.CharField(max_length=100, blank=True)
     microsoft_account_deleted = models.CharField(max_length=100, blank=True)
@@ -181,7 +174,8 @@ class engagementJoining(models.Model):
     upwork_account_Add_account = models.CharField(max_length=100, blank=True)
     upwork_account_Remove_from_team = models.CharField(max_length=100, blank=True)
     upwork_account_Close_account = models.CharField(max_length=100, blank=True)
-
+    history = HistoricalRecords()
+ 
     def __str__(self):
         return str(self.employee_name)
 
