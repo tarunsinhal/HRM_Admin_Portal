@@ -205,7 +205,6 @@ $('#id_purchase_date, #id_frequency').on('change', function() {
 
 $('#purchase_date, #frequency').on('change', function() {
 	debugger;
-	// var date = this.value;
 	var purDate = $('#purchase_date').val()
 	var date = new Date(purDate);
 
@@ -230,6 +229,8 @@ $('#purchase_date, #frequency').on('change', function() {
 		$("#next_order_date").val(nextDate);
 	}
 });
+
+
 //.... for getting products list based on selected type in add product form...//
 $("#id_type").change(function () {
 	debugger
@@ -265,13 +266,13 @@ function editfunction(obj, obj2) {
 		}
 	}
 		
-	for (i = 0; i < (y.length - 5); i++) {
+	for (i = 0; i < (y.length - 6); i++) {
 		var str = x[i + 2].textContent.split(/(\s+)/);
 		y[i + 2].value = str[0]
 	}
 
-    y[7].value = x[8].textContent.split(/(\s+)/);
-	y[8].value = x[9].textContent.split(/(\s+)/);
+    y[8].value = x[8].textContent.split(/(\s+)/);
+	y[9].value = x[9].textContent.split(/(\s+)/);
 	z[0].value = x[10].textContent;
 
 	document.getElementById('editForm').action = obj.id;
@@ -324,15 +325,8 @@ function editfunction(obj, obj2) {
 			}
         }
     });
-	// var paid_by = x[7].textContent;
-	// for (var i, j = 0; i = mySelect[3].options[j]; j++) {
-	// 	if (paid_by == i.value) {
-	// 		mySelect[3].selectedIndex = j;
-	// 		break;
-	// 	}
-	// }
-
 }
+
 
 // Add Name field pops up when Other is selected in Add new Product form
 $('#id_paid_by').change(function(){
