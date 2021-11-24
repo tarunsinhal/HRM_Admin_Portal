@@ -191,7 +191,12 @@
         <div class="table-wrapper1">
             <div class="table-title">
                 {% regroup service|dictsort:'service_of' by service as service_list %}
-                <div>
+                
+                    <span style="float: left;">
+                        <span style="margin-left: 3px;">Service date:</span>
+                        <input style="margin-left: 38px;" type="date" class="inventory_datepicker_1" id="pur_min_1" name="pur_min_1" data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_1" id="pur_max_1" name="pur_max_1" data-attr-type="pur"/>
+                    </span>
+                    
                     <!-- <h2 class="font-weight-bold" style="color: black; text-align: center; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: 30px;">Service/Repair List</h2> -->
                     <a type="button" href="{% url 'operations:mro_service_history' %}">
                         <button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
@@ -202,10 +207,19 @@
                     <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right; margin: 5px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
                         <span>Import</span>
                     </button>
+                    <br>
+                    <span style="float: left;">
+                        <span style="margin-left: 3px;">Next Service date:</span>
+                        <input type="date" class="inventory_datepicker_1" id="next_min_1" name="next_min_1" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_1" id="next_max_1" name="next_max_1" data-attr-type="next"/>
+                    </span>
+                
+                    <span style="float: left; margin-left: 5px;">
+                        <i data-section-id="1" class="daterefresh fa fa-rotate-right" aria-hidden="true"></i>
+                    </span>
 
                     <div>
                         {% for service_details in service_list %}
-                        <section id="{{ vendor_details.grouper }}">
+                        <section id="1">
                             <table class="productTable1">
 
                                 <thead class="table tbl-header table-hover table-bordered">
@@ -237,7 +251,7 @@
                                         <td class="name" width=10% style="padding: 2px 5px;display: none;">{{ rows.payment_mode }}</td>
                                         <td class="last-date font-weight-bold" width=10% style="padding: 2px 5px;">{{ rows.next_service_date }}</td>
                                         <td class="name" width=15% style="padding: 2px 5px;">{{ rows.aditional_info }}</td>
-                                        <td class="name" style="display: none;">{{ vendor_details.grouper }} </td>
+                                        <td class="name" style="display: none;"> 1 </td>
                                         <td width=8% style="padding: 2px 5px;">
                                             <a id='edit/{{ rows.id }}' onclick=editfunction(this) data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" style="color: #6e6c64; padding: 0px;">
                                                 <i class="material-icons">&#xE254;</i></a> 

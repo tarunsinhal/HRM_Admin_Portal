@@ -19,36 +19,41 @@ $(document).ready(function () {
 		],
 		'pageLength': 8,
 		"bLengthChange": false,
-		"autoWidth": false,
+		"autoWidth": false,	
 		initComplete: function () {		
 			$.fn.dataTable.ext.search.push(
 				function (settings, data, dataIndex) {	
 					debugger;	
-					let activeTabId = $('.tablinks.active').attr('data-tab-id');
-					// let pur_min =$('#pur_min_'+activeTabId).val();
-					// let pur_max = $('#pur_max_'+activeTabId).val();
+					let activeTabId = "1";
+					let pur_min =$('#pur_min_'+activeTabId).val();
+					let pur_max = $('#pur_max_'+activeTabId).val();
+					let next_min =$('#next_min_'+activeTabId).val();
+					let next_max = $('#next_max_'+activeTabId).val();
 					
-					// pur_min = (pur_min != "")?new Date(pur_min):null ;
-					// pur_max = (pur_max != "")?new Date(pur_max):null;
-					
-					// let purchaseDate = new Date(data[0]);
+					pur_min = (pur_min != "")?new Date(pur_min):null;
+					pur_max = (pur_max != "")?new Date(pur_max):null;
+					next_min = (next_min != "")?new Date(next_min):null;
+					next_max = (next_max != "")?new Date(next_max):null;
+
+					let purchaseDate = new Date(data[0]);
+					let nextDate = new Date(data[8]);
 					let recordType  = data[10]
 
 					if(activeTabId == recordType){
-						if ((pur_min == null && pur_max == null )) 
+						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null )) 
 							return true;
-						if ((pur_min == null && purchaseDate <= pur_max))
+						if (((pur_min == null && purchaseDate <= pur_max) && (next_min == null && nextDate <= next_max )))
 							return true;
-						if ((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)))
+						if (((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)) || (next_max == null && (next_min != null && nextDate >= next_min ))))
 							return true;
-						if ((purchaseDate <= pur_max && purchaseDate >= pur_min))
+						if (((purchaseDate <= pur_max && purchaseDate >= pur_min) ||  (nextDate <= next_max && nextDate >= next_min)))
 							return true;
 					}else{
 						return true;
 					}	
 				}		
 			)	
-		}		
+		}
 	});	
 	select = document.getElementById('id_vendor_name');
 	var opt = document.createElement('option');
@@ -56,6 +61,23 @@ $(document).ready(function () {
     opt.innerHTML = "---------";
     select.appendChild(opt);
 });
+
+$('.inventory_datepicker_1').on('change', function (e) {
+	let selDateType = e.target.getAttribute('data-attr-type')
+	let selDateTypeVal = (selDateType == "pur")?"next":"pur";
+	let activeTabId = "1";
+	let resetDateIdMin = selDateTypeVal+"_min_"+activeTabId;
+	let resetDateIdMax = selDateTypeVal+"_max_"+activeTabId;
+	$('#'+resetDateIdMin).val('')
+	$('#'+resetDateIdMax).val('')
+	$('[data-tab-id="+activeTabId+"]').click();
+	dataTableRes.draw();
+});
+$('.daterefresh').on('click', function (e) {
+	let selSecId= e.target.getAttribute('data-section-id')
+	$('.inventory_datepicker_'+selSecId).val('');
+	dataTableRes.draw();
+})
 
 // load Paid_by dropdown
 $(document).ready(function () {

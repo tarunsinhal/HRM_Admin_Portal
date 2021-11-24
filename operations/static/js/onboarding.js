@@ -10,7 +10,7 @@ $(document).ready(function () {
 			text: 'Export',
 			title: 'Tshirt Inventory',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
 			},
 		}
 		],
@@ -33,7 +33,7 @@ $(document).ready(function () {
 			$.fn.dataTable.ext.search.push(
 				function (settings, data, dataIndex) {	
 					debugger;	
-					let activeTabId = $('.tablinks.active').attr('data-tab-id');
+					let activeTabId = "1";
 					let pur_min =$('#pur_min_'+activeTabId).val();
 					let pur_max = $('#pur_max_'+activeTabId).val();
 					let next_min =$('#next_min_'+activeTabId).val();
@@ -43,9 +43,10 @@ $(document).ready(function () {
 					pur_max = (pur_max != "")?new Date(pur_max):null;
 					next_min = (next_min != "")?new Date(next_min):null ;
 					next_max = (next_max != "")?new Date(next_max):null;
-
+					
 					let purchaseDate = new Date(data[0]);
-					let recordType  = data[7]
+					let nextDate = new Date(data[1]);
+					let recordType  = data[10]
 
 					if(activeTabId == recordType){
 						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null )) 
@@ -64,10 +65,10 @@ $(document).ready(function () {
 		}		
 	});	
 });
-$('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3').on('change', function (e) {
+$('.inventory_datepicker_1').on('change', function (e) {
 	let selDateType = e.target.getAttribute('data-attr-type')
 	let selDateTypeVal = (selDateType == "pur")?"next":"pur";
-	let activeTabId = $('.tablinks.active').attr('data-tab-id');
+	let activeTabId = "1";
 	let resetDateIdMin = selDateTypeVal+"_min_"+activeTabId;
 	let resetDateIdMax = selDateTypeVal+"_max_"+activeTabId;
 	$('#'+resetDateIdMin).val('')
@@ -466,7 +467,6 @@ $('.tshirt_ordered_quantity').on('change', function(){
 		$('#'+ error_id).attr({"required": false});
 	}
 })
-
 
 
 $('.tshirt_received_quantity').on('change', function(){
