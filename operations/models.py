@@ -1,8 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from simple_history.models import HistoricalRecords
-import datetime
-from datetime import datetime
 
 freq_choices = [('Daily', 'Daily'), ('Weekly', 'Weekly'), ('Bimonthly', 'Bimonthly'), ('Monthly', 'Monthly')]
 unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter')]
@@ -10,7 +8,7 @@ payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_acco
 t_shirt_sizes = [('XS', 'Extra-Small'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'), ('XL', 'Extra-Large'), ('XXL', 'XXL')]
 adhoc_product_types = [('1', 'Pantry'), ('2', 'Non-Pantry')]
 
-# Create your models here.
+# Create models for item_types
 class Item_types(models.Model):
     type_name = models.CharField(max_length=50)
     type_id = models.IntegerField(primary_key=True)
@@ -18,7 +16,7 @@ class Item_types(models.Model):
     def __str__(self):
         return str(self.type_name)
 
-
+# Create models for product_types
 class Product_type(models.Model):
     product_type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
     product_name = models.CharField(max_length=50)
@@ -55,6 +53,15 @@ class recurringItems(models.Model):
     next_order_date = models.DateField(null=True, blank=True)
     history = HistoricalRecords()
     additional_info = models.CharField(max_length=200, blank=True)
+    __history_date = None
+
+    @property
+    def _history_date(self):
+        return self.__history_date
+
+    @_history_date.setter
+    def _history_date(self, value):
+        self.__history_date = value
 
     def __str__(self):
         return str(self.product)
@@ -80,6 +87,15 @@ class AdhocItems(models.Model):
     received_date = models.DateField(blank=True, null=True)
     additional_info = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
+    __history_date = None
+
+    @property
+    def _history_date(self):
+        return self.__history_date
+
+    @_history_date.setter
+    def _history_date(self, value):
+        self.__history_date = value
 
     def __str__(self):
         return str(self.product)
@@ -94,6 +110,15 @@ class vendorContactList(models.Model):
     nominal_charges = models.PositiveIntegerField(null=True, blank=True)
     aditional_info = models.CharField(max_length=200, blank=True, null=True, )
     history = HistoricalRecords()
+    __history_date = None
+
+    @property
+    def _history_date(self):
+        return self.__history_date
+
+    @_history_date.setter
+    def _history_date(self, value):
+        self.__history_date = value
 
     def __str__(self):
         return str(self.service)
@@ -111,6 +136,15 @@ class repairServices(models.Model):
     next_service_date = models.DateField()
     aditional_info = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
+    __history_date = None
+
+    @property
+    def _history_date(self):
+        return self.__history_date
+
+    @_history_date.setter
+    def _history_date(self, value):
+        self.__history_date = value
 
     def __str__(self):
         return str(self.service_of)
@@ -131,6 +165,15 @@ class t_shirt_inventory(models.Model):
     additional = models.CharField(max_length=500, blank=True, null=True)
     user_name = models.CharField(max_length=50, default="Admin")
     history = HistoricalRecords()
+    __history_date = None
+
+    @property
+    def _history_date(self):
+        return self.__history_date
+
+    @_history_date.setter
+    def _history_date(self, value):
+        self.__history_date = value
     
     class Meta:
         ordering = ['-receiving_date']
@@ -175,6 +218,15 @@ class engagementJoining(models.Model):
     upwork_account_Remove_from_team = models.CharField(max_length=100, blank=True)
     upwork_account_Close_account = models.CharField(max_length=100, blank=True)
     history = HistoricalRecords()
+    __history_date = None
+
+    @property
+    def _history_date(self):
+        return self.__history_date
+
+    @_history_date.setter
+    def _history_date(self, value):
+        self.__history_date = value
  
     def __str__(self):
         return str(self.employee_name)
@@ -183,7 +235,20 @@ class engagementJoining(models.Model):
 class officeEvents(models.Model):
     date = models.DateField()
     event_name = models.CharField(max_length=100)
-    activity_planned = models.CharField(max_length=100)
-    item = models.CharField(max_length=100)
-    food = models.CharField(max_length=100)
+    activity_planned = models.CharField(max_length=100, blank=True)
+    item = models.JSONField(max_length=100, blank=True, null=True)
+    food = models.JSONField(max_length=100, blank=True, null=True)
     remarks = models.CharField(max_length=200, blank=True)
+    history = HistoricalRecords()
+    __history_date = None
+
+    @property
+    def _history_date(self):
+        return self.__history_date
+
+    @_history_date.setter
+    def _history_date(self, value):
+        self.__history_date = value
+ 
+    def __str__(self):
+        return str(self.event_name)
