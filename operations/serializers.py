@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import Item_types, Product_type, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining, officeEvents
 from django.contrib.auth.models import User
-
+from datetime import datetime
 
 # serializer class for item type in recurring section
 class ItemTypeSerializer(serializers.ModelSerializer):
@@ -23,7 +23,6 @@ class ProductSerializer(serializers.ModelSerializer):
             data['paid_by'] = data['paid_by'].strip().title()
             data['new_product'] = data['new_product'].strip().title()
             data['additional_info'] = data['additional_info'].strip().capitalize()
-            data['add_name'] = data['add_name'].strip().title()
             if data['add_name']:
                 data['paid_by'] = data['add_name'].strip().title()
             if data['new_product']:
@@ -42,11 +41,11 @@ class ProductSerializer(serializers.ModelSerializer):
         rep['product'] = instance.product.product_name
         return rep
 
-    def validate(self, data):
-        if data['purchase_date'] and data['next_order_date'] :
-            if data['purchase_date'] > data['next_order_date']:
-                raise serializers.ValidationError("Next Order date should be greater than purchase date!!!")
-        return data
+    # def validate(self, data):
+    #     if data['purchase_date'] and data['next_order_date'] :
+    #         if data['purchase_date'] > data['next_order_date']:
+    #             raise serializers.ValidationError("Next Order date should be greater than purchase date!!!")
+    #     return data
 
 
 class editProductSerializer(ProductSerializer):
@@ -67,7 +66,6 @@ class AdhocItemSerializer(serializers.ModelSerializer):
             data['paid_by'] = data['paid_by'].strip().title()
             data['additional_info'] = data['additional_info'].strip().capitalize()
             data['quantity'] = data['quantity_0'] + ' ' + data['quantity_1']
-            data['add_name'] = data['add_name'].strip().title()
             if data['add_name']:
                 data['paid_by'] = data['add_name'].strip().title()
 
@@ -85,12 +83,9 @@ class AdhocItemSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"quantity_1": "This field is required."})
         if data['amount'] == 0:
             raise serializers.ValidationError({"amount": "Amount should not be Zero."})  
-        return data
-
-    def validate(self, data):
-        if data['purchase_date'] and data['received_date'] :
-            if data['purchase_date'] > data['received_date']:
-                raise serializers.ValidationError("Received date should be greater than purchase date!!!")
+        # if data['purchase_date'] and data['received_date'] :
+        #     if data['purchase_date'] > data['received_date']:
+        #         raise serializers.ValidationError("Received date should be greater than purchase date!!!")
         return data
 
 
@@ -120,7 +115,7 @@ class vendorSerializer(serializers.ModelSerializer):
         vendor_name = data['vendor_name']
         query = vendorContactList.objects.filter(vendor_name=vendor_name, service=service).values('vendor_name')
         if query:
-            raise serializers.ValidationError({"vendor_name" : "Vendor Name already exists."})
+            raise serializers.ValidationError({"vendor_name" : "Vendor Name already exist."})
         return data
 
 
@@ -147,7 +142,7 @@ class editVendorSerializer(vendorSerializer):
             vendor_name = data['vendor_name']
             query = vendorContactList.objects.filter(vendor_name=vendor_name, service=service).values('vendor_name')
             if query:
-                raise serializers.ValidationError({"vendor_name" : "Vendor Name already exists."})
+                raise serializers.ValidationError({"vendor_name" : "Vendor Name already exist."})
         return data
 
 
@@ -165,7 +160,7 @@ class repairServicesSerializer(serializers.ModelSerializer):
             data['service_type'] = data['service_type'].strip().title()
             data['paid_by'] = data['paid_by'].strip().title()
             data['aditional_info'] = data['aditional_info'].strip().capitalize()
-            data['add_name'] = data['add_name'].strip().title()
+            # data['add_name'] = data['add_name'].strip().title()
             if data['add_name']:
                 data['paid_by'] = data['add_name'].strip().title()
             data._mutable = False
@@ -176,10 +171,10 @@ class repairServicesSerializer(serializers.ModelSerializer):
         rep['service_of'] = instance.service_of.service
         return rep
 
-    def validate(self, data):
-        if data['service_date'] and data['next_service_date'] :
-            if data['service_date'] > data['next_service_date']:
-                raise serializers.ValidationError("Next Service date should be greater than  Service date!!!")
+    # def validate(self, data):
+    #     if data['service_date'] and data['next_service_date'] :
+    #         if data['service_date'] > data['next_service_date'] :
+    #             raise serializers.ValidationError("Next Service date should be greater than  Service date!!!")
         return data
 
 class editRepairServicesSerializer(repairServicesSerializer):
@@ -194,46 +189,40 @@ class tshirtSerializer(serializers.ModelSerializer):
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
-            print(data)
-            data['form-0-paid_by'] = data['form-0-paid_by'].strip().title()
-            if data['form-0-add_name']:
-                data['form-0-paid_by'] = data['form-0-add_name'].strip().title()
+            data['paid_by'] = data['paid_by'].strip().title()
             super(tshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(tshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
-
-    # def __init__(self, instance=None, data=None, **kwargs):
-    #     if data:
-    #         data._mutable = True
-    #         data['form-0-total_quantity'] = int(data['form-0-previous_stock']) + int(data['form-0-ordered_quantity'])
-    #         data['form-0-remaining'] = int(data['form-0-total_quantity']) - int(data['form-0-allotted'])
-
-    #         print(data)
-    #         for i in range(1,6):
-    #             form_id = 'form-' + str(i)
-    #             data[form_id+'order_date'] = data['form-0-order_date']
-    #             data[form_id+'receiving_date'] = data['form-0-receiving_date']
-    #             data[form_id+'-total_quantity'] = int(data[form_id+'-previous_stock']) + int(data[form_id+'-ordered_quantity'])
-    #             data[form_id+'-remaining'] = int(data[form_id+'-total_quantity']) - int(data[form_id+'-allotted'])
-    #             data[form_id+'-paid_by'] = data['form-0-paid_by']
-    #             data[form_id+'-additional'] = data['form-0-additional']
-    #         data._mutable = False
-
-    #     super(addTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
-
+    def validate(self, data):
+        size = data['size']
+        datedata = t_shirt_inventory.objects.filter(order_date=data['order_date'], size=size).values_list('order_date')
+        print(datedata)
+        for i in range(len(data)):
+            if datedata:
+                raise serializers.ValidationError({"form-0-order_date" : "Date already exist."})
+        return data
 
 class editTshirtSerializer(serializers.ModelSerializer):
     class Meta:
         model = t_shirt_inventory
-        fields = ('size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining',
-        'paid_by', 'additional')
+        fields = ('size', 'order_date', 'receiving_date', 'previous_stock', 'ordered_quantity', 'received_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'additional')
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
+        self.orderDate = t_shirt_inventory.objects.filter(id=instance.pk).values('order_date')[0]['order_date']
         if data:
-            print(data)
+            data['paid_by'] = data['paid_by'].strip().title()
             super(editTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(editTshirtSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
+    def validate(self, data):
+        if data['order_date'] != self.orderDate:
+            size = data['size']
+            datedata = t_shirt_inventory.objects.filter(order_date=data['order_date'], size=size).values_list('order_date')
+            print(datedata)
+            for i in range(len(data)):
+                if datedata:
+                    raise serializers.ValidationError({"form-0-order_date" : "Date already exist."})
+        return data
 
 class operations_history(serializers.ModelSerializer):
     def __init__(self, model, *args, fields='__all__', **kwargs):
@@ -283,8 +272,6 @@ class joiningSerializer(serializers.ModelSerializer):
 class editJoiningSerializer(joiningSerializer):
     class Meta(joiningSerializer.Meta):
         fields = '__all__'
-        # fileds = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'grant_onedrive_access', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account']
-        
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
@@ -292,21 +279,65 @@ class EventSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
-
         if data:
             data._mutable = True
-            data['item'] = data['item_0'] + ' : ' + data['item_1']
-            data['food'] = data['food_0'] + ' : ' + data['food_1']
+            data['event_name'] = data['event_name'].strip().title()
             if data['new_event']:
-                try:
-                    p = officeEvents.objects.get(event_name=data['new_event'])
-                except:
-                    p = officeEvents.objects.create(event_name=data['new_event'])
-                    p.save()
+                data['event_name'] = data['new_event'].strip().title()
             data._mutable = False
             super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
 
+    def validate(self, data):
+        datedata = officeEvents.objects.filter(date=data['date']).values_list('date')
+        for i in range(len(data)):
+            if datedata:
+                raise serializers.ValidationError({"date" : "Date already exist."})
+        for k,v in data['item'].items() :
+            if k == '' and v != '':
+                raise serializers.ValidationError({"item_name" : "This field may not be blank."})
+            if k != '' and v == '':
+                raise serializers.ValidationError({"item_price" : "This field may not be blank."})
+        for k,v in data['food'].items() :
+            if k == '' and v != '':
+                raise serializers.ValidationError({"food_name" : "This field may not be blank."})
+            if k != '' and v == '':
+                raise serializers.ValidationError({"food_price" : "This field may not be blank."})
+        return data
+        
+class EditEventSerializer(EventSerializer):
+    class Meta(EventSerializer.Meta):
+        fields = '__all__'
+
+    def __init__(self, *args, instance=None, data=None, **kwargs):
+        self.preDate = officeEvents.objects.filter(id=instance.pk).values('date')[0]['date']
+        if data:
+            data._mutable = True
+            data['event_name'] = data['event_name'].strip().title()
+            if data['new_event']:
+                data['event_name'] = data['new_event'].strip().title()
+            data._mutable = False
+            super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
+        super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
+
+    def validate(self, data):
+        if data['date'] != self.preDate:
+            datedata = officeEvents.objects.filter(date=data['date']).values_list('date')
+            for i in range(len(data)):
+                if datedata:
+                    raise serializers.ValidationError({"date" : "Date already exist."})
+        for k,v in data['item'].items() :
+            if k == '' and v != '':
+                raise serializers.ValidationError({"item_name" : "This field may not be blank."})
+            if k != '' and v == '':
+                raise serializers.ValidationError({"item_price" : "This field may not be blank."})
+        for k,v in data['food'].items() :
+            if k == '' and v != '':
+                raise serializers.ValidationError({"food_name" : "This field may not be blank."})
+            if k != '' and v == '':
+                raise serializers.ValidationError({"food_price" : "This field may not be blank."})
+        return data
+        
 
 # class recurring_history_serializer(serializers.Serializer):
     

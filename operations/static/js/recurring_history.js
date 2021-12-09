@@ -4,8 +4,8 @@ function format ( d ) {
 	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Frequency: </span>'+d[9]+'</div><br>'+
 	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Discount: </span>'+d[10]+'</div><br>'+
 	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div></div><br>'+
-        '<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Next Order Date: </span>'+d[11]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[12]+'</div></div><br>'+
+        '<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Next Order Date: </span>'+d[12]+'</div><br>'+
+		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[13]+'</div></div><br>'+
         '</div></div>';
 }
 
@@ -16,11 +16,11 @@ function format_and_diff(d,res){
 	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Frequency: </span>'+d[9]+'</div><br>'+
 	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Discount: </span>'+d[10]+'</div><br>'+
 	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div></div><br>'+
-        '<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Next Order Date: </span>'+d[11]+'</div><br>'+
-		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[12]+'</div></div><br>'+
+        '<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Next Order Date: </span>'+d[12]+'</div><br>'+
+		'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[13]+'</div></div><br>'+
         '</div>'+
-		'<div style=" background: #FF6666; margin-bottom: 10px; padding: 10px">'+
-			'<div><p class="font-weight-bold">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
+		'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
+			'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
 	for (let key in res){
 		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
 		b += d
@@ -39,16 +39,19 @@ $(document).ready(function () {
 		buttons: [{
 			extend: 'csv',
 			text: 'Export',
+			title: 'Recurring History',
 			exportOptions: {
 				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12]
 			},
 		}
 		],
+		order: [],
 		columnDefs: [
 			{ orderable: false, targets: 4 },
 			{ orderable: false, targets: 7 },
 			{ orderable: false, targets: 8 },
-			{ orderable: false, targets: 9 }
+			{ orderable: false, targets: 9 },
+			{ orderable: false, targets: 16 }
 		],
 		
 		'pageLength': 12,
@@ -94,7 +97,6 @@ $(document).ready(function () {
 
 	 // Array to track the ids of the details displayed rows
 	 var detailRows = [];
-
 
 	// $('#history_data').on('click', function(){
 	// 	debugger

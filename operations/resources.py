@@ -1,5 +1,5 @@
 from import_export import widgets,fields,resources
-from .models import Item_types, Product_type, recurringItems, t_shirt_inventory, Adhoc_types, AdhocItems, vendorContactList, repairServices, officeEvents, Detail_types, engagementJoining 
+from .models import Item_types, Product_type, recurringItems, t_shirt_inventory, Adhoc_types, AdhocItems, vendorContactList, repairServices, officeEvents, Detail_types, engagementJoining, officeEvents 
 from import_export.widgets import ForeignKeyWidget
 
 class RecurringResource(resources.ModelResource):
@@ -25,3 +25,11 @@ class VendorResource(resources.ModelResource):
 class TshirtResource(resources.ModelResource):
     class Meta:
         model = t_shirt_inventory
+
+class officeEventsResource(resources.ModelResource):
+    class Meta:
+        model = officeEvents
+    
+    
+
+    

@@ -13,6 +13,7 @@ $(document).ready(function () {
 			},
 		}
 		],
+		order: [],
 		columnDefs: [
 			{ orderable: false, targets: 2 },
 			{ orderable: false, targets: 3 },
@@ -22,29 +23,6 @@ $(document).ready(function () {
 		'pageLength': 8,
 		"bLengthChange": false,
 		"autoWidth": false,
-		initComplete: function () {
-			$.fn.dataTable.ext.search.push(
-				function (settings, data, dataIndex) {
-					debugger;
-					let activeTabId = $('.tablinks.active').attr('data-tab-id');
-					
-					let recordType = data[6]
-
-					if (activeTabId == recordType) {
-						if ((pur_min == null && pur_max == null))
-							return true;
-						if ((pur_min == null && purchaseDate <= pur_max))
-							return true;
-						if ((pur_max == null && (pur_min != null && purchaseDate >= pur_min)))
-							return true;
-						if ((purchaseDate <= pur_max && purchaseDate >= pur_min))
-							return true;
-					} else {
-						return true;
-					}
-				}
-			)
-		}
 	});
 });
 
@@ -53,7 +31,7 @@ $(document).ready(function () {
 function editfunction(obj) {
 	debugger
 	document.getElementById('editForm').style.display = 'block'
-	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	var x = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('editForm').getElementsByTagName('input');
 	var z = document.getElementById('editForm').getElementsByTagName('textarea');
 
@@ -322,3 +300,14 @@ importVendorForm.addEventListener("submit", handleImportVendor)
 $('#staticBackdrop').on('hidden.bs.modal', function () {
 	window.location.reload();
 })
+
+// Used for three dots click event in action column
+document.querySelector('table').onclick = ({
+	target
+  }) => {
+	if (!target.classList.contains('more')) return
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== target.parentElement && d.classList.remove('activeActn')
+	)
+	target.parentElement.classList.toggle('activeActn')
+}

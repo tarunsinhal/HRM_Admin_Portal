@@ -81,6 +81,7 @@ $(document).ready(function () {
 			},
 		}
 		],
+		order: [],
 		columnDefs: [
 			{ orderable: false, targets: 2 },
 			{ orderable: false, targets: 3 },
@@ -253,7 +254,7 @@ $("#id_type").change(function () {
 function editfunction(obj, obj2) {
 	debugger;
 	document.getElementById('editForm').style.display = 'block'
-	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	var x = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('editForm').getElementsByTagName('input');
 	var z = document.getElementById('editForm').getElementsByTagName('textarea');
 	var mySelect = document.getElementById('editForm').getElementsByTagName('select');
@@ -325,6 +326,10 @@ function editfunction(obj, obj2) {
 			}
         }
     });
+	
+	var val = $("#purchase_date").val();
+	$("#next_order_date").attr('min', val)
+	
 }
 
 
@@ -366,7 +371,7 @@ function repeatfunction(obj, obj2) {
 	debugger;
 	document.getElementById('staticBackdropLabel').textContent = 'Repeat Product';
 	document.getElementById('saveNew').remove();
-	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	var x = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('addForm').getElementsByTagName('input');
 	var z = document.getElementById('addForm').getElementsByTagName('textarea');
 	var mySelect = document.getElementById('addForm').getElementsByTagName('select');
@@ -441,6 +446,10 @@ function repeatfunction(obj, obj2) {
 												nextDate = date.toISOString().slice(0,10);
 												$("#id_next_order_date").val(nextDate);
 											}
+
+											var val = $("#id_purchase_date").val();
+											$("#id_next_order_date").attr('min', val)
+
 										}	
 									}
 								}
@@ -453,6 +462,8 @@ function repeatfunction(obj, obj2) {
 			break;
 		}
 	}
+
+
 	var unit = x[3].textContent.split(/(\s+)/)[2]
 	for (var i, j = 0; i = mySelect[3].options[j]; j++) {
 		if (unit == i.value) {
@@ -469,6 +480,8 @@ function repeatfunction(obj, obj2) {
 			break;
 		}
 	}
+
+	
 }
 
 
@@ -580,6 +593,7 @@ $("#saveNew").click(function (e) {
 });
 
 
+
 //...function called when addProduct form is submitted...//
 function handleaddnewProduct(event) {
 	event.preventDefault()
@@ -603,7 +617,7 @@ function handleaddnewProduct(event) {
 			window.location.reload();
 		}
 		else {
-			alert('Next order should be greater than purchase date.')
+			alert('Unable to add data, please try again.')
 		}
 	}
 	xhr.send(myFormData)
@@ -635,7 +649,7 @@ function handleEditProduct(event) {
 			window.location.reload();
 		}
 		else {
-			alert('Next order should be greater than purchase date.')
+			alert('There is some problem in editing the product.')
 		}
 	}
 	xhr.send(myFormData)
@@ -697,7 +711,6 @@ function handleImportRecurring(event) {
 		}
 		else {
 			debugger;
-			// alert('Wrong Formate, Try again.')
 			var $parentTag = $('#id_import_file').parent();
 			if ($parentTag[0].className != "form-group mb-0 files error") {
 				$parentTag.addClass('error').prepend('<span class="error" style="color: red; font-size=12px;">Wrong Format, Try again !!!</span>');
@@ -749,6 +762,9 @@ $("#id_product").change(function () {
 						nextDate = date.toISOString().slice(0,10);
 						$("#id_next_order_date").val(nextDate);
 					}
+
+					var val = $("#id_purchase_date").val();
+					$("#id_next_order_date").attr('min', val)
 				}	
 			}
 		}
@@ -788,3 +804,39 @@ function openTab(evt, tabName) {
 
 // // Get the element with id="defaultOpen" and click on it
 $("#defaultOpen").click();
+
+// Used for three dots click event in action column
+// document.querySelector('table').onclick = ({
+// 	target
+//   }) => {
+// 	  debugger
+// 	if (!target.classList.contains('more')) return
+// 	document.querySelectorAll('.dropout.activeActn').forEach(
+// 	  (d) => d !== target.parentElement && d.classList.remove('activeActn')
+// 	)
+// 	target.parentElement.classList.toggle('activeActn')
+// }
+
+
+// Used for three dots click event in action column
+$(".dropout").on('click', function(){
+	debugger
+	if (!this.classList.contains('more')) {
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== this && d.classList.remove('activeActn')
+	)}
+	this.classList.toggle('activeActn')
+});
+
+$("#id_purchase_date").on('change', function(){
+	debugger
+	var val = $(this).val();
+	$("#id_next_order_date").attr('min', val)
+});
+
+$("#purchase_date").on('change', function(){
+	debugger
+	var val = $(this).val();
+	$("#next_order_date").attr('min', val)
+});
+	 

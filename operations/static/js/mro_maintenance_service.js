@@ -13,6 +13,7 @@ $(document).ready(function () {
 			},
 		}
 		],
+		order: [],
 		columnDefs: [
 			{ orderable: false, targets: 9 },
 			{ orderable: false, targets: 11 }
@@ -165,7 +166,7 @@ $('#paid_by').change(function(){
 function editfunction(obj) {
 	debugger
 	document.getElementById('editForm').style.display = 'block'
-	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	var x = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('editForm').getElementsByTagName('input');
 	var z = document.getElementById('editForm').getElementsByTagName('textarea');
 	var mySelect = document.getElementById('editForm').getElementsByTagName('select');
@@ -209,7 +210,6 @@ function editfunction(obj) {
 					break;
 				}
 			}
-	
 		}
 	});
 
@@ -275,10 +275,13 @@ function editfunction(obj) {
 		}
 	}
 
-	y[5].value = x[8].textContent;
+	y[6].value = x[8].textContent;
 
 	z[0].value = x[9].textContent;
 	document.getElementById('editForm').action = obj.id;
+
+	var val = $("#service_date").val();
+	$("#next_service_date").attr('min', val)
 
 }
 
@@ -387,12 +390,6 @@ $("#saveNew").click(function (e) {
 	});
 });
 
-
-// $(".form-select option").val(function(val) {
-// 	$(this).siblings('[value="'+ val +'"]').remove();
-// });
-
-
 //...function called when addProduct form is submitted...//
 function handleaddnewProduct(event) {
 	debugger
@@ -495,4 +492,27 @@ deleteForm.addEventListener("submit", handleDeleteProduct)
 //...loading page again on closing the add new product form...//
 $('#staticBackdrop').on('hidden.bs.modal', function () {
 	window.location.reload();
+});
+
+// Used for three dots click event in action column
+document.querySelector('table').onclick = ({
+	target
+  }) => {
+	if (!target.classList.contains('more')) return
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== target.parentElement && d.classList.remove('activeActn')
+	)
+	target.parentElement.classList.toggle('activeActn')
+}
+
+$("#id_service_date").on('change', function(){
+	debugger
+	var val = $(this).val();
+	$("#id_next_service_date").attr('min', val)
+});
+
+$("#service_date").on('change', function(){
+	debugger
+	var val = $(this).val();
+	$("#next_service_date").attr('min', val)
 });

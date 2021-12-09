@@ -1,5 +1,3 @@
-
-
 var minDate, maxDate, dataTableRes;
 
 //...datatable plugin for pagination and search tab in tables...//
@@ -15,6 +13,7 @@ $(document).ready(function () {
 			},
 		}
 		],
+		order: [],
 		columnDefs: [
 			{ orderable: false, targets: 0 },
 			{ orderable: false, targets: 4 },
@@ -124,12 +123,14 @@ $('#price, #quantity_0').on('keyup', function () {
 	$("#amount").val(total)
 });
 
+
 // Balance amount field calculation in Add Product Form 
 $('#amount, #advance_pay').on('keyup', function () {
 	debugger;
 	let balance = $("#amount").val() - $("#advance_pay").val();
 	$("#balance_amount").val(balance)
 });
+
 
 // Used to set balance amount based on received date for Add form
 // $('#addBtn').on('click', function() {
@@ -149,16 +150,14 @@ $('#amount, #advance_pay').on('keyup', function () {
 
 // // Get the element with id="defaultOpen" and click on it
 // document.getElementById("defaultOpen").click();
-	
 $("#defaultOpen").click();
-	
 
 
 //...called when edit button is clicked...//
 function editfunction(obj) {
 	debugger;
 	document.getElementById('editFormAdhoc').style.display = 'block'
-	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	var x = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td');
 	var y = document.getElementById('editFormAdhoc').getElementsByTagName('input');
 	var mySelect = document.getElementById('editFormAdhoc').getElementsByTagName('select');
 	var myText = document.getElementById('editFormAdhoc').getElementsByTagName('textarea');
@@ -200,6 +199,10 @@ function editfunction(obj) {
 			}
         }
     });
+
+	var val = $("#id_purchase_date").val();
+	$("#id_received_date").attr('min', val);
+	
 }
 
 // Amount field calculation in Update new Product form
@@ -331,24 +334,6 @@ $("#saveNew").click(function (e) {
 					}
 				}
 			});
-			// $('.required', $formId).each(function () {
-			// 	var inputVal = $(this).val();
-
-			// 	var $parentTag = $(this).parent();
-			// 	if (inputVal == '') {
-			// 		if($parentTag[0].className!=="col-6 error"){
-			// 			$parentTag.addClass('error').append('<span class="error" style="color: red; font-size=12px;"><i class="material-icons">&#xe001;</i>This field is required </span>');
-			// 		}
-			// 	}else{
-			// 		if($(this).nextAll().length==2){
-			// 			$parentTag.removeClass("error");
-			// 			$(this).nextAll()[1].remove();
-			// 		}else{
-			// 			$parentTag.removeClass("error");
-			// 			$(this).next().remove();
-			// 		}
-			// 	}
-			// })
 		}
 	});
 });
@@ -389,7 +374,7 @@ debugger;
 				var $parentTag = $(this).parent();
 				if (Inval[ipVal]) {
 					if ($parentTag[0].className != "col-6 error") {
-						$parentTag.addClass('error').append('<span class="error" id="err" style="color: red; font-size: 12px">' + Inval[ipVal] + '</span>')
+						$parentTag.addClass('error').append('<span class="error" id="err" style="color: red; font-size: 15px">' + Inval[ipVal] + '</span>')
 					}
 				}
 				else {
@@ -540,4 +525,24 @@ $('#staticBackdrop').on('hidden.bs.modal', function () {
 	window.location.reload();
 })
 
+// Used for three dots click event in action column
+$(".dropout").on('click', function(){
+	debugger
+	if (!this.classList.contains('more')) {
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== this && d.classList.remove('activeActn')
+	)}
+	this.classList.toggle('activeActn')
+});
 
+$("#id_purchase_date").on('change', function(){
+	debugger
+	var val = $(this).val();
+	$("#id_received_date").attr('min', val)
+});
+
+$("#purchase_date").on('change', function(){
+	debugger
+	var val = $(this).val();
+	$("#received_date").attr('min', val)
+});

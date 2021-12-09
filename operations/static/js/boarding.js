@@ -1,219 +1,3 @@
-// var editor, dataTableRes1, dataTableRes2;
-
-// // Display an Editor form that allows the user to pick the CSV data to apply to each column
-// function selectColumns ( editor, csv, header ) {
-//     var selectEditor = new $.fn.dataTable.Editor();
-//     var fields = editor.order();
- 
-//     for ( var i=0 ; i<fields.length ; i++ ) {
-//         var field = editor.field( fields[i] );
- 
-//         selectEditor.add( {
-//             label: field.label(),
-//             name: field.name(),
-//             type: 'select',
-//             options: header,
-//             def: header[i]
-//         } );
-//     }
- 
-//     selectEditor.create({
-//         title: 'Map CSV fields',
-//         buttons: 'Import '+csv.length+' records',
-//         message: 'Select the CSV column you want to use the data from for each field.',
-//         onComplete: 'none'
-//     });
- 
-//     selectEditor.on('submitComplete', function (e, json, data, action) {
-//         // Use the host Editor instance to show a multi-row create form allowing the user to submit the data.
-//         editor.create( csv.length, {
-//             title: 'Confirm import',
-//             buttons: 'Submit',
-//             message: 'Click the <i>Submit</i> button to confirm the import of '+csv.length+' rows of data. Optionally, override the value for a field to set a common value by clicking on the field below.'
-//         } );
- 
-//         for ( var i=0 ; i<fields.length ; i++ ) {
-//             var field = editor.field( fields[i] );
-//             var mapped = data[ field.name() ];
- 
-//             for ( var j=0 ; j<csv.length ; j++ ) {
-//                 field.multiSet( j, csv[j][mapped] );
-//             }
-//         }
-//     } );
-// }
- 
-// $(document).ready(function() {
-//     // Regular editor for the table
-//     editor = new $.fn.dataTable.Editor( {
-//         ajax: "../php/staff.php",
-//         table: "#boardingTable",
-//         fields: [ {
-//                 label: "Employee Name:",
-//                 name: "employee_name"
-//             }, {
-//                 label: "Email Account:",
-//                 name: "email_account"
-//             }, {
-//                 label: "Upwork Account-Add to Team:",
-//                 name: "upwork_account_Add_to_team"
-//             }, {
-//                 label: "Upwork Account-Add Account:",
-//                 name: "upwork_account_Add_account"
-//             }, {
-//                 label: "Grant Onedrive Access:",
-//                 name: "grant_onedrive_accesse"
-//             }, {
-//                 label: "Microsoft Account Created:",
-//                 name: "microsoft_account_created"
-//             }, {
-//                 label: "Gmail Account:",
-//                 name: "gmail_account"
-//             }, {
-//                 label: "Skype Id:",
-//                 name: "skype_id"
-//             }, {
-//                 label: "System Config.:",
-//                 name: "system_configration"
-//             }, {
-//                 label: "LOI:",
-//                 name: "loi"
-//             }, {
-//                 label: "Offer Letter:",
-//                 name: "offer_letter"
-//             }, {
-//                 label: "NDA-Signed:",
-//                 name: "nda_signed"
-//             }, {
-//                 label: "Joining Letter:",
-//                 name: "joining_letter"
-//             }, {
-//                 label: "Joining Docs:",
-//                 name: "joining_documents"
-//             }, {
-//                 label: "Joining Hamper:",
-//                 name: "joining_hamper"
-//             }, {
-//                 label: "Laptop-Charger:",
-//                 name: "laptop_charger"
-//             }, {
-//                 label: "Mouse:",
-//                 name: "mouse_mousePad"
-//             }, {
-//                 label: "Bag:",
-//                 name: "bag"
-//             }, {
-//                 label: "Id Card:",
-//                 name: "id_card"
-//             }, {
-//                 label: "Induction:",
-//                 name: "induction"
-//             }, {
-//                 label: "Add to Skype Group:",
-//                 name: "add_to_skype_group"
-//             }, {
-//                 label: "Add to Whatsapp Group:",
-//                 name: "add_to_whatsapp_group"
-//             }
-//         ]
-//     } );
- 
-//     // Upload Editor - triggered from the import button. Used only for uploading a file to the browser
-//     var uploadEditor = new $.fn.dataTable.Editor( {
-//         fields: [ {
-//             label: 'CSV file:',
-//             name: 'csv',
-//             type: 'upload',
-//             ajax: function ( files, done ) {
-//                 // Ajax override of the upload so we can handle the file locally. Here we use Papa
-//                 // to parse the CSV.
-//                 Papa.parse(files[0], {
-//                     header: true,
-//                     skipEmptyLines: true,
-//                     complete: function (results) {
-//                         if ( results.errors.length ) {
-//                             console.log( results );
-//                             uploadEditor.field('csv').error( 'CSV parsing error: '+ results.errors[0].message );
-//                         }
-//                         else {
-//                             selectColumns( editor, results.data, results.meta.fields );
-//                         }
- 
-//                         // Tell Editor the upload is complete - the array is a list of file
-//                         // id's, which the value of doesn't matter in this case.
-//                         done([0]);
-//                     }
-//                 });
-//             }
-//         } ]
-//     });
- 
-// 		dataTableRes1 = $('.productTable1').DataTable( {
-// 		scrollX: true,
-// 		fixedColumns:   {
-// 			left: 1,
-// 			rightColumns: 1
-// 		},
-// 		dom: 'Bfrtip',
-// 		buttons: [{
-// 			extend: 'csv',
-// 			text: 'Export',
-// 			exportOptions: {
-// 				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21]
-// 			},
-// 		},
-// 		{
-// 			text: 'Import',
-// 			action: function () {
-// 				uploadEditor.create( {
-// 					title: 'CSV file import'
-// 				} );
-// 			}
-// 		},
-// 		],
-// 		columnDefs: [
-// 			{ orderable: false, targets: 23 },
-// 		],
-// 		'pageLength': 12,
-// 		"bLengthChange": true,
-// 		"autoWidth": true,
-// 	});
-
-// 	$('#tab2').on('click', function() {
-// 		dataTableRes2 = $('.productTable2').DataTable( {
-// 			destroy: true,
-// 			scrollX: true,
-// 			fixedColumns:   {
-// 				left: 1,
-// 				rightColumns: 1
-// 			},
-// 			dom: 'Bfrtip',
-// 			buttons: [{
-// 				extend: 'csv',
-// 				text: 'Export',
-// 				exportOptions: {
-// 					columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]
-// 				},
-// 			},
-// 			// {
-// 			// 	text: 'Import',
-// 			// 	action: function () {
-// 			// 		uploadEditor.create( {
-// 			// 			title: 'CSV file import'
-// 			// 		} );
-// 			// 	}
-// 			// },
-// 			],
-// 			columnDefs: [
-// 				{ orderable: false, targets: 19 },
-// 			],
-// 			'pageLength': 12,
-// 			"bLengthChange": true,
-// 			"autoWidth": true,
-// 		});
-// 	});
-// });
-
 var dataTableRes1, dataTableRes2;
 
 //...datatable plugin for pagination and search tab in tables...//
@@ -261,6 +45,7 @@ $(document).ready(function () {
 				},
 			},
 			],
+			order: [],
 			columnDefs: [
 				{ orderable: false, targets: 19 },
 			],
@@ -414,7 +199,7 @@ function hideShow(){
 function editfunction(obj) {
 	debugger;
 	document.getElementById('editJoiningForm').style.display = 'block'
-	var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
+	var x = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td');
 	if($('.tablinks.active').attr('data-tab-id') == '1') {
 		$('.commonC').parent().show();
 		$('.joiningC').parent().show();
@@ -438,14 +223,7 @@ function editfunction(obj) {
 			y[i].children[0].value = str;
 		}
 	}
-	// document.getElementById('editJoiningForm').style.display = 'block'
-	// var x = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td');
-	// var y = document.getElementById('editJoiningForm').getElementsByTagName('input');
-
-	// for (i = 0; i < (y.length-1); i++) {
-	// 	var str = x[i].textContent;
-	// 	y[i + 1].value = str;
-	// }
+	
 	document.getElementById('editJoiningForm').action = obj.id;
 }
 
@@ -599,6 +377,15 @@ $('.btn-close').on('click', function () {
 	window.location.reload();
 })  
 
+// Used for three dots click event in action column
+$(".dropout").on('click', function(){
+	debugger
+	if (!this.classList.contains('more')) {
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== this && d.classList.remove('activeActn')
+	)}
+	this.classList.toggle('activeActn')
+});
 
 // $('input[data-toggle="tab"]').on('shown.bs.tab', function(e){
 // 	debugger;

@@ -109,7 +109,7 @@
                                                 <div class="row"
                                                     style="text-align: left; font-size: 15px; display: none;">
                                                     <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                        style="margin: 5px; text-align: left; text-transform: capitalize;">{{ field.label }}</div>
                                                     <div class="col-6" style="margin: 5px">
                                                         {{ field }}
                                                     </div>
@@ -118,7 +118,7 @@
                                             {% else %}
                                             <div class="container">
                                                 <div class="row" style="text-align: left; font-size: 15px;">
-                                                    <div class="col-4 font-weight-bold" style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                    <div class="col-4 font-weight-bold" style="margin: 5px; text-align: left; text-transform: capitalize;">{{ field.label }}</div>
                                                     <div class="col-6" style="margin: 5px">
                                                         {{ field }}
                                                         {{ field.errors }}
@@ -220,10 +220,10 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" name="saveButton"
+                                        <button type="button" class="btnStyle" name="saveButton"
                                             value="Save and Add Another" id="saveNew">Save and Add Another</button>
                                         <button type="submit" name="addButton" value="Add"
-                                            class="btn btn-primary">Add</button>
+                                            class="btnStyle">Add</button>
                                     </div>
                                 </div>
                             </div>
@@ -249,8 +249,7 @@
                                             <div class="container">
                                                 <div class="row"
                                                     style="text-align: left; font-size: 15px; display: none;">
-                                                    <div class="col-4" style="margin: 5px; text-align: center;">{{
-                                                        field.label }}</div>
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: capitalize;">{{ field.label }}</div>
                                                     <div class="col-6" style="margin: 5px">
                                                         {{ field }}
                                                     </div>
@@ -260,7 +259,7 @@
                                             <div class="container">
                                                 <div class="row" style="text-align: left; font-size: 15px;">
                                                     <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
+                                                        style="margin: 5px; text-align: left; text-transform: capitalize;">{{ field.label }}</div>
                                                     <div class="col-6" style="margin: 5px">
                                                         {{ field }}
                                                         {{ field.errors }}
@@ -271,12 +270,11 @@
                                             {% endfor %}
                                         </div>
 
-
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
+                                        <button type="button" class="btnStyle"
                                             data-bs-dismiss="modal">Close</button>
-                                        <input type="submit" value="Update" class="btn btn-primary">
+                                        <input type="submit" value="Update" class="btnStyle">
                                     </div>
                                 </div>
                             </div>
@@ -299,9 +297,9 @@
                                         Are you sure you want to delete this product?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
+                                        <button type="button" class="btnStyle"
                                             data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                        <button type="submit" class="btnStyle">Delete</button>
                                     </div>
                                 </div>
                             </div>
@@ -333,7 +331,7 @@
                                         {%endfor%}
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-secondary" id="submitBtn">Submit</button>
+                                        <button type="submit" class="btnStyle" id="submitBtn">Submit</button>
                                     </div>
                                 </div>
                             </div>
@@ -341,7 +339,6 @@
                     </form>
                 </div>
             </div>
-
         </div>
     </div>
 
@@ -375,16 +372,14 @@
                 <label for="tab5">Others</label>
 
                 <a type="button" href="{% url 'operations:inventory_recurring_history' %}">
-                <button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                <button style="margin: 6px; font-size: 14px;" class="btnStyle">
                     <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
                 </button></a>
 
                 <!-- Import Button -->
-                <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                <button data-bs-toggle="modal" data-bs-target="#importModal" style="margin: 6px; font-size: 14px;" class="btnStyle">
                     <span>Import</span>
                 </button>
-
-                
 
                 <div class="tab-panels">
                     {% for product_type in product_list %}
@@ -458,7 +453,7 @@
                                     <th width=15% style="padding: 12px;">Next Order Date</th>
                                     <th width=15% style="padding: 12px;">Additional Info</th>
                                     <td class="name" style="display: none;"> </td>
-                                    <th width=12% style="padding: 12px;">Actions</th>
+                                    <th style="padding: 12px; width: 6% !important;">Action</th>
                                 </tr>
                             </thead>
                           
@@ -477,10 +472,24 @@
                                     <td class="last-date" width=15% style="padding: 2px 5px;">{{ rows.next_order_date }}</td>
                                     <td class="name" width=15% style="padding: 2px 5px;">{{ rows.additional_info }}</td>
                                     <td class="name" style="display: none;">{{ product_type.grouper }} </td>
-                                    <td width=12% style="padding: 2px 5px;">
-                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" style="color: #6e6c64; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
-                                        <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete" style="color: #6e6c64; padding: 0px;"><i class="material-icons">&#xE872;</i></a>
-                                        <a id={{ rows.id }} onclick=repeatfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal" data-bs-target="#staticBackdrop" title="Repeat"  style="color: #6e6c64; padding: 0px;"><i class="material-icons">&#xe863;</i></a>
+                                    <td style="padding: 2px 5px;">
+                                        <div class="dropout">
+                                            <button class="more">
+                                                <span></span>
+                                                <span></span>
+                                                <span></span>
+                                            </button>
+                                            <ul>
+                                                <li><a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal" data-bs-target="#editModal"><span>Edit</span></a> 
+                                                </li>
+                                                <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                <li><a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal"><span>Delete</span></a>
+                                                </li>
+                                                <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                <li><a id={{ rows.id }} onclick=repeatfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Repeat</span></a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                     </td>
                                 </tr>
                                 {% endfor %}

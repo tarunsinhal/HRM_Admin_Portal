@@ -21,8 +21,8 @@ function format_and_diff(d,res){
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Received Date: </span>'+d[12]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[13]+'</div></div><br>'+
         '</div>'+
-		'<div style=" background: #FF6666; margin-bottom: 10px; padding: 10px">'+
-			'<div><p class="font-weight-bold">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
+		'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
+			'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
 	for (let key in res){
 		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
 		b += d
@@ -46,6 +46,7 @@ $(document).ready(function () {
 			},
 		}
 		],
+		order: [],
 		columnDefs: [
 			{ orderable: false, targets: 4 },
 			{ orderable: false, targets: 7 },

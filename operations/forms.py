@@ -43,7 +43,7 @@ class AddProducts(ModelForm):
 
     class Meta:
         model = recurringItems
-        fields = ( 'frequency', 'type', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'add_name', 'purchase_date', 'next_order_date', 'additional_info')
+        fields = ('frequency', 'type', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'add_name', 'purchase_date', 'next_order_date', 'additional_info')
         widgets = {
             'frequency': Select(attrs={'type':'text', 'class':"required form-select"}),
             'type': Select(attrs={'type':'text', 'class':"required form-select"}),
@@ -52,7 +52,7 @@ class AddProducts(ModelForm):
             'price': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
             'discount': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
             'amount': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
-            'paid_by': Select(attrs={'type':'select', 'class':"required form-select"}),
+            'paid_by': Select(attrs={'type':'select', 'class':"required form-select", 'required':True}),
             'purchase_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
             'next_order_date': DateInput(attrs={'type':'date', 'class':"form-control"}),
             'additional_info': Textarea(attrs={'type':'textarea', 'class':"form-control"})
@@ -72,7 +72,7 @@ class AddProducts(ModelForm):
 
 class EditProducts(AddProducts, ModelForm):
     class Meta(AddProducts.Meta):
-        exclude = ['type']
+        fields = ['frequency', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'add_name', 'purchase_date', 'next_order_date', 'additional_info']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -184,15 +184,14 @@ class AddRepairServicesForm(ModelForm):
 
 class EditRepairServicesForm(AddRepairServicesForm, ModelForm):
     class Meta(AddRepairServicesForm.Meta):
-        fields = '__all__'
+        fields = ['service_date', 'service_of', 'service_type', 'charges', 'vendor_name', 'contact_no', 'paid_by', 'add_name', 'payment_mode', 'next_service_date', 'aditional_info']
 
 
 class addTshirtForm(ModelForm):
     add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
     class Meta:
         model = t_shirt_inventory
-        fields = ('id', 'order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted',
-                'paid_by', 'additional')
+        fields = ('id', 'order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted', 'paid_by', 'add_name', 'additional')
         widgets = {
             'order_date': DateInput(attrs={'type':'date', 'required':True,  'class':"required form-control"}),
             'receiving_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
@@ -211,7 +210,7 @@ class addTshirtForm(ModelForm):
 
 class editTshirtForm(addTshirtForm, ModelForm):
     class Meta(addTshirtForm.Meta):
-        fields = ('size', 'receiving_date', 'previous_stock', 'ordered_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'add_name', 'additional')
+        fields = ('size', 'order_date', 'receiving_date', 'previous_stock', 'ordered_quantity', 'received_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'add_name', 'additional')
 
     
 class AddJoiningForm(ModelForm):
@@ -262,60 +261,27 @@ class ImportForm(forms.Form):
     import_file = forms.FileField(allow_empty_file=False,validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls', 'xlsx'])], label="")
 
 
-class ItemWidget(MultiWidget):
-    def __init__(self, *args, **kwargs):
-        self.widgets = [TextInput(attrs={'type':'text', 'class':"required form-control", 'placeholder':'Enter Item for Activity'}), NumberInput({'type': 'number', 'class': "required form-control", 'placeholder':'Enter Price'})]
-        super(ItemWidget, self).__init__(self.widgets, *args, **kwargs)
-
-    def decompress(self, value):
-        if value:
-            return value.split(' : ')
-        return [None, None]
-
-
-class ItemField(MultiValueField):
-    widget = ItemWidget
-
-    def __init__(self, *args, **kwargs):
-        fields = (CharField(max_length=50), IntegerField())
-        super(ItemField, self).__init__(fields, *args, **kwargs)
-
-    def compress(self, data_list):
-        return ' : '.join(data_list)
-
-class FoodWidget(MultiWidget):
-    def __init__(self, *args, **kwargs):
-        self.widgets = [TextInput(attrs={'type':'text', 'class':"required form-control", 'placeholder':'Enter Food Item'}), NumberInput({'type': 'number', 'class': "required form-control", 'placeholder':'Enter Price'})]
-        super(FoodWidget, self).__init__(self.widgets, *args, **kwargs)
-
-    def decompress(self, value):
-        if value:
-            return value.split(' : ')
-        return [None, None]
-
-
-class FoodField(MultiValueField):
-    widget = FoodWidget
-
-    def __init__(self, *args, **kwargs):
-        fields = (CharField(max_length=50), IntegerField())
-        super(FoodField, self).__init__(fields, *args, **kwargs)
-
-    def compress(self, data_list):
-        return ' : '.join(data_list)
-
-
 class AddEventForm(ModelForm):
-    new_event = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter event"}))
-    item = ItemField()
-    food = FoodField()
-    
+    new_event = CharField(max_length=50, widget=TextInput(attrs={'type': 'text', 'class': "form-control", "placeholder": "Enter event"}))
+    date = forms.DateField(
+        widget=forms.DateInput(format='%d-%m-%Y', attrs={'type':'date', 'class': "required form-select datepicker"}),
+        input_formats=('%d-%m-%Y', )
+    )
     class Meta:
         model = officeEvents
         fields = ('date', 'event_name', 'new_event', 'activity_planned', 'item', 'food', 'remarks')
+        
         widgets = {
-            'date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
+            # 'date': DateInput(format='%m-%d-%Y', attrs={'type':'date', 'class': "required form-select"}),
             'event_name': Select(attrs={'type':'select', 'class': "required form-select"}),
-            'activity_planned': TextInput(attrs={'type':'text', 'class':"required form-control"}),
+            'activity_planned': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'item': Textarea(attrs={'type':'textarea', 'class':"required form-control", 'placeholder':'Enter Item'}),
+            'food': Textarea(attrs={'type':'textarea', 'class':"required form-control", 'placeholder':'Enter Food Item'}),
             'remarks': Textarea(attrs={'type':'textarea', 'class':"form-control"})
         }
+    
+
+
+class EditEventForm(AddEventForm, ModelForm):
+    class Meta(AddEventForm.Meta):
+        fields = '__all__'

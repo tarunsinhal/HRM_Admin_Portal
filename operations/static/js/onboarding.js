@@ -14,14 +14,17 @@ $(document).ready(function () {
 			},
 		}
 		],
+		order: [],
 		columnDefs: [
-			{ orderable: false, targets: 1 },
 			{ orderable: false, targets: 2 },
 			{ orderable: false, targets: 3 },
 			{ orderable: false, targets: 4 },
 			{ orderable: false, targets: 5 },
 			{ orderable: false, targets: 6 },
-			{ orderable: false, targets: 7 }
+			{ orderable: false, targets: 7 },
+			{ orderable: false, targets: 8 },
+			{ orderable: false, targets: 9 },
+			{ orderable: false, targets: 11}
 		],
 		
 		'rowsGroup': [0, 1, 9],
@@ -140,7 +143,6 @@ $(".disable_allotted").each(function(){
 	$(this).find('input').attr({"readOnly": true})
 })
 
-
 //...called when edit button is clicked...//
 function editfunction(obj) {
 	debugger;
@@ -148,7 +150,7 @@ function editfunction(obj) {
 	document.getElementById("staticBackdropLabel").textContent = "Update Items";
 	document.getElementById("submitButton").textContent = "Update";
 
-	var date = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td')[0].textContent.trim()
+	var date = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td')[0].textContent.trim()
 	var table1 = document.getElementById('table1').getElementsByTagName('tr')
 	var table2 = document.getElementById('table2').getElementsByTagName('tr')
 
@@ -227,14 +229,14 @@ function editfunction(obj) {
 	// 		}
     //     }
     // });
-
+	var val = $("#id_form-0-order_date").val();
+	$("#id_form-0-receiving_date").attr('min', val)
 
 }
 
-
 //...called when delete button is clicked...//
 function deletefunction(obj) {
-	var date = document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td')[0].textContent.trim()
+	var date = document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td')[0].textContent.trim()
 	$.ajax({
 		type: 'GET',
 		url: $("#addTshirtForm").attr("data-edit-url"),
@@ -281,9 +283,17 @@ function handleaddnewTshirt(event) {
 		else {
 			debugger;
 			const newProduct = xhr.response
-			const newProduct1 = xhr.response
 			console.log(xhr.response)
-			alert('Next order should be greater than purchase date.....')
+			// alert('Unable to add data, Please try again.....')
+			$('.required', myForm).each(function () {
+				var ipVal = $(this).attr('name');
+				var $parentTag = $(this).parent();
+				if (newProduct[ipVal]) {
+					if (!$parentTag[0].classList.contains("error")) {
+						$parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 14px">' + newProduct[ipVal] + '</span>')
+					}
+				}
+			});	
 		}
 	}
 	xhr.send(myFormData)
@@ -292,37 +302,36 @@ function handleaddnewTshirt(event) {
 const addNewTshirtForm = document.getElementById('addTshirtForm')
 addNewTshirtForm.addEventListener("submit", handleaddnewTshirt)
 
+// //...function called when edit form is submitted...//
+// function handleTshirtEdit(event) {
+// 	event.preventDefault()
+// 	const myForm = event.target
+// 	const myFormData = new FormData(myForm)
+// 	const url = myForm.getAttribute("action")
+// 	const method = myForm.getAttribute("method")
+// 	const xhr = new XMLHttpRequest()
+// 	xhr.open(method, url)
 
-//...function called when edit form is submitted...//
-function handleTshirtEdit(event) {
-	event.preventDefault()
-	const myForm = event.target
-	const myFormData = new FormData(myForm)
-	const url = myForm.getAttribute("action")
-	const method = myForm.getAttribute("method")
-	const xhr = new XMLHttpRequest()
-	xhr.open(method, url)
+// 	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+// 	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
 
-	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
-	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+// 	const responseType = "json"
+// 	xhr.responseType = responseType
 
-	const responseType = "json"
-	xhr.responseType = responseType
+// 	xhr.onload = function () {
+// 		if (xhr.status === 201) {
+// 			const newProduct = xhr.response
+// 			window.location.reload();
+// 		}
+// 		else {
+// 			alert('Next order should be greater than purchase date.')
+// 		}
+// 	}
+// 	xhr.send(myFormData)
+// }
 
-	xhr.onload = function () {
-		if (xhr.status === 201) {
-			const newProduct = xhr.response
-			window.location.reload();
-		}
-		else {
-			alert('Next order should be greater than purchase date.')
-		}
-	}
-	xhr.send(myFormData)
-}
-
-const editTshirtForm = document.getElementById('editTshirtForm')
-editTshirtForm.addEventListener("submit", handleTshirtEdit)
+// const editTshirtForm = document.getElementById('editTshirtForm')
+// editTshirtForm.addEventListener("submit", handleTshirtEdit)
 
 
 //...function called when delete form is submitted...//
@@ -448,7 +457,6 @@ $('.tshirt_error_message').hide();
 
 $('.tshirt_ordered_quantity').on('change', function(){
 	debugger
-
 	var status = $("#id_status").val();
 	var ordered_val = $(this).find('input').val();
 	var rowIndex = $(this).parent('tr').index()
@@ -509,13 +517,20 @@ $(".tshirt_allotted").each(function(){
 })
 
 
-
 //...loading page again on closing the add new product form...//
 $('#staticBackdrop').on('hidden.bs.modal', function () {
 	window.location.reload();
 })
 
-
+// Used for three dots click event in action column
+$(".dropout").on('click', function(){
+	debugger
+	if (!this.classList.contains('more')) {
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== this && d.classList.remove('activeActn')
+	)}
+	this.classList.toggle('activeActn')
+});
 
 // let TshirtForm = document.querySelectorAll(".add-form-container")
 // let container = document.querySelector(".add-tshirt-container")
@@ -545,3 +560,8 @@ $('#staticBackdrop').on('hidden.bs.modal', function () {
 //     totalForms.setAttribute('value', `${formNum+1}`) //Increment the number of total forms in the management form
 // }
 
+$("#id_form-0-order_date").on('change', function(){
+	debugger
+	var val = $(this).val();
+	$("#id_form-0-receiving_date").attr('min', val)
+});
