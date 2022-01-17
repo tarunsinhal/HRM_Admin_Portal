@@ -12,6 +12,7 @@ urlpatterns = [
     path('inventory/recurring/delete/<str:pk>', views.deleteProducts, name='deleteProducts'),
     path('inventory/recurring/import', views.ImportrecurringView.as_view(), name='import_recurring'),
     path('ajax/load-products/', views.load_products, name='ajax_load_products'),
+    # path('ajax/inventory/recurring/addProducts', views.addProducts, name='addProducts'),
     path('ajax/load_purchase_date', views.load_purchase_date, name="ajax_load_purchase_date"),
     path('ajax/load-recurring-users/', views.load_recurring_users, name='ajax_load_recurring_users'),
     path('ajax/load-previous-recurring-data', views.load_previous_recurring_history, name="ajax_load_previous_recurring_history"),

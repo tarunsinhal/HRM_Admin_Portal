@@ -6,6 +6,7 @@
 {% block style %}
 
 
+
 <!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
 <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
@@ -15,16 +16,18 @@
 
 <link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
 
-<link href="{% static 'css/food_inventory.css' %}" rel="stylesheet">
+<link href="{% static 'css/it_inventory.css' %}" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
 
 <!-- <link href=
 "https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
          rel="stylesheet"> -->
 
 {% endblock style %}
-
 
 
 {% block content %}
@@ -41,55 +44,15 @@
                         <h2><b>IT-Inventory</b></h2>
                         <p>Manage food Inventory, find tables and data for the available stock and requirements.</p>
                     </div>
-                    <!-- <div class="col-sm-4" style="padding: 10px;">
-                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" style="background-color: #007bff">
-                            +</button>
-                    </div> -->
 
-                    <form method="POST" action="{% url 'operations:addProducts' %}" id="addForm"
-                        data-products-url="{% url 'operations:ajax_load_products' %}"
-                        data-date-url="{% url 'operations:ajax_load_purchase_date' %}" class="needs-validation">
+                    <div class="col-sm-4" style="padding-right: 15px;">
+                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="background-color: #2f8669; margin: 10px;">+</button>
+                    </div>
+                    
+                    <form method="POST" action="{% url 'IT_Infra:addInventory' %}" id="addInventoryForm"
+                        data-products-url="{% url 'IT_Infra:ajax_load_data' %}"
+                        data-item-url="{% url 'IT_Infra:ajax_load_item_data' %}" class="needs-validation">
                         {% csrf_token %}
-                        <!-- Modal -->
-                        <!-- <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-
-                                    <div class="modal-body">
-                                        <div class="row g-3">
-                                            {% for field in addProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="col-sm"
-                                                style="text-align: left; font-size: 12px; display: none;">
-                                                {{ field.label }}
-                                                {{ field }}
-                                            </div>
-                                            {% else %}
-                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
-                                                {{ field.label }}
-                                                {{ field }}
-                                            </div>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-secondary" id="addAnother">Save and Add
-                                            another</button>
-                                        <input type="button" value="Add" id="saveNew" class="btn btn-primary">
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
-
-
 
                         <!-- Modal -->
                         <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -103,133 +66,92 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
-                                            {% for field in addProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="container">
-                                                <div class="row"
-                                                    style="text-align: left; font-size: 15px; display: none;">
-                                                    <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
-                                                    <div class="col-6" style="margin: 5px">
-                                                        {{ field }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% else %}
                                             <div class="container">
                                                 <div class="row" style="text-align: left; font-size: 15px;">
-                                                    <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
-                                                    <div class="col-6" style="margin: 5px">
-                                                        {{ field }}
-                                                        {{ field.errors }}
+                                                    <div class="col">
+                                                        <div class="font-weight-bold"
+                                                            style="margin: 5px;">{{ addInventoryForm.type.label }}</div>
+                                                        <div style="margin: 5px 5px 10px 5px">
+                                                            {{ addInventoryForm.type }}
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col">
+                                                        <div class="font-weight-bold"
+                                                            style="margin: 5px;">{{ addInventoryForm.item.label }}</div>
+                                                        <div style="margin: 5px 5px 10px 5px">
+                                                            {{ addInventoryForm.item }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col" style="display: none;">
+                                                        <div class="font-weight-bold" style="margin: 5px;">{{ addInventoryForm.new_item.label }}</div>
+                                                        <div style="margin: 5px 5px 10px 5px;">{{ addInventoryForm.new_item }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">{{ addInventoryForm.details.label }}</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">{{ addInventoryForm.details }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 5px;">{{ addInventoryForm.name.label }}</div>
+                                                        <div class="row" style="margin: 5px 5px 10px 5px;"><div class="col" style="padding: 0px; margin: 0px 5px 10px 0px;"><input type="text" name="item_base_name" id="item_base_name" class="form-control chk" required></div> 	&#8211; <div class="col" style="padding: 0px; margin: 0px 5px 10px 5px;"><input type="number" name="item_number" id="item_number" class="form-control" min="0" required></div></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" style="display: none;" id="validity_input">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="text-align: left;">Validity</div>
+                                                        <div class="row" style="margin: 5px 5px 10px 5px;">
+                                                            <div class="col" style="padding: 0px;">
+                                                                <div style="text-align: left;">Start Date</div>
+                                                                <div style="padding: 0px; margin: 0px 5px 10px 0px;">{{ addInventoryForm.validity_start_date }}</div> 
+                                                            </div>
+                                                            <div class="col" style="padding: 0px;">
+                                                                <div style="text-align: left;">End Date</div>
+                                                                <div style="padding: 0px; margin: 0px 5px 10px 5px;">{{ addInventoryForm.validity_end_date }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" style="display: none;" id="system_names_input">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">System names</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">
+                                                            <select class="js-multiple-system-select form-select" style="width: 100%" multiple="multiple" name="system_names">
+                                                                {% for option in system_names %}
+                                                                <option value="{{ option.id }}">{{ option.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">{{ addInventoryForm.purchase_type.label }}</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">{{ addInventoryForm.purchase_type }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">{{ addInventoryForm.remarks.label }}</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">{{ addInventoryForm.remarks }}</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% endif %}
-                                            {% endfor %}
-
-
-
-
-                                            <!-- <div class="container">
-                                                <div class="row">
-                                                    <div class="col mb-2" style="text-align: left;">
-                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px;">                                                           
-                                                            {{ addProductsForm.type.label }}</div>
-                                                        <div style="margin-bottom: 15px; padding: 0px;">
-                                                            {{ addProductsForm.type }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col mb-2" style="text-align: left;">
-                                                        <div class="form-label font-weight-bold" style="padding: 0px;  margin-bottom: 2px; ">
-                                                            {{ addProductsForm.product.label }}</div>                                                      
-                                                            <div style="margin-bottom: 10px; padding: 0px;">                                                                
-                                                                {{ addProductsForm.product }}
-                                                            </div>
-                                                            <div style="padding: 0px;">
-                                                                {{ addProductsForm.new_product }}
-                                                            </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col mb-2" style="text-align: left;">
-                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; ">
-                                                            {{ addProductsForm.quantity.label }}</div>
-                                                        <div style="margin-bottom: 15px; padding: 0px;">
-                                                            {{ addProductsForm.quantity }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col mb-2" style="text-align: left;">                                                    
-                                                        <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; ">
-                                                            {{ addProductsForm.unit.label }} </div>
-                                                        <div class="col g-2"
-                                                            style="margin-bottom: 15px; padding: 0px;">
-                                                            {{ addProductsForm.unit }}
-                                                        </div>                                                
-                                                    </div>
-                                                </div>
-
-                                                <div class="row">
-                                                    <div class="col mb-2" style="text-align: left;">
-                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
-                                                            {{ addProductsForm.purchased_quantity.label }} </div>
-                                                        <div
-                                                            style="margin-bottom: 15px; padding: 0px;">
-                                                            {{ addProductsForm.purchased_quantity }}
-                                                        </div>
-                                                    </div>                                                    
-                                                </div>
-                                                <div class="col mb-2" style="text-align: left;">
-                                                    <div class="col-2 form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
-                                                        {{ addProductsForm.price.label }}
-                                                    </div>
-                                                    <div class="col-4 input-group"
-                                                        style="margin-bottom: 15px; padding: 0px;">
-                                                        <span class="input-group-text">&#x20b9;</span>
-                                                        {{ addProductsForm.price }}
-                                                        <span class="helptext">100 characters max.</span>
-                                                    </div>
-                                                </div>
-                                                <div class="col mb-2" style="text-align: left;">
-                                                    <div class="col-2 form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
-                                                        {{ addProductsForm.amount.label }}
-                                                    </div>
-                                                    <div class="col-4 input-group"
-                                                        style="margin-bottom: 15px; padding: 0px;">
-                                                        <span class="input-group-text">&#x20b9;</span>
-                                                        {{ addProductsForm.amount }}
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <div class="col mb-2" style="text-align: left;">
-                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
-                                                            {{ addProductsForm.last_order_date.label }}
-                                                        </div>
-                                                        <div
-                                                            style="margin-bottom: 15px; padding: 0px;">
-                                                            {{ addProductsForm.last_order_date }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="col mb-2" style="text-align: left;">
-                                                        <div class="form-label font-weight-normal" style="padding: 0px; margin-bottom: 2px; ">
-                                                            {{ addProductsForm.expected_order_date.label }}
-                                                        </div>
-                                                        <div style="margin-bottom: 15px; padding: 0px;">
-                                                            {{ addProductsForm.expected_order_date }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div> -->
-
-
-
-
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" name="saveButton"
-                                            value="Save and Add Another" id="saveNew">Save and Add Another</button>
                                         <button type="submit" name="addButton" value="Add"
                                             class="btn btn-primary">Add</button>
                                     </div>
@@ -238,7 +160,7 @@
                         </div>
                     </form>
 
-                    <form method="POST" id="editForm">
+                    <form method="POST" id="editInventoryForm">
                         {% csrf_token %}
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -249,51 +171,92 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
-                                        <!-- <div class="row g-3">
-                                            {% for field in editProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="col-sm"
-                                                style="text-align: left; font-size: 12px; display: none;">
-                                                {{ field }}
-                                            </div>
-                                            {% else %}
-                                            <div class="col-sm" style="text-align: left; font-size: 12px;">
-                                                {{ field.label }}
-                                                {{ field }}
-                                            </div>
-                                            {% endif %}
-                                            {% endfor %}
-                                        </div> -->
+                                    <div class="modal-body">                                        
 
                                         <div class="row g-3">
-                                            {% for field in editProductsForm %}
-                                            {% if field.is_hidden %}
-                                            <div class="container">
-                                                <div class="row"
-                                                    style="text-align: left; font-size: 15px; display: none;">
-                                                    <div class="col-4" style="margin: 5px; text-align: center;">{{
-                                                        field.label }}</div>
-                                                    <div class="col-6" style="margin: 5px">
-                                                        {{ field }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {% else %}
                                             <div class="container">
                                                 <div class="row" style="text-align: left; font-size: 15px;">
-                                                    <div class="col-4 font-weight-bold"
-                                                        style="margin: 5px; text-align: center;">{{ field.label }}</div>
-                                                    <div class="col-6" style="margin: 5px">
-                                                        {{ field }}
-                                                        {{ field.errors }}
+                                                    <div class="col">
+                                                        <div class="font-weight-bold"
+                                                            style="margin: 5px;">{{ editInventoryForm.item.label }}</div>
+                                                        <div style="margin: 5px 5px 10px 5px">
+                                                            {{ editInventoryForm.item }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col" style="display: none;">
+                                                        <div class="font-weight-bold" style="margin: 5px;">{{ editInventoryForm.new_item.label }}</div>
+                                                        <div style="margin: 5px 5px 10px 5px;">{{ editInventoryForm.new_item }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">{{ editInventoryForm.details.label }}</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">{{ editInventoryForm.details }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 5px;">{{ editInventoryForm.name.label }}</div>
+                                                        <div class="row" style="margin: 5px 5px 10px 5px;"><div class="col" style="padding: 0px; margin: 0px 5px 10px 0px;"><input type="text" name="item_base_name" id="item_base_name" class="form-control chk" required></div> 	&#8211; <div class="col" style="padding: 0px; margin: 0px 5px 10px 5px;"><input type="number" name="item_number" id="item_number" class="form-control" min="0"></div></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">{{ editInventoryForm.status.label }}</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">{{ editInventoryForm.status }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" style="display: none;" id="edit_validity_input">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="text-align: left;">Validity</div>
+                                                        <div class="row" style="margin: 5px 5px 10px 5px;">
+                                                            <div class="col" style="padding: 0px;">
+                                                                <div style="text-align: left;">Start Date</div>
+                                                                <div style="padding: 0px; margin: 0px 5px 10px 0px;">{{ editInventoryForm.validity_start_date }}</div> 
+                                                            </div>
+                                                            <div class="col" style="padding: 0px;">
+                                                                <div style="text-align: left;">End Date</div>
+                                                                <div style="padding: 0px; margin: 0px 5px 10px 5px;">{{ editInventoryForm.validity_end_date }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row" style="display: none;" id="edit_system_names_input">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">System Names</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">
+                                                            <select class="js-multiple-system-select form-select" style="width: 100%" multiple="multiple" name="system_names" id="edit_system_names">
+                                                                {% for option in system_names %}
+                                                                <option value="{{ option.id }}">{{ option.name }}</option>
+                                                                {% endfor %}
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">{{ editInventoryForm.purchase_type.label }}</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">{{ editInventoryForm.purchase_type }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <div class="font-weight-bold" style="margin: 10px 5px 5px 5px; text-align: left;">{{ editInventoryForm.remarks.label }}</div>
+                                                        <div style="margin: 0px 5px 10px 5px; text-align: left;">{{ editInventoryForm.remarks }}</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            {% endif %}
-                                            {% endfor %}
                                         </div>
-
 
                                     </div>
                                     <div class="modal-footer">
@@ -331,16 +294,67 @@
                         </div>
                     </form>
 
-                    
+                    <form method="POST" enctype="multipart/form-data" id="importRecurringForm" action="{% url 'operations:import_recurring' %}">
+                        {% csrf_token %}
+                        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content"
+                                    style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Import</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {%for field in importForm%}
+                                            {%if field.field.widget.input_type == 'file'%}
+                                                <div class="form-group mb-0 files">
+                                                    {{field}}
+                                                </div>
+                                                <p style="color: darkblue; font-size: 13px; margin-left: 5px; margin-top: 5px;">{ Supported .csv file extension }</p>
+                                            {%else%}
+                                                {{field}}
+                                            {%endif%}
+                                        {%endfor%}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-secondary" id="submitBtn">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
                 </div>
             </div>
 
         </div>
     </div>
 
-    <button style="padding: 8px; float: right;" class="btn btn-primary">Add Bag</button>
-    <button style="padding: 8px; float: right;" class="btn btn-primary">Add Mouse</button>
-    <button style="padding: 8px; float: right;" class="btn btn-primary">Add Laptop</button>
+
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn" style="padding: 5px; background-color: #5f4266; color: white; font-size: 14px;" value="Back" onclick="history.back()">
+    </form>
+    <!-- <button style="padding: 8px; float: left;" class="btn btn-primary"  data-bs-toggle="modal"
+    data-bs-target="#staticBackdrop" id="addLaptop">Add Laptop</button>
+    <button style="padding: 8px; float: left;" class="btn btn-primary"  data-bs-toggle="modal"
+    data-bs-target="#staticBackdrop" id="addMouse">Add Mouse</button>
+    <button style="padding: 8px; float: left;" class="btn btn-primary" data-bs-toggle="modal"
+    data-bs-target="#staticBackdrop" id="addBag">Add Bag</button> -->
+    
+
+    <a type="button" href="{% url 'IT_Infra:inventoryHistory' %}">
+        <button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;" class="btn">
+        <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+        </button>
+    </a>
+
+    <!-- Import Button -->
+    <button data-bs-toggle="modal" data-bs-target="#importModal" style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+        <span>Import</span>
+    </button>
 
 
 
@@ -348,25 +362,23 @@
         <div class="table-wrapper1">
             <div class="table-title">
 
-            {% regroup products|dictsort:'type' by type as product_list %}
+            {% regroup inventory_data|dictsort:'type' by type as data_list %}
 
             <div class="tabset">
                 <!-- Tab 1 -->
                 <input type="radio" data-tab-id ="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openTab(event, '1')">
-                <label for="defaultOpen">Laptop</label>
+                <label for="defaultOpen">Hardware</label>
                 <!-- Tab 2 -->
                 <input type="radio" data-tab-id ="2" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
-                    onclick="openTab(event, 2)">
-                <label for="tab2">Mouse</label>
-                <!-- Tab 3 -->
-                <input type="radio" data-tab-id ="3" name="tabset" id="tab3" class="tablinks" aria-controls="Others"
-                    onclick="openTab(event, 3)">
-                <label for="tab3">Laptop Bag</label>
+                    onclick="openTab(event, '2')">
+                <label for="tab2">Software</label>
+               
 
                 <div class="tab-panels">
-                    {% for product_type in product_list %}
-                    <section class="tab-panel" id={{ product_type.grouper }}>
-                        <table class="productTable1">
+                    {% for data in data_list %}
+                    <section class="tab-panel" id="section-{{ data.grouper }}">
+
+                        <table class="inventoryTable table-bordered table table-hover">
                             
                             <!-- <div class="tbl-header table-hover"> -->
                             <!-- <table class="table table-hover table-bordered"> -->
@@ -392,7 +404,7 @@
                                 </div> -->
 
 
-                                <div class="col-md-12" style="padding-bottom: 5px;">
+                                <!-- <div class="col-md-12" style="padding-bottom: 5px;">
                                     <span>
                                        <span class="font-weight-bold">Purchase date: </span> <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="pur_min_{{ product_type.grouper }}" name="pur_min_{{ product_type.grouper }}"data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_{{ product_type.grouper }}" id="pur_max_{{ product_type.grouper }}" name="pur_max_{{ product_type.grouper }}" data-attr-type="pur"/>
                                     </span>
@@ -402,25 +414,25 @@
                                     </span>
                                     <span>
                                         <i data-section-id="{{product_type.grouper }}" class="daterefresh fa fa-refresh" aria-hidden="true" style="margin-left: 20px;"></i>
-                                        <!-- <img data-section-id="{{product_type.grouper }}" class="daterefresh" src="../../static/img/refresh.jpg" height="70" style="margin-left: 20px;"> -->
                                     </span>
-                            </div>
+                            </div> -->
                             </div>
 
 
                             <thead class="table tbl-header table-hover table-bordered">
                                 <tr>
-                                    <th width=15% style="padding: 12px;">Product name</th>
-                                    <th width=10% style="padding: 12px;">Quantity</th>
-                                    <th width=12% style="padding: 12px;">Unit</th>
-                                    <th width=12% style="padding: 12px;">Price</th>
-                                    <td style="display: none;">Discount</td>
-                                    <th width=12% style="padding: 12px;">Amount</th>
-                                    <td style="display: none;">Paid By</td>
-                                    <th width=15% style="padding: 12px;">Purchase Date</th>
-                                    <th width=18% style="padding: 12px;">Next Order Date</th>
-                                    <td class="name" style="display: none;"> </td>
-                                    <th width=12% style="padding: 12px;">Actions</th>
+                                    <th width=25% style="padding: 12px;">Item</th>
+                                    <th width=25% style="padding: 12px;">Details</th>
+                                    <th width=15% style="padding: 12px;">Item name</th>
+                                    <th width=12% style="padding: 12px;">Status</th>
+                                    <th width=12% style="padding: 12px;">Allotte ID</th>
+                                    <th width=15% style="padding: 12px;">Alottee Name</th>
+                                    <th width=15% style="display: none;">Validity Start Date</th>
+                                    <th width=15% style="display: none;">Validity End Date</th>
+                                    <th width=15% style="display: none;">Purchase type</th>
+                                    <th width=15% style="display: none;">System Names</th>
+                                    <th width=15% style="padding: 12px;">Remarks</th>
+                                    <th width=8% style="padding: 12px;">Actions</th>
                                 </tr>
                             </thead>
                             <!-- </table> -->
@@ -429,29 +441,28 @@
                             <!-- <div class="tbl-content table"> -->
                             <!-- <table id="productTable"> -->
                             <tbody class="tbl-content table-bordered">
-                                {% for rows in product_type.list %}
+                                {% for rows in data.list %}
                                 <tr>
-                                    <td class="name font-weight-bold" width=15% style="border-left: 2px solid #007bff; padding: 2px 5px;">
-                                        {{ rows.product }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.quantity }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.unit }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.price }}</td>
-                                    <td style="display: none;" style="padding: 2px 5px;">{{ rows.discount }}</td>
-                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.amount }}</td>
-                                    <td style="display: none;" style="padding: 2px 5px;">{{ rows.paid_by }}</td>
-                                    <td class="last-date" width=15% style="padding: 2px 5px;">{{ rows.purchase_date }}</td>
-                                    <td class="last-date" width=18% style="padding: 2px 5px;">{{ rows.next_order_date }}</td>
-                                    <td class="name" style="display: none;">{{ product_type.grouper }} </td>
+                                    <td class="name" width=12% style="border-left: 2px solid #007bff; padding: 2px 5px;">{{ rows.item }}</td>
+                                    <td class="name" width=15%>
+                                        {{ rows.details }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.name }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.status }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.allottee_id }}</td>
+                                    <td  style="padding: 2px 5px;">{{ rows.allotte_name }}</td>
+                                    <td  style="display: none;">{{ rows.validity_start_date }}</td>
+                                    <td  style="display: none;">{{ rows.validity_end_date }}</td>
+                                    <td  style="display: none;">{{ rows.purchase_type }}</td>
+                                    <td  style="display: none;">{{ rows.system_names }}</td>
+                                    <td class="name" width=12% style="padding: 2px 5px;">{{ rows.remarks }}</td>
                                     <td width=10% style="padding: 2px 5px;">
-                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ product_type.grouper }})
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,'{{ data.grouper }}')
                                             data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
                                             style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
                                         <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
                                             data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
                                                 class="material-icons">&#xE872;</i></a>
-                                        <a id={{ rows.id }} onclick=repeatfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal"
-                                        data-bs-target="#staticBackdrop" title="Repeat"><i
-                                            class="material-icons">&#8942;</i></a>
+
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -477,12 +488,19 @@
 {% block addextra %}
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="{% static 'js/food_inventory.js' %}"></script>
+<script src="{% static 'js/it_inventory.js' %}"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script> -->
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 
 {% endblock addextra %}

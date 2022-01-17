@@ -142,9 +142,9 @@ $(document).ready(function () {
 
 
 // Add Name field pops up when Other is selected in Add new Product form
-$('#id_form-0-paid_by').change(function(){
+$('#id_form-0-paid_by').on('change', function(){
+	debugger;
 	if ($(this).val() == "Other"){
-		debugger;
 		$("#id_form-0-add_name").prop({ 'type': 'text', 'required': true });
 		$("#id_form-0-add_name").parent().parent().css("display", "block");
 	}

@@ -1,0 +1,79 @@
+<div class="row" style="margin: 5px;">
+    <div class="col-3 font-weight-bold">Employee Id:</div>
+    <div class="col">{{ employee_id }}</div>
+</div>
+
+<div class="row" style="margin: 5px;">
+    <div class="col-3 font-weight-bold">Employee Name:</div>
+    <div class="col">{{ employee_name }}</div>
+</div>
+
+<div class="col" style="margin-top: 20px;">
+
+<div class="row">
+{% if hardware_items %}
+<h5>Hardware Items</h5>
+
+<table>
+    <thead class="table tbl-header table-hover table-bordered">
+        <tr>
+            <th>Item</th>
+            <th>Item Name</th>
+            <th>Details</th>
+            <th>Additional</th>
+        </tr>
+    </thead>
+
+    <tbody class="table tab-panels tbl-content table-bordered">
+        {% for row in hardware_items %}
+        <tr>
+            <td>{{ row.item__item }}</td>
+            <td>{{ row.item_name__name }}</td>
+            <td>{{ row.details }}</td>
+            <td>{{ row.additonal }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+{% endif %}
+</div>
+
+
+<div class="row" style="margin-top: 20px;">
+{% if software_items %}
+<h5>Software Items</h5>
+
+
+<table>
+    <thead class="table tbl-header table-hover table-bordered">
+        <tr>
+            <th>Item</th>
+            <th>Item Name</th>
+            <th>Details</th>
+            <th>Validity Start Date</th>
+            <th>Validity End Date</th>
+            <th>Additional</th>
+        </tr>
+    </thead>
+
+    <tbody class="table tab-panels tbl-content table-bordered">
+        {% for row in software_items %}
+        <tr>
+            <td>{{ row.item__item }}</td>
+            <td>{{ row.item_name__name }}</td>
+            <td>{{ row.details }}</td>
+            <td>{{ row.validity_start_date }}</td>
+            <td>{{ row.validity_end_date }}</td>
+            <td>{{ row.additonal }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+
+{% endif %}
+</div>
+
+</div>

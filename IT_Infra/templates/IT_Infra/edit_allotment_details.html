@@ -1,0 +1,112 @@
+
+
+<div class="col" style="margin-top: 20px; text-align: left;">
+
+<div class="row">
+<p>Hardware Items</p>
+
+<table style="border-width: 1px;">
+    <thead class="table tbl-header table-hover table-bordered">
+        <tr>
+            <th>Item</th>
+            <th>Item Name</th>
+            <th>Details</th>
+            <th>Additional</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody class="table tab-panels tbl-content">
+       
+<!-- 
+        {% for i in initial_hardware %}
+        <tr>
+            <td class="edit_item" style="text-align: left;"><input type="checkbox" class="form-check-input edit_item" name='{{ i.item }}'
+                onclick="handleEditItemCheckboxclick(this);" value={{ i.item.id }} id='{{ i.item|lower }}' checked disabled>
+            <label for='{{ i.item|lower }}'><span>{{ i.item }}</span></label></td>
+            <td>{{ i.item_name }}</td>
+            <td>{{ i.details }}</td>
+            <td><input type="text" name="hardware-0-additional" class="form-control" maxlength="500" id="id_hardware-0-additional"></td>
+            <td>Allotted</td>
+        </tr>
+        {% endfor %} -->
+
+        {% for item, form in hardware_items %}
+        
+        <tr>
+            {% if item.item_name %}
+            <td class="edit_item" style="text-align: left;"><input type="checkbox" class="form-check-input edit_item" name='{{ item.item.name }}'
+                onclick="handleEditItemCheckboxclick(this);" value={{ form.item.value }} id='{{ form.item.auto_id }}' checked disabled>
+            <label for='{{ form.item.auto_id }}'><span>{{ item.item }}</span></label></td>
+            {% else %}
+            
+            <td class="edit_item" style="text-align: left;"><input type="checkbox" class="form-check-input" name='{{ form.item.html_name }}'
+                onclick="handleEditItemCheckboxclick(this);" value='{{ item.item.id }}' id='edit_{{ form.item.auto_id }}'>
+            <label for='edit_{{ form.item.auto_id }}'><span>{{ item.item.item }}</span></label></td>
+            {% endif %}
+            <td>{{ form.item_name }}</td>
+            <td>{{ form.details }}</td>
+            <td>{{ form.additional }}</td>
+            <td>{{ form.status }}</td>
+        </tr>
+        
+        {% endfor %}
+        
+    </tbody>
+
+</table>
+
+</div>
+
+
+<div class="row" style="margin-top: 20px; text-align: left;">
+
+<p>Software Items</p>
+
+
+<table>
+    <thead class="table tbl-header table-hover table-bordered">
+        <tr>
+            <th>Item</th>
+            <th>Item Name</th>
+            <th>Details</th>
+            <th>Validity Start Date</th>
+            <th>Validity End Date</th>
+            <th>Additional</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+
+    <tbody class="table tab-panels tbl-content">
+
+        {% for item, form in software_items %}
+        
+        <tr>
+            {% if item.item_name %}
+            <td class="edit_item" style="text-align: left;"><input type="checkbox" class="form-check-input edit_item" name='{{ item.item.name }}'
+                onclick="handleEditItemCheckboxclick(this);" value={{ form.item.value }} id='{{ form.item.auto_id }}' checked disabled>
+            <label for='{{ form.item.auto_id }}'><span>{{ item.item }}</span></label></td>
+            {% else %}
+            
+            <td class="edit_item" style="text-align: left;"><input type="checkbox" class="form-check-input" name='{{ form.item.html_name }}'
+                onclick="handleEditItemCheckboxclick(this);" value='{{ item.item.id }}' id='edit_{{ form.item.auto_id }}'>
+            <label for='edit_{{ form.item.auto_id }}'><span>{{ item.item.item }}</span></label></td>
+            {% endif %}
+            <td>{{ form.item_name }}</td>
+            <td>{{ form.details }}</td>
+            <td>{{ form.validity_start_date }}</td>
+            <td>{{ form.validity_end_date }}</td>
+            <td>{{ form.additional }}</td>
+            <td>{{ form.status }}</td>
+        </tr>
+        {% endfor %}
+        
+    </tbody>
+
+</table>
+
+
+</div>
+
+</div>
+

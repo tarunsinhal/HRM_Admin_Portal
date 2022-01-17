@@ -1,0 +1,712 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Operations-Pantry-Recurring {% endblock title %}
+
+{% block style %}
+
+
+<!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/it_allotment.css' %}" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+<!-- <link href=
+"https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css"
+         rel="stylesheet"> -->
+
+{% endblock style %}
+
+
+{% block content %}
+
+<div class="container-lg">
+    <div>
+        <div>
+            <div class="table-title">
+                <div class="row">
+                    <div class="col-sm-1">
+                        <img src="{% static 'img/employee-2.svg' %}" height="100%" width="100%" alt="...">
+                    </div>
+                    <div class="col-sm-7" id="foodtitle">
+                        <h2><b>IT-Allotment</b></h2>
+                        <p>Manage food Inventory, find tables and data for the available stock and requirements.</p>
+                    </div>
+                    <div class="col-sm-4" style="padding-right: 15px;">
+                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
+                            data-bs-target="#staticBackdrop" style="background-color: #2f8669; margin: 10px;">+</button>
+                    </div>
+
+                    <form method="POST" action="{% url 'IT_Infra:addAllotment' %}" id="addAllotmentForm"
+                        data-products-url="{% url 'IT_Infra:ajax_load_data' %}" enctype="multipart/form-data"
+                        employee-code-url="{% url 'IT_Infra:ajax_load_employee_code' %}"
+                        data-date-url="{% url 'operations:ajax_load_purchase_date' %}"
+                        data-item_name-url="{% url 'IT_Infra:ajax_load_item_name' %}"
+                        data-item_details-url="{% url 'IT_Infra:ajax_load_item_details' %}" class="needs-validation"
+                        novalidate>
+                        {% csrf_token %}
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Add New Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+
+
+                                        <!-- progressbar -->
+                                        <!-- <ul id="progressbar">
+                                                <li class="progress_active"></li>
+                                                <li></li>
+                                                <li></li>
+                                            </ul>
+                                           
+                                            <fieldset>
+                                                <h2 class="fs-title">Question 1</h2>
+                                                <h3 class="fs-subtitle">What do you consider your main strengths to be?</h3>
+                                            
+                                            <textarea class="form-control" name="CAT_Custom_1" id="CAT_Custom_1" rows="4" onkeydown="if(this.value.length>=4000)this.value=this.value.substring(0,3999);"></textarea>
+                                                <input type="button" name="next" class="next action-button" value="Next" />
+                                            </fieldset>
+                                            <fieldset>
+                                                <h2 class="fs-title">Question 2</h2>
+                                                <h3 class="fs-subtitle">What do your colleagues consider your main strengths to be?</h3>
+                                        <textarea class="form-control" name="CAT_Custom_2" id="CAT_Custom_2" rows="4" onkeydown="if(this.value.length>=4000)this.value=this.value.substring(0,3999);"></textarea>
+                                                <input type="button" name="previous" class="previous action-button" value="Previous" />
+                                                <input type="button" name="next" class="next action-button" value="Next" />
+                                            </fieldset>
+                                            <fieldset>
+                                                <h2 class="fs-title">Question 3</h2>
+                                                <h3 class="fs-subtitle">What have been your main achievements?</h3>
+                                        <textarea class="form-control" name="CAT_Custom_3" id="CAT_Custom_3" rows="4" onkeydown="if(this.value.length>=4000)this.value=this.value.substring(0,3999);"></textarea>
+                                                <input type="button" name="previous" class="previous action-button" value="Previous" />
+                                                <input type="button" name="next" class="next action-button" value="Next" />
+                                            </fieldset>
+                                          
+                                            <fieldset>
+                                                <h2 class="fs-title">Question 10</h2>
+                                                <h3 class="fs-subtitle">What postgraduate qualifications or training do you wish to obtain?</h3>
+                                        <textarea class="form-control" name="CAT_Custom_10" id="CAT_Custom_10" rows="4" onkeydown="if(this.value.length>=4000)this.value=this.value.substring(0,3999);"></textarea>
+                                                <input type="button" name="previous" class="previous action-button" value="Previous" />
+                                                <input type="submit" name="submit" class="submit action-button" value="Submit" />
+                                            </fieldset> -->
+
+                                        <!-- progressbar -->
+                                        <div class="wrapper" style="text-align: center;">
+                                            <ul id="progressbar">
+                                                <li class="progress_active" id="account"><strong>Employee
+                                                        Details</strong></li>
+                                                <li id="personal"><strong>Accounts</strong></li>
+                                                <li id="payment"><strong>Damage/Lost</strong></li>
+                                                <li id="confirm"><strong>Finish</strong></li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                                role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div> <br>
+
+
+                                        <!-- fieldsets -->
+                                        <fieldset>
+                                            <div class="form-card">
+                                                <div class="row">
+                                                </div>
+
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.employee_id.label }}
+                                                            *</label>
+                                                        {{ addForm.employee_id }}
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.employee_name.label }}
+                                                            *</label>
+                                                        {{ addForm.employee_name }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h4>Items Allotted:</h4>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <input type="checkbox" class="form-check-input" name="Hardware"
+                                                        onclick="handleTypeCheckboxclick(this);" value="hardware" id="id_hardware">
+                                                    <label for="id_hardware">
+                                                        <span>Hardware</span></label>
+                                                </div>
+
+                                                <div class="row" style="display: none; margin-left: 20px;"
+                                                    id="Hardware">
+                                                    {% for item, form in hardware_items %}
+                                                    <div class="hardware_checkbox">
+                                                        <input type="checkbox" class="form-check-input"
+                                                            name="{{ item.item }}"
+                                                            onclick="handleItemCheckboxclick(this);" value={{ item.id }}
+                                                            id="id_{{ item.item|lower }}">
+                                                        <label for="id_{{ item.item|lower }}">
+                                                            <span>{{ item.item }}</span></label>
+                                                    </div>
+                                                    <div class="row" style="display: none; margin: 10px;">
+                                                        <div class="col">
+                                                            <div>{{ form.item_name.label }}</div>
+                                                            <div>{{ form.item_name }}</div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div>{{ form.details.label }}</div>
+                                                            <div>{{ form.details }}</div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div>{{ form.additional.label }}</div>
+                                                            <div>{{ form.additional }}</div>
+                                                        </div>
+                                                        <div class="col" style="display: none;">
+                                                            <div>{{ form.item.label }}</div>
+                                                            <div>{{ form.item }}</div>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                                <div>
+                                                    <input type="checkbox" class="form-check-input" name="Software"
+                                                        onclick="handleTypeCheckboxclick(this);" value="software"
+                                                        id="id_software">
+                                                    <label for="id_software">
+                                                        <span>Software</span></label>
+                                                </div>
+
+                                                <div class="row" style="display: none; margin-left: 20px;"
+                                                    id="Software">
+                                                    {% for item, form in software_items %}
+                                                    <div>
+                                                        <input type="checkbox" class="form-check-input"
+                                                            name="{{ item.item }}"
+                                                            onclick="handleItemCheckboxclick(this);" value={{ item.id }}
+                                                            id="id_{{ item.item|lower }}">
+                                                        <label for="id_{{ item.item|lower }}">
+                                                            <span>{{ item.item }}</span></label>
+                                                    </div>
+                                                    <div class="row" style="display: none;">
+                                                        <div class="col">
+                                                            <div>{{ form.item_name.label }}</div>
+                                                            <div>{{ form.item_name }}</div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div>{{ form.details.label }}</div>
+                                                            <div>{{ form.details }}</div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div>{{ form.validity_start_date.label }}</div>
+                                                            <div>{{ form.validity_start_date }}</div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div>{{ form.validity_end_date.label }}</div>
+                                                            <div>{{ form.validity_end_date }}</div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <div>{{ form.additional.label }}</div>
+                                                            <div>{{ form.additional }}</div>
+                                                        </div>
+                                                        <div class="col" style="display: none;">
+                                                            <div>{{ form.item.label }}</div>
+                                                            <div>{{ form.item }}</div>
+                                                        </div>
+                                                    </div>
+                                                    {% endfor %}
+                                                </div>
+
+                                            </div>
+
+                                            <input type="button" name="next" class="next action-button" value="Next"
+                                                id="next1" />
+                                        </fieldset>
+
+
+                                        <fieldset>
+                                            <div class="form-card">
+                                                <div class="row">
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.office_365_Id.label }}:
+                                                        </label>
+                                                        {{ addForm.office_365_Id }}
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.official_email.label }}:
+                                                        </label>
+                                                        <div class="input-group mb-3">{{ addForm.official_email }}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.microsoft_email.label }}:
+                                                        </label>
+                                                        {{ addForm.microsoft_email }}
+                                                    </div>
+                                                    <div class="col">
+
+                                                        <label class="fieldlabels">{{ addForm.microsoft_email_password.label }}: </label>
+
+                                                        <span class="input-group flex-nowrap">
+                                                            {{ addForm.microsoft_email_password }}<span
+                                                                class="input-group-text" id="addon-wrapping"
+                                                                style="margin-bottom: 25px; margin-top: 2px;"
+                                                                onclick="togglePassword(this)"><i
+                                                                    class="fa fa-eye-slash"
+                                                                    id="basic-addon2"></i></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.skype_email.label }}:
+                                                        </label>
+                                                        {{ addForm.skype_email }}
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.skype_email_password.label }}: </label>
+                                                        <span class="input-group flex-nowrap">
+                                                            {{ addForm.skype_email_password }}<span
+                                                                class="input-group-text" id="addon-wrapping"
+                                                                style="margin-bottom: 25px; margin-top: 2px;"
+                                                                onclick="togglePassword(this)"><i
+                                                                    class="fa fa-eye-slash"
+                                                                    id="basic-addon2"></i></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <input type="button" name="next" class="next action-button" value="Next" />
+                                            <input type="button" name="previous" class="previous action-button-previous"
+                                                value="Previous" />
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-card">
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.damage.label }}: </label>
+                                                        {{ addForm.damage }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row" id="images">
+                                                    <label class="fieldlabels">Images for damage: </label>
+                                                    <div class="col">
+                                                        <input name="file[]" type="file" style="margin-bottom: 5px;">
+                                                        <!-- <button onclick="return this.parentNode.remove()" style="border: none; float: right;">Remove</button> -->
+                                                    </div>
+                                                    <!-- <div id="preview"></div> -->
+                                                </div>
+
+                                                <!-- <a><input type="button" name="add_image" id="add_image" value="Add more Image" style="padding: 2px; width: auto;"></a> -->
+                                                <a onclick="addImageInput(this)" style="color: blue;"><i
+                                                        class="fa fa-plus"></i> Add more images</a>
+
+
+
+                                                <!-- <div class="row">
+                                                    <div class="col-7">
+                                                        <h2 class="fs-title">Image Upload:</h2>
+                                                    </div>
+                                                    
+                                                </div> 
+                                                <label class="fieldlabels">Upload Your Photo:</label> <input type="file" name="pic" accept="image/*"> <label class="fieldlabels">Upload Signature Photo:</label> <input type="file" name="pic" accept="image/*"> -->
+                                            </div>
+                                            <input type="button" name="next" class="next action-button" value="Next" />
+                                            <input type="button" name="previous" class="previous action-button-previous"
+                                                value="Previous" />
+                                        </fieldset>
+
+
+                                        <fieldset>
+                                            <div class="form-card">
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ addForm.remarks.label }}: </label>
+                                                        {{ addForm.remarks }}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <input type="submit" name="next" class="action-button" value="Submit" />
+                                            <input type="button" name="previous" class="previous action-button-previous"
+                                                value="Previous" />
+                                        </fieldset>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" id="editAllotmentForm" data-edit-allotment-url="{% url 'IT_Infra:ajax_edit_allotment_details' %}">
+                        {% csrf_token %}
+                        <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Update Item</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div> 
+                                    <div class="modal-body">
+                                       
+
+                                         <!-- progressbar -->
+                                        <div class="wrapper" style="text-align: center;">
+                                            <ul id="progressbar">
+                                                <li class="progress_active" id="account"><strong>Employee
+                                                        Details</strong></li>
+                                                <li id="personal"><strong>Accounts</strong></li>
+                                                <li id="payment"><strong>Damage/Lost</strong></li>
+                                                <li id="confirm"><strong>Finish</strong></li>
+                                            </ul>
+                                        </div>
+
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                                role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                                        </div> <br>
+
+
+                                        <!-- fieldsets -->
+                                        <fieldset>
+                                            <div class="form-card">
+                                                <div class="row">
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.employee_id.label }}
+                                                            *</label>
+                                                        {{ editForm.employee_id }}
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.employee_name.label }}
+                                                            *</label>
+                                                        {{ editForm.employee_name }}
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h5>Items Allotted:</hh5>
+                                                    </div>
+                                                </div>
+
+                                                <div id="edit_allotment_body"></div>
+                                            </div>
+                                            <input type="button" name="next" class="next action-button" value="Next" />
+                                        </fieldset>
+
+
+                                        <fieldset  id="edit_accounts">
+                                            <div class="form-card">
+                                                <div class="row">
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.office_365_Id.label }}:
+                                                        </label>
+                                                        {{ editForm.office_365_Id }}
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.official_email.label }}:
+                                                        </label>
+                                                        <div class="input-group mb-3">{{ editForm.official_email }}</div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.microsoft_email.label }}:
+                                                        </label>
+                                                        {{ editForm.microsoft_email }}
+                                                    </div>
+                                                    <div class="col">
+
+                                                        <label class="fieldlabels">{{ editForm.microsoft_email_password.label }}: </label>
+
+                                                        <span class="input-group flex-nowrap">
+                                                            {{ editForm.microsoft_email_password }}<span
+                                                                class="input-group-text" id="addon-wrapping"
+                                                                style="margin-bottom: 25px; margin-top: 2px;"
+                                                                onclick="togglePassword(this)"><i
+                                                                    class="fa fa-eye-slash"
+                                                                    id="basic-addon2"></i></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.skype_email.label }}:
+                                                        </label>
+                                                        {{ editForm.skype_email }}
+                                                    </div>
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.skype_email_password.label }}: </label>
+                                                        <span class="input-group flex-nowrap">
+                                                            {{ editForm.skype_email_password }}<span
+                                                                class="input-group-text" id="addon-wrapping"
+                                                                style="margin-bottom: 25px; margin-top: 2px;"
+                                                                onclick="togglePassword(this)"><i
+                                                                    class="fa fa-eye-slash"
+                                                                    id="basic-addon2"></i></span>
+                                                        </span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <input type="button" name="next" class="next action-button" value="Next" />
+                                            <input type="button" name="previous" class="previous action-button-previous"
+                                                value="Previous" />
+                                        </fieldset>
+
+                                        <fieldset>
+                                            <div class="form-card">
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.damage.label }}: </label>
+                                                        {{ editForm.damage }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="row" id="edit_images">
+                                                    <label class="fieldlabels">Images for damage: </label>
+                                                    <div class="col">
+                                                        <input name="file[]" type="file" style="margin-bottom: 5px;">
+                                                        <!-- <button onclick="return this.parentNode.remove()" style="border: none; float: right;">Remove</button> -->
+                                                    </div>
+                                                    <!-- <div id="preview"></div> -->
+                                                </div>
+
+                                                <!-- <a><input type="button" name="add_image" id="add_image" value="Add more Image" style="padding: 2px; width: auto;"></a> -->
+                                                <a onclick="addImageInput(this)" style="color: blue;"><i
+                                                        class="fa fa-plus edit_images"></i> Add more images</a>
+
+
+                                                <!-- <div class="row">
+                                                    <div class="col-7">
+                                                        <h2 class="fs-title">Image Upload:</h2>
+                                                    </div>
+                                                    
+                                                </div> 
+                                                <label class="fieldlabels">Upload Your Photo:</label> <input type="file" name="pic" accept="image/*"> <label class="fieldlabels">Upload Signature Photo:</label> <input type="file" name="pic" accept="image/*"> -->
+                                            </div>
+                                            <input type="button" name="next" class="next action-button" value="Next" />
+                                            <input type="button" name="previous" class="previous action-button-previous"
+                                                value="Previous" />
+                                        </fieldset>
+
+
+                                        <fieldset>
+                                            <div class="form-card">
+
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <label class="fieldlabels">{{ editForm.remarks.label }}: </label>
+                                                        {{ editForm.remarks }}
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <input type="submit" name="next" class="action-button" value="Update" />
+                                            <input type="button" name="previous" class="previous action-button-previous"
+                                                value="Previous" />
+                                        </fieldset>
+
+
+                                    </div>
+                                    <!-- <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <input type="submit" value="Update" class="btn btn-primary">
+                                    </div> -->
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <form method="POST" id="deleteForm">
+                        {% csrf_token %}
+                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content"
+                                    style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this product?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Delete</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+
+                    <div class="modal fade" id="allotmentModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                            tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-allotment-url="{% url 'IT_Infra:ajax_load_allotted_items' %}">
+                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">Allotment Details</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body" id="allotment-modal-body">
+                                         
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn btn-secondary" style="padding: 5px;" value="Back" onclick="history.back()">
+    </form>
+
+
+
+    <div class="table-responsive">
+        <div class="table-wrapper1">
+            <div class="table-title">
+
+                <a type="button" href="{% url 'IT_Infra:inventoryHistory' %}"><button
+                        style="float: right; margin: 2px 5px 10px 10px; padding: 8px; cursor: pointer;"
+                        class="btn btn-secondary">
+                        <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span
+                            style="margin-left: 5px;">Version History</span>
+                    </button></a>
+
+
+                <!-- {% regroup data by item as data_list %} -->
+
+                <div class="tabset">
+
+                    <div class="tab-panels">
+                        <table class="allotmentTable">
+                            <thead class="table tbl-header table-hover table-bordered">
+                                <tr>
+                                    <th width=25% style="padding: 12px;">Employee ID</th>
+                                    <th width=25% style="padding: 12px;">Employee Name</th>
+                                    <th width=15% style="padding: 12px;">Office 365 Id</th>
+                                    <th width=12% style="padding: 12px;">Official Email</th>
+                                    <th width=12% style="padding: 12px;">Microsoft Email</th>
+                                    <th width=12% style="display: none;">Microsoft Email Password</th>
+                                    <th width=15% style="padding: 12px;">Skype Email</th>
+                                    <th width=15% style="display: none;">Skype Email Password</th>
+                                    <th width=15% style="padding: 12px;">Allotment Details</th>
+                                    <th width=8% style="padding: 12px;">Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody class="tbl-content table-bordered">
+                                {% for rows in data %}
+                                <tr>
+                                    <td class="name" width=12% style="border-left: 2px solid #007bff; ">{{ rows.employee_id }}</td>
+                                    <td class="name font-weight-bold" width=15%
+                                        style="padding: 2px 5px;">
+                                        {{ rows.employee_name }}</td>
+                                    <td class="name edit_accounts" width=12% style="padding: 2px 5px; word-wrap: break-word;">{{ rows.office_365_Id }}</td>
+                                    <td class="name edit_accounts" width=12% style="padding: 2px 5px; word-wrap: break-word;">{{ rows.official_email }}</td>
+                                    <td class="name edit_accounts" width=12% style="padding: 2px 5px; word-wrap: break-word;">{{ rows.microsoft_email }}</td>
+                                    <td class="name edit_accounts" style="display: none;">{{ rows.microsoft_email_password }}</td>
+                                    <td class="name edit_accounts" style="padding: 2px 5px; word-wrap: break-word;">{{ rows.skype_email }}</td>
+                                    <td class="name edit_accounts" style="display: none;">{{ rows.skype_email_password }}</td>
+                                    <td style="padding: 2px 5px;"><a onclick="allotmentFunction(this, '{{ rows.employee_id }}')" data-bs-toggle="modal" data-bs-target="#allotmentModal" title="Allotment Details" style="color: blue; text-decoration: underline;">Click here</a></td>
+                                    <td width=10% style="padding: 2px 5px;">
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this)
+                                            data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
+                                            style="color: #FFC107; padding: 0px;"><i
+                                                class="material-icons">&#xE254;</i></a>
+                                        <a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
+                                            data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
+                                                class="material-icons">&#xE872;</i></a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+
+{% block addextra %}
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/it_allotment.js' %}"></script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"
+    type="text/javascript"></script>
+
+<!-- <script type="text/javascript" charset="utf8" src="http://docs.jquery.com/Plugins/Validation"></script> -->
+
+<script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+
+
+{% endblock addextra %}

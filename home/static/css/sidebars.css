@@ -44,6 +44,11 @@ main {
   border-radius: 0;
 }
 
+.dropdown{
+  z-index: 999;
+}
+
+
 .btn-toggle {
   display: inline-flex;
   align-items: center;

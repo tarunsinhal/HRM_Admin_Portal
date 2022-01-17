@@ -13,7 +13,7 @@ from .serializers import ProductSerializer, editProductSerializer, tshirtSeriali
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 import requests
-from .forms import AddProducts, EditProducts, addTshirtForm, editTshirtForm, AddAdhocItemsForm, EditAdhocItemsForm, AddVendorForm, EditVendorForm, AddRepairServicesForm, EditRepairServicesForm, AddJoiningForm, EditJoiningForm, ImportForm, AddEventForm, EditEventForm
+from .forms import AddProducts, EditProducts, addTshirtForm, editTshirtForm, AddAdhocItemsForm, EditAdhocItemsForm, AddVendorForm, EditVendorForm, AddRepairServicesForm, EditRepairServicesForm, AddJoiningForm, EditJoiningForm, ImportForm, AddEventForm, EditEventForm, addTshirtForm
 from django.urls import reverse
 from home.models import notifications
 from django.contrib.auth.models import User
@@ -71,7 +71,7 @@ def engagements_onboarding_view(request):
         initial.append(data)
 
     # creating model formset factory object for creating multiple forms in tshirt inventory
-    addTshirtFormset = modelformset_factory(t_shirt_inventory, fields="__all__", form=addTshirtForm,extra=6, max_num=6)
+    addTshirtFormset = modelformset_factory(t_shirt_inventory, fields="__all__", form=addTshirtForm, extra=6, max_num=6)
     tshirt_formset = addTshirtFormset(initial=initial, queryset=t_shirt_inventory.objects.none())
 
     qs = t_shirt_inventory.objects.all().order_by("-id")
@@ -116,6 +116,7 @@ def addTshirt(request):
             else:
                 return Response(serializer.errors, status=400)
         return Response({}, status=201)
+    print(formset.errors)
     return Response({'error':formset.errors}, status=201)
 
 
@@ -308,10 +309,13 @@ def editProducts(request, pk):
         notification = notifications.objects.filter(item_id=pk)
         if notification:
             notification.delete()
+    
+    print(request.POST)
 
     serializer = editProductSerializer(instance=product, data=request.POST)
     
     if serializer.is_valid():
+        print(serializer.validated_data)
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)

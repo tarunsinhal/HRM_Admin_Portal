@@ -36,5 +36,6 @@ urlpatterns = [
     ), name='password_reset_complete'),
     path('home/', include('home.urls')),
     path('operations/', include('operations.urls')),
-    path('IT_Infra/', include('IT_Infra.urls'))
+    path('IT_Infra/', include('IT_Infra.urls')),
+    path("select2/", include("django_select2.urls")),
 ]
