@@ -1,4 +1,4 @@
-from django.core.exceptions import RequestAborted
+from django.core.exceptions import RequestAborted, ValidationError
 from django.db.models import fields
 from django.forms.utils import pretty_name
 from django.forms.widgets import DateInput
@@ -21,13 +21,14 @@ from django.forms import formset_factory, modelformset_factory
 from itertools import chain
 from django.contrib import messages
 from django.views import View
-from .resources import RecurringResource, AdhocResource, JoiningResource, VendorResource, TshirtResource, officeEventsResource
+from .resources import RecurringResource, AdhocResource, JoiningResource, ExitResource, VendorResource, TshirtResource, officeEventsResource
 import pandas as pd
 from tablib import Dataset
 import json
 import csv
 from datetime import datetime
 from django.utils import timezone
+
 
 @login_required(login_url='/auth/login')
 def operations_view(request):
@@ -73,7 +74,7 @@ def engagements_onboarding_view(request):
     addTshirtFormset = modelformset_factory(t_shirt_inventory, fields="__all__", form=addTshirtForm,extra=6, max_num=6)
     tshirt_formset = addTshirtFormset(initial=initial, queryset=t_shirt_inventory.objects.none())
 
-    qs = t_shirt_inventory.objects.all()
+    qs = t_shirt_inventory.objects.all().order_by("-id")
     serializer = tshirtSerializer(qs, many=True)
 
     importForm = ImportForm()
@@ -186,7 +187,7 @@ def load_tshirt_edit_data(request):
 # view for tshirt version history module
 @login_required(login_url='/auth/login')
 def tshirt_history(request):
-    history = t_shirt_inventory.history.all().order_by('-history_date')
+    history = t_shirt_inventory.history.filter(history_type="-").all().order_by('-history_date')
     return render(request, 'operations/tshirt_history.html', {'tshirt_history': history})
 
 # view for checking if there is any change from the previous values in version history part of tshirt inventory
@@ -214,6 +215,20 @@ def load_previous_tshirt_history(request):
     except Exception as e:
         return JsonResponse({'data': None})
 
+# view for each row version history module of tshirt inventory section
+@login_required(login_url='/auth/login')
+def tshirt_row_history(request):
+    order_date = request.GET.get('order_date')
+    tshirt_row_history = t_shirt_inventory.history.filter(order_date=order_date, history_type="+").all() | t_shirt_inventory.history.filter(order_date=order_date, history_type="~").all()
+    return render(request, 'operations/tshirt_row_history.html', {'tshirt_row_history': tshirt_row_history})
+
+# view for each row version history module of tshirt inventory deleted history section
+@login_required(login_url='/auth/login')
+def tshirt_row_deleted_history(request):
+    row_id = request.GET.get('order_date')
+    tshirt_row_history = t_shirt_inventory.history.filter(id=row_id, history_type="+" and "~").all()
+    return render(request, 'operations/tshirt_row_history.html', {'tshirt_row_history': tshirt_row_history})
+
 # import function for Tshirt_inventory
 class ImportTshirtView(View):
     context = {}
@@ -231,24 +246,20 @@ class ImportTshirtView(View):
             extension = file.name.split(".")[-1].lower()
             resource = TshirtResource()
 
-            if extension == 'csv':
-                data = data_set.load(file.read().decode('utf-8'), format=extension)
-            else:
-                return JsonResponse({},status=400)
-                # data = data_set.load(file.read(), format=extension)
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
-            if result.has_validation_errors() or result.has_errors():
-                print("error", result.invalid_rows)
-                self.context['result'] = result
-                return JsonResponse({},status=400)
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
+            #result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+            try:
+                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
                 return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
+            
         else:
             self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
-        return JsonResponse({}, status=201)
+            return JsonResponse({"error":"Invalid file format."},status=400)
 
 # view for loading paid by users in tshirt inventory module
 def load_tshirt_inventory_users(request):
@@ -270,7 +281,7 @@ def inventory_recurring_view(request):
     importForm = ImportForm()
 
     if request.method == 'GET':
-        qs = recurringItems.objects.all()
+        qs = recurringItems.objects.all().order_by("-id")
         serializer = ProductSerializer(qs, many=True)
     return render(request, 'operations/inventory_recurring.html', {'products': serializer.data, 'addProductsForm': addProductsForm, 'editProductsForm': editProducts, 'importForm': importForm})
 
@@ -346,9 +357,10 @@ class ImportrecurringView(View):
             file = request.FILES['import_file']
             extension = file.name.split(".")[-1].lower()
             resource = RecurringResource()
+            
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
 
-            if extension == 'csv':
-                data = data_set.load(file.read().decode('utf-8'), format=extension)
+            if 'type' in data:
                 for x in range(len(data)):
                     type_id = Item_types.objects.filter(type_name=data['type'][x]).values('type_id')[0]['type_id']
                     try:
@@ -356,21 +368,18 @@ class ImportrecurringView(View):
                     except:
                         p = Product_type.objects.create(product_type_id=type_id, product_name=data['product'][x])
                         p.save()
-            else:
-                return JsonResponse({},status=400)
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=True,)
-            if result.has_validation_errors() or result.has_errors():
-                print("error")
-                self.context['result'] = result
-                return JsonResponse({},status=400)
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
+            try:
+                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
                 return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
+        
         else:
             self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
-        return JsonResponse({}, status=201)
+            return JsonResponse({"error":"Invalid file format."},status=400)
 
 # view for loading paid by users in recurring module
 def load_recurring_users(request):
@@ -386,8 +395,9 @@ def load_recurring_users(request):
 # view for version history module of recurring section
 @login_required(login_url='/auth/login')
 def inventory_recurring_history(request):
-    recurring_history = recurringItems.history.all()
+    recurring_history = recurringItems.history.filter(history_type="-").all()
     return render(request, 'operations/recurring_history.html', {'recurring_history': recurring_history})
+
 
 # view for checking if there is any change from the previous values in version history part of recurring module
 def load_previous_recurring_history(request):
@@ -414,6 +424,12 @@ def load_previous_recurring_history(request):
     except Exception as e:
         return JsonResponse({'data': None})
 
+# view for each row version history module of recurring section
+@login_required(login_url='/auth/login')
+def recurring_row_history(request):
+    row_id = request.GET.get('id')
+    recurring_row_history = recurringItems.history.filter(id=row_id, history_type="+").all() | recurringItems.history.filter(id=row_id, history_type="~").all()
+    return render(request, 'operations/recurring_row_history.html', {'recurring_row_history': recurring_row_history})
 
 # view for adhoc module
 @login_required(login_url='/auth/login')
@@ -423,7 +439,7 @@ def inventory_adhoc_view(request):
     importForm = ImportForm()
 
     if request.method == 'GET':
-        qs = AdhocItems.objects.all()
+        qs = AdhocItems.objects.all().order_by("-id")
         serializer = AdhocItemSerializer(qs, many=True)
     return render(request, 'operations/inventory_adhoc.html', {'products': serializer.data, 'addAdhocProductsForm': addAdhocProductsForm, 'editAdhocProductsForm': editAdhocProductsForm, 'importForm': importForm})
 
@@ -474,22 +490,18 @@ class ImportadhocView(View):
             extension = file.name.split(".")[-1].lower()
             resource = AdhocResource()
 
-            if extension == 'csv':
-                data = data_set.load(file.read().decode('utf-8'), format=extension)
-            else:
-                return JsonResponse({},status=400)
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
-            if result.has_validation_errors() or result.has_errors():
-                self.context['result'] = result
-                return JsonResponse({},status=400)
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
+            try:
+                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
                 return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
         else:
             self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
-        return JsonResponse({}, status=201)
+            return JsonResponse({"error":"Invalid file format."},status=400)
 
 # view for loading paid by users in adhoc module
 def load_adhoc_users(request):
@@ -504,7 +516,7 @@ def load_adhoc_users(request):
 
 # view for version history module of recurring section
 def inventory_adhoc_history(request):
-    adhoc_history = AdhocItems.history.all()
+    adhoc_history = AdhocItems.history.filter(history_type="-").all()
     return render(request, 'operations/adhoc_history.html', {'adhoc_history': adhoc_history})
 
 # view for checking if there is any change from the previous values in version history part of adhoc module
@@ -532,6 +544,13 @@ def load_previous_adhoc_history(request):
     except Exception as e:
         return JsonResponse({'data': None})
 
+# view for each row version history module of adhoc section
+@login_required(login_url='/auth/login')
+def adhoc_row_history(request):
+    row_id = request.GET.get('id')
+    adhoc_row_history = AdhocItems.history.filter(id=row_id, history_type="+").all() | AdhocItems.history.filter(id=row_id, history_type="~").all()
+    return render(request, 'operations/adhoc_row_history.html', {'adhoc_row_history': adhoc_row_history})
+
 
 # view for vendor section in MRO module
 @login_required(login_url='/auth/login')
@@ -541,7 +560,7 @@ def mro_maintenance_vendor(request):
     importForm = ImportForm()
     
     if request.method == 'GET':
-        vs = vendorContactList.objects.all()
+        vs = vendorContactList.objects.all().order_by("-id")
         serializer = vendorSerializer(vs, many=True)
     
     return render(request, 'operations/mro_maintenance_vendor.html', {'vendor':serializer.data, 'addVendorForm': addVendorForm, 'editVendorForm': editVendorForm, 'importForm': importForm})
@@ -608,27 +627,24 @@ class ImportvendorView(View):
             file = request.FILES['import_file']
             extension = file.name.split(".")[-1].lower()
             resource = VendorResource()
-
-            if extension == 'csv':
-                data = data_set.load(file.read().decode('utf-8'), format=extension)
-            else:
-                return JsonResponse({},status=400)
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
-            if result.has_validation_errors() or result.has_errors():
-                self.context['result'] = result
-                return JsonResponse({},status=400)
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
+            # result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)    
+            try:
+                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
                 return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
+
         else:
             self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
-        return JsonResponse({}, status=201)
+            return JsonResponse({"error":"Invalid file format."},status=400)
 
 # view for loading vendor history in MRO module
 def mro_vendor_history(request):
-    vendor_history = vendorContactList.history.all()
+    vendor_history = vendorContactList.history.filter(history_type="-").all()
     return render(request, 'operations/vendor_history.html', {'vendor_history': vendor_history})
 
 # view for checking if there is any change from the previous values in version history part of vendor section
@@ -656,6 +672,13 @@ def load_previous_vendor_history(request):
     except Exception as e:
         return JsonResponse({'data': None})
 
+# view for each row version history module of adhoc section
+@login_required(login_url='/auth/login')
+def vendor_row_history(request):
+    row_id = request.GET.get('id')
+    vendor_row_history = vendorContactList.history.filter(id=row_id, history_type="+").all() | vendorContactList.history.filter(id=row_id, history_type="~").all()
+    return render(request, 'operations/vendor_row_history.html', {'vendor_row_history': vendor_row_history})
+
 
 # view for service section in MRO mmodule
 @login_required(login_url='/auth/login')
@@ -665,7 +688,7 @@ def mro_maintenance_service(request):
     importForm = ImportForm()
     
     if request.method == 'GET':
-        rs = repairServices.objects.all()
+        rs = repairServices.objects.all().order_by("-id")
         serializer = repairServicesSerializer(rs, many=True)
 
     return render(request, 'operations/mro_maintenance_service.html', {'service': serializer.data, 'addRepairServicesForm': addRepairServicesForm, 'editRepairServicesForm': editRepairServicesForm, 'importForm': importForm})
@@ -702,7 +725,7 @@ def deleteRepairServices(request, pk):
 
 # view for loading service history in MRO module
 def mro_service_history(request):
-    service_history = repairServices.history.all()
+    service_history = repairServices.history.filter(history_type="-").all()
     return render(request, 'operations/service_history.html', {'service_history': service_history})
 
 # view for checking if there is any change from the previous values in version history part of service section
@@ -741,6 +764,13 @@ def load_mro_users(request):
     PAID_BY.append("Other")
     return render(request, 'operations/paid_by.html', { 'paid_by': PAID_BY})
 
+# view for each row version history module of adhoc section
+@login_required(login_url='/auth/login')
+def service_row_history(request):
+    row_id = request.GET.get('id')
+    service_row_history = repairServices.history.filter(id=row_id, history_type="+").all() | repairServices.history.filter(id=row_id, history_type="~").all()
+    return render(request, 'operations/service_row_history.html', {'service_row_history': service_row_history})
+
 
 # view for onBoarding and offBoarding module in engagements section
 @login_required(login_url='/auth/login')
@@ -757,12 +787,15 @@ def engagements_on_off_boarding_view(request):
 # view for adding the joining details of an employee
 @api_view(['POST'])
 def addJoining(request):
+    print('hello123')
     engagementJoining._history_date = datetime.now()
     serializer = joiningSerializer(data=request.POST)
 
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
+    print('hello')
+    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 # view for editing the joining details of an employee
@@ -785,7 +818,7 @@ def deleteJoining(request, pk):
     employee.delete()
     return Response({}, status=201)
 
-# import-export function for on-boarding & off-boarding
+# import-export function for joining-boarding
 class ImportJoiningView(View):
     context = {}
 
@@ -802,37 +835,64 @@ class ImportJoiningView(View):
             extension = file.name.split(".")[-1].lower()
             resource = JoiningResource()
 
-            if extension == 'csv' :
-                data = data_set.load(file.read().decode('utf-8'), format=extension)
-            else:
-                return JsonResponse({},status=400)
-                # data = data_set.load(file.read(), format=extension)
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
-            if result.has_validation_errors() or result.has_errors():
-                print("error", result.invalid_rows)
-                self.context['result'] = result
-                return JsonResponse({},status=400)
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
-                return JsonResponse({}, status=201)
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
+            result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+            # try:
+            #     result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+            #     return JsonResponse({}, status=201)
+            # except ValidationError as e:
+            #     length = len(e.message_dict)
+            #     return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            # except Exception:
+            #     return JsonResponse({"error": "Check imported file & try again."},status=400)
+            return JsonResponse({}, status=201)
         else:
             self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
+            return JsonResponse({"error":"Invalid file format."},status=400)
+
+# import-export function for joining-boarding
+class ImportExitView(View):
+    context = {}
+
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
         return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = ExitResource()
+
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
+              
+            try:
+                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+                return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
+
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({"error":"Invalid file format."},status=400)
 
 # view for loading boarding history in engagements module
 def enagagements_boarding_history(request):
-    boarding_history = engagementJoining.history.all().order_by('-details_id')
+    boarding_history = engagementJoining.history.filter(history_type="-").all().order_by('-details_id')
     return render(request, 'operations/boarding_history.html', {'boarding_history': boarding_history})
 
 # view for checking if there is any change from the previous values in version history part of engagements section
 def load_previous_engagements_history(request):
-    tab_id = request.GET.get('tab_id')
     recent_id = request.GET.get('id')
     history_id = request.GET.get('history_id')
 
-    res = list(engagementJoining.history.filter(id=recent_id, details_id=int(tab_id)).order_by('-history_id').values())
+    res = list(engagementJoining.history.filter(id=recent_id).order_by('-history_id').values())
 
     a = 0
     current_data = {}
@@ -854,6 +914,13 @@ def load_previous_engagements_history(request):
     except Exception as e:
         return JsonResponse({'data': None})
 
+# view for each row version history module of adhoc section
+@login_required(login_url='/auth/login')
+def boarding_row_history(request):
+    row_id = request.GET.get('id')
+    boarding_row_history = engagementJoining.history.filter(id=row_id, history_type="+").all() | engagementJoining.history.filter(id=row_id, history_type="~").all()
+    return render(request, 'operations/boarding_row_history.html', {'boarding_row_history': boarding_row_history})
+
 
 # view for office events module
 @login_required(login_url='/auth/login')
@@ -863,7 +930,7 @@ def office_events_view(request):
     importForm = ImportForm()
 
     if request.method == 'GET':
-        ev = officeEvents.objects.all()
+        ev = officeEvents.objects.all().order_by("-id")
         serializer = EventSerializer(ev, many=True)
 
     return render(request, 'operations/office_events.html',{'officeEvents':serializer.data, 'addEventForm': addEventForm, 'editEventForm': editEventForm, 'importForm': importForm})
@@ -920,7 +987,7 @@ def export_csv(request):
                 if i < itemlen :
                     writer.writerow([event[0],event[1],event[2],list(event[3].keys())[i],list(event[3].values())[i],list(event[4].keys())[i],list(event[4].values())[i],event[5]])
                 else :
-                    writer.writerow([event[0],event[1],event[2],list(event[3].keys())[i],"Null","Null",list(event[4].keys())[i],list(event[4].values())[i],event[5]])
+                    writer.writerow([event[0],event[1],event[2],"Null","Null",list(event[4].keys())[i],list(event[4].values())[i],event[5]])
             
     return response
 
@@ -941,62 +1008,55 @@ class ImportOfficeEventsView(View):
             extension = file.name.split(".")[-1].lower()
             resource = officeEventsResource()
             
-            if extension == 'csv' :
-                df = pd.read_csv(file)
+            df = pd.read_csv(file)
+            if 'Date' in df:
                 dfnew = df.groupby('Date')
                 complete_data = []
                 for date,frame in dfnew :
+                    try:
+                        datetime.strptime(date, '%Y-%m-%d')
+                    except ValueError:
+                        return JsonResponse({"error":"Incorrect data format, should be YYYY-MM-DD."},status=400)
                     datedata = officeEvents.objects.filter(date=date).values_list('date')
-                    print(datedata)
                     if datedata:
-                        return JsonResponse({},status=400)
+                        return JsonResponse({"error":"Date is already exist."},status=400)
                     else:
-                        data_list = []
-                        item = {}
-                        food = {}
-                        # dateVal = datetime.strptime(date,"%d-%m-%Y").date()
-                        # print(type(dateVal))
-                        date = date.strftime("%Y-%m-%d")
-                        print(date)
-                        
-                        for event,activity,remark in zip(frame["Event Name"], frame["Activity Planned"], frame["Remarks"]):
-                            event_name = event
-                            activity_name = activity
-                            remark_name = remark
-                            
-                        for name, price in zip(frame["Item Name"], frame["Item Price"]):
-                            if name != "Null":
-                                item[name] = price
+                        try:
+                            data_list = []
+                            item = {}
+                            food = {}
 
-                        for name, price in zip(frame["Food Name"], frame["Food Price"]):
-                            if name != "Null":
-                                food[name] = price
+                            for event,activity,remark in zip(frame["Event Name"], frame["Activity Planned"], frame["Remarks"]):
+                                event_name = event
+                                activity_name = activity
+                                remark_name = remark
+                                
+                            for name, price in zip(frame["Item Name"], frame["Item Price"]):
+                                if name != "Null":
+                                    item[name] = price
 
+                            for name, price in zip(frame["Food Name"], frame["Food Price"]):
+                                if name != "Null":
+                                    food[name] = price
+                        except KeyError as e:
+                            return JsonResponse({"error": "{} column does not exist.".format(e.args[0])},status=400)
                         data_list.extend([date, event_name, activity_name, item, food, remark_name])
 
                         complete_data.append(data_list)
                 
-                df = pd.DataFrame(complete_data, columns = ['date', 'event_name', 'activity_planned', 'item', 'food', 'remarks'])  
+                df = pd.DataFrame(complete_data, columns=['date', 'event_name', 'activity_planned', 'item', 'food', 'remarks'])  
                 data = data_set.load(df)
-                print(data_set)
-            else:
-                return JsonResponse({},status=400)
-                
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
-            if result.has_validation_errors() or result.has_errors():
-                print("error", result.invalid_rows)
-                print(result.has_validation_errors(), result.has_validation_errors)
-                print(result.has_errors(), result.has_errors)
-                self.context['result'] = result
-                return JsonResponse({},status=400)
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
+            try:
+                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
                 return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
         else:
             self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
-        return JsonResponse({}, status=201)
+            return JsonResponse({"error":"Invalid file format."},status=400)
 
 # view for loading event name in office event module    
 def load_events_name(request):
@@ -1009,7 +1069,7 @@ def load_events_name(request):
 
 # view for loading officeEvents history in engagements module
 def enagagements_officeEvents_history(request):
-    officeEvents_history = officeEvents.history.all()
+    officeEvents_history = officeEvents.history.filter(history_type="-").all()
     return render(request, 'operations/officeEvents_history.html', {'officeEvents_history': officeEvents_history})
 
 # view for checking if there is any change from the previous values in version history part of officeEvents section
@@ -1036,4 +1096,13 @@ def load_previous_officeEvents_history(request):
         return JsonResponse({'data': None})
     except Exception as e:
         return JsonResponse({'data': None})
+
+# view for each row version history module of adhoc section
+@login_required(login_url='/auth/login')
+def officeEvents_row_history(request):
+    row_id = request.GET.get('id')
+    officeEvents_row_history = officeEvents.history.filter(id=row_id, history_type="+").all() | officeEvents.history.filter(id=row_id, history_type="~").all()
+    return render(request, 'operations/officeEvents_row_history.html', {'officeEvents_row_history': officeEvents_row_history})
+
+
 

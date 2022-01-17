@@ -1,0 +1,35 @@
+{% for data in adhoc_row_history %}
+<tr>
+    <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
+            {{ data.history_date }}</td>
+    <td class="name" width=15% style="padding: 2px 5px; text-align:center;">{{ data.purchase_date }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.product }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.quantity }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.price }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.amount }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
+
+    {% if data.history_type == "+" %}
+    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+    {% elif data.history_type == "~" %}
+    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+    {% else %}
+    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+    {% endif %}                                          
+    
+    <td class="name" width=10% style="display: none;">{{ data.type }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.paid_by }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.advance_pay }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.balance_amount }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.received_date }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.additional_info }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+    
+    <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
+    
+
+</tr>
+{% endfor %}
+
+

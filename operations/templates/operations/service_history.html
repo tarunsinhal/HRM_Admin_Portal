@@ -44,7 +44,44 @@
                         <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
                     </div> -->
                     <div class="col-8" id="foodtitle">
-                        <h2><b>Version History</b></h2>
+                        <h2><b>Deleted History</b></h2>
+                    </div>
+
+                    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" data-history-url="{% url 'operations:service_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content" style="justify-content: center;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="historyModalLabel">Version History</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="historyTable1" id="historyTableId" data-previous-url="{% url 'operations:ajax_load_previous_service_history' %}">
+                                        <thead class="table tbl-header table-bordered">
+                                            <tr>
+                                                <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                                <th width=15% style="padding: 12px; text-align:center;">Service Date</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Service Of</th>
+                                                <th width=15% style="padding: 12px; text-align:center;">Vendor Name</th>
+                                                <th width=15% style="padding: 12px; text-align:center;">Contact No.</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th> 
+                                                <th width=8% style="display: none;">Service Type</th>
+                                                <th width=8% style="display: none;">Charges</th>
+                                                <th width=8% style="display: none;">Paid By</th>  
+                                                <th width=8% style="display: none;">Payment Mode</th> 
+                                                <th width=8% style="display: none;">Next Service Date</th> 
+                                                <th width=8% style="display: none;">Additional Info</th>                             
+                                                <th id="rowId" style="display: none;">Id</th>
+                                                <th id="rowHistoryId" style="display: none;">History Id</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbl-content table table-bordered" id="tbody-content">
+                                        </tbody>
+                                    </table>
+                                </div>  
+                            </div>
+                        </div>
                     </div>
                     
                 </div>
@@ -76,8 +113,8 @@
                             <thead class="table tbl-header table-bordered">
                                 <tr>
                                     <th width=20% style="padding: 12px; text-align:center;">History Date</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Service Date</th>
-                                    <th width=15% style="padding: 12px; text-align:center;">Service Of</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">Service Date</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Service Of</th>
                                     <th width=15% style="padding: 12px; text-align:center;">Vendor Name</th>
                                     <th width=15% style="padding: 12px; text-align:center;">Contact No.</th>
                                     <th width=10% style="padding: 12px; text-align:center;">User</th>
@@ -90,48 +127,40 @@
                                     <th width=8% style="display: none;">Additional Info</th>                             
                                     <th id="rowId" style="display: none;">Id</th>
                                     <th id="rowHistoryId" style="display: none;">History Id</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">History</th>
                                     <th width="5%"></th>
-
-                                    
                                 </tr>
                             </thead>
 
-
-
-                            <!-- <div class="tbl-content table"> -->
-                            <!-- <table id="productTable"> -->
                             <tbody class="tbl-content table table-bordered" >
+                                {% for data in service_history %}
+                                <tr>
+                                    <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
+                                            {{ data.history_date }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px; text-align:center;">{{ data.service_date }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.service_of }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px; text-align:center;">{{ data.vendor_name }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px; text-align:center;">{{ data.contact_no }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
 
-                                                {% for data in service_history %}
-                                        <tr>
-                                            <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
-                                                    {{ data.history_date }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.service_date }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.service_of }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.vendor_name }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.contact_no }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
-
-                                            {% if data.history_type == "+" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
-                                            {% elif data.history_type == "~" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
-                                            {% else %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
-                                            {% endif %}                                          
-                                            
-                                            <td class="name" width=8% style="display: none;">{{ data.service_type }}</td>
-                                            <td class="name" width=8% style="display: none;">{{ data.charges }}</td>
-                                            <td class="name" width=8% style="display: none;">{{ data.paid_by }}</td>
-                                            <td class="name" width=8% style="display: none;">{{ data.payment_mode }}</td>
-                                            <td class="name" width=8% style="display: none;">{{ data.next_service_date }}</td>
-                                            <td class="name" width=8% style="display: none;">{{ data.additional_info }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.id }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
-
-                                            <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
-                                            
-
+                                    {% if data.history_type == "+" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+                                    {% elif data.history_type == "~" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+                                    {% else %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+                                    {% endif %}                                          
+                                    
+                                    <td class="name" width=8% style="display: none;">{{ data.service_type }}</td>
+                                    <td class="name" width=8% style="display: none;">{{ data.charges }}</td>
+                                    <td class="name" width=8% style="display: none;">{{ data.paid_by }}</td>
+                                    <td class="name" width=8% style="display: none;">{{ data.payment_mode }}</td>
+                                    <td class="name" width=8% style="display: none;">{{ data.next_service_date }}</td>
+                                    <td class="name" width=8% style="display: none;">{{ data.additional_info }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px; text-align:center;"><a onclick=historyfunction(this,{{ data.id }}) data-bs-toggle="modal" data-bs-target="#historyModal"><span style="color: blue;">click here</span></a></td>
+                                    <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
                                 </tr>
                                 {% endfor %}
                                

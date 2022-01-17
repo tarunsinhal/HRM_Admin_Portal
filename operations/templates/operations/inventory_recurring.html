@@ -318,17 +318,19 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body row">
                                         {%for field in importForm%}
                                             {%if field.field.widget.input_type == 'file'%}
-                                                <div class="form-group mb-0 files">
+                                                <div class="form-group mb-0 files col-10">
                                                     {{field}}
                                                 </div>
-                                                <p style="color: darkblue; font-size: 13px; margin-left: 5px; margin-top: 5px;">{ Supported .csv file extension }</p>
                                             {%else%}
                                                 {{field}}
                                             {%endif%}
                                         {%endfor%}
+                                        <div class="col-2">
+                                            <i class="fa fa-info-circle fa-lg info"></i>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="submit" class="btnStyle" id="submitBtn">Submit</button>
@@ -337,6 +339,45 @@
                             </div>
                         </div>
                     </form>
+
+                    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" data-history-url="{% url 'operations:recurring_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content" style="justify-content: center;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="historyModalLabel">Version History</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="historyTable1" id="historyTableId" data-previous-url="{% url 'operations:ajax_load_previous_recurring_history' %}">
+                                        <thead class="table tbl-header table-bordered">
+                                            <tr>
+                                                <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                                <th width=15% style="padding: 12px; text-align:center;">Purchase Date</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Product</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Quantity</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Unit</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Price</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Amount</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                                <th width=10% style="display: none;">Frequency</th>
+                                                <th width=10% style="display: none;">Discount</th>
+                                                <th width=10% style="display: none;">Paid By</th>
+                                                <th width=10% style="display: none;">Next Order Date</th>
+                                                <th width=10% style="display: none;">Additional Info</th>                                    
+                                                <th id="rowId" style="display: none;">Id</th>
+                                                <th id="rowHistoryId" style="display: none;">History Id</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbl-content table table-bordered" id="tbody-content">
+                                        </tbody>
+                                    </table>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -373,7 +414,7 @@
 
                 <a type="button" href="{% url 'operations:inventory_recurring_history' %}">
                 <button style="margin: 6px; font-size: 14px;" class="btnStyle">
-                    <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+                    <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">History</span>
                 </button></a>
 
                 <!-- Import Button -->
@@ -442,7 +483,7 @@
                             <thead class="table tbl-header table-hover table-bordered">
                                 <tr>
                                     <td style="display: none;">Frequency</td>
-                                    <th width=15% style="padding: 12px;">Product name</th>
+                                    <th width=15% style="padding: 12px;">Product</th>
                                     <th width=10% style="padding: 12px;">Quantity</th>
                                     <th width=12% style="padding: 12px;">Unit</th>
                                     <th width=10% style="padding: 12px;">Price</th>
@@ -486,7 +527,10 @@
                                                 <li><a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal"><span>Delete</span></a>
                                                 </li>
                                                 <hr style="color: #FFF; padding: 0px; margin: 0px;">
-                                                <li><a id={{ rows.id }} onclick=repeatfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Repeat</span></a>
+                                                <li><a id='{{ rows.id }}' onclick=repeatfunction(this,{{ product_type.grouper }}) data-bs-toggle="modal" data-bs-target="#staticBackdrop"><span>Repeat</span></a>
+                                                </li>
+                                                <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                <li><a id='history/{{ rows.id }}' onclick=historyfunction(this,{{ rows.id }}) data-bs-toggle="modal" data-bs-target="#historyModal"><span>History</span></a>
                                                 </li>
                                             </ul>
                                         </div>

@@ -45,8 +45,47 @@
                         <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
                     </div> -->
                     <div class="col-8" id="foodtitle">
-                        <h2><b>Version History</b></h2>
+                        <h2><b>Deleted History</b></h2>
                     </div>
+
+                    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" data-history-url="{% url 'operations:adhoc_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content" style="justify-content: center;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="historyModalLabel">Version History</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="historyTable1" id="historyTableId" data-previous-url="{% url 'operations:ajax_load_previous_adhoc_history' %}">
+                                        <thead class="table tbl-header table-bordered">
+                                            <tr>
+                                                <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                                <th width=15% style="padding: 12px; text-align:center;">Purchase Date</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Product</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Quantity</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Price</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Amount</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                                <th width=10% style="display: none;">Type</th>
+                                                <th width=10% style="display: none;">Paid BY</th>
+                                                <th width=10% style="display: none;">Advance Pay</th>
+                                                <th width=10% style="display: none;">Balance Amount</th>  
+                                                <th width=10% style="display: none;">Received Date</th>
+                                                <th width=10% style="display: none;">Additional Info</th>                                  
+                                                <th id="rowId" style="display: none;">Id</th>
+                                                <th id="rowHistoryId" style="display: none;">History Id</th>
+                                                <th width="5%"></th> 
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbl-content table table-bordered" id="tbody-content">
+                                        </tbody>
+                                    </table>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+
                     
                 </div>
             </div>
@@ -57,9 +96,6 @@
     <div class="table-responsive">
         <div class="table-wrapper1">
             <div class="table-title">
-
-
-               
             
                 <form>
                     <i class="fa fa-arrow-left" aria-hidden="true"></i>
@@ -77,24 +113,23 @@
                             <thead class="table tbl-header table-bordered">
                                 <tr>
                                     <th width=20% style="padding: 12px; text-align:center;">History Date</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Purchase Date</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">Purchase Date</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Product</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Quantity</th>
-                                    <th width=8% style="padding: 12px; text-align:center;">Price</th>
-                                    <th width=8% style="padding: 12px; text-align:center;">Amount</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Price</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Amount</th>
                                     <th width=10% style="padding: 12px; text-align:center;">User</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Action</th>
-                                    <th width=14% style="display: none;">Type</th>
-                                    <th width=14% style="display: none;">Paid BY</th>
-                                    <th width=14% style="display: none;">Advance Pay</th>
-                                    <th width=14% style="display: none;">Balance Amount</th>  
-                                    <th width=14% style="display: none;">Received Date</th>
-                                    <th width=14% style="display: none;">Additional Info</th>                                  
+                                    <th width=10% style="display: none;">Type</th>
+                                    <th width=10% style="display: none;">Paid BY</th>
+                                    <th width=10% style="display: none;">Advance Pay</th>
+                                    <th width=10% style="display: none;">Balance Amount</th>  
+                                    <th width=10% style="display: none;">Received Date</th>
+                                    <th width=10% style="display: none;">Additional Info</th>                                  
                                     <th id="rowId" style="display: none;">Id</th>
                                     <th id="rowHistoryId" style="display: none;">History Id</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">History</th>
                                     <th width="5%"></th>
-
-                                    
                                 </tr>
                             </thead>
 
@@ -103,37 +138,35 @@
                             <!-- <table id="productTable"> -->
                             <tbody class="tbl-content table table-bordered" >
 
-                                                {% for data in adhoc_history %}
-                                        <tr>
-                                            <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
-                                                    {{ data.history_date }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.purchase_date }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.product }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.quantity }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.price }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.amount }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
+                                {% for data in adhoc_history %}
+                                <tr>
+                                    <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
+                                            {{ data.history_date }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.purchase_date }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.product }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.quantity }}</td>
+                                    <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.price }}</td>
+                                    <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.amount }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
 
-                                            {% if data.history_type == "+" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
-                                            {% elif data.history_type == "~" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
-                                            {% else %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
-                                            {% endif %}                                          
-                                            
-                                            <td class="name" width=10% style="display: none;">{{ data.type }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.paid_by }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.advance_pay }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.balance_amount }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.received_date }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.additional_info }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.id }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
-                                            
-                                            <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
-                                            
-
+                                    {% if data.history_type == "+" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+                                    {% elif data.history_type == "~" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+                                    {% else %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+                                    {% endif %}                                          
+                                    
+                                    <td class="name" width=10% style="display: none;">{{ data.type }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.paid_by }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.advance_pay }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.balance_amount }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.received_date }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.additional_info }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px; text-align:center;"><a onclick=historyfunction(this,{{ data.id }}) data-bs-toggle="modal" data-bs-target="#historyModal"><span style="color: blue;">click here</span></a></td>
+                                    <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
                                 </tr>
                                 {% endfor %}
                                
@@ -164,9 +197,6 @@
 
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-
-
-
 
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>

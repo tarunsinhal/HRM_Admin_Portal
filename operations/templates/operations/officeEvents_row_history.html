@@ -1,0 +1,63 @@
+{% for data in officeEvents_row_history %}
+<tr>
+    <td width=18% style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold">{{ data.history_date }}</td>
+    <td width=10% class="name" style="padding: 2px 5px; text-align:center;">{{ data.date }}</td>
+    <td width=12% class="name" style="padding: 2px 5px; text-align:center;">{{ data.event_name }}</td>
+    <td width=14% class="name" style="padding: 2px 5px; text-align:center;">{{ data.activity_planned }}</td>
+    <td width=15% class="name" style="display: none;">
+        <table>
+            <thead>
+                <tr>
+                    <th style="padding: 2px">Item Name</th>
+                    <th style="padding: 2px">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key,value in data.item.items %}
+                <tr>
+                    <td style="padding: 0px">{{ key }}</td>
+                    <td style="padding: 0px">{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </td>
+    <td width=15% class="name" style="display: none;">
+        <table>
+            <thead>
+                <tr>
+                    <th style="padding: 2px">Food Name</th>
+                    <th style="padding: 2px">Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key,value in data.food.items %}
+                <tr>
+                    <td style="padding: 0px">{{ key }}</td>
+                    <td style="padding: 0px">{{ value }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </td>
+
+    <td width=10% class="name" style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
+
+    {% if data.history_type == "+" %}
+    <td width="10%" style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold">Created</td>  
+    {% elif data.history_type == "~" %}
+    <td width="10%" style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold">Updated</td> 
+    {% else %}
+    <td width="10%" style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold">Deleted</td>   
+    {% endif %}                                          
+    
+    <td width="8%" class="name" style="display: none;">{{ data.remarks }}</td>
+    <td width="8%" class="name" style="display: none;">{{ data.id }}</td>
+    <td width="8%" class="name" style="display: none;">{{ data.history_id }}</td>
+
+    <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
+</tr>
+{% endfor %}
+
+
+

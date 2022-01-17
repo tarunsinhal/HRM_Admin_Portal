@@ -415,17 +415,19 @@
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                             aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body row">
                                         {%for field in importForm%}
                                             {%if field.field.widget.input_type == 'file'%}
-                                                <div class="form-group mb-0 files">
+                                                <div class="form-group mb-0 files col-10">
                                                     {{field}}
                                                 </div>
-                                                <p style="color: darkblue; font-size: 13px; margin-left: 5px; margin-top: 5px;">{ Supported .csv file extension }</p>
                                             {%else%}
                                                 {{field}}
                                             {%endif%}
                                         {%endfor%}
+                                        <div class="col-2">
+                                            <i class="fa fa-info-circle fa-lg info"></i>
+                                        </div>
                                     </div>
                                     <!-- <p style="color: darkblue; font-size: 10px; margin-left: 20px;">Choose CSV file :)</p> -->
                                     <div class="modal-footer">
@@ -436,6 +438,43 @@
                         </div>
                     </form>
                     
+                    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" data-history-url="{% url 'operations:tshirt_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content" style="justify-content: center;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="historyModalLabel">Version History</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="historyTable1" id="historyTableId" data-previous-url="{% url 'operations:ajax_load_previous_tshirt_history' %}">
+                                        <thead class="table tbl-header table-bordered">
+                                            <tr>
+                                                <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                                <th width=5% style="padding: 12px; text-align:center;">Size</th>
+                                                <th width=12% style="padding: 12px; text-align:center;">Previous Stock</th>
+                                                <th width=12% style="padding: 12px; text-align:center;">Ordered Qty</th>
+                                                <th width=18% style="padding: 12px; text-align:center;">User</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                                <th width=14% style="display: none;">Order Date</th>
+                                                <th width=14% style="display: none;">Receiving Date</th>
+                                                <th width=14% style="display: none;">Total Quantity</th>
+                                                <th width=14% style="display: none;">Allotted</th>
+                                                <th width=10% style="display: none;">Remaining</th>
+                                                <th width=14% style="display: none;">Paid By</th>
+                                                <th width=14% style="display: none;">Additional</th>                                    
+                                                <th id="rowId" style="display: none;">Id</th>
+                                                <th id="rowHistoryId" style="display: none;">History Id</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbl-content table table-bordered" id="tbody-content">
+                                        </tbody>
+                                    </table>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -459,7 +498,7 @@
                         <input style="margin-left: 30px;" type="date" class="inventory_datepicker_1" id="pur_min_1" name="pur_min_1" data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_1" id="pur_max_1" name="pur_max_1" data-attr-type="pur"/>
                     </span>
                     <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
-                        <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+                        <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">History</span>
                     </button>
                     </a>
 
@@ -486,12 +525,12 @@
                                     <th width=15% style="padding: 12px; text-align:center;">Receiving Date</th>
                                     <th width=5% style="padding: 12px; text-align:center;">Size</th>
                                     <th width=5% style="display: none;">Previous Stock</th>
-                                    <th width=12% style="padding: 12px; text-align:center;">Ordered Qty</th>
+                                    <th width=12% style="padding: 12px; text-align:center;">Ordered Quantity</th>
                                     <th width=14% style="padding: 12px; text-align:center;">Total Quantity</th>
                                     <th width=14% style="padding: 12px; text-align:center; display: none;">Allotted</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Remaining</th>
                                     <th width=18% style="display: none;">Paid By</td>
-                                    <th width=18% style="padding: 12px; text-align:center;">Additional Info</td>
+                                    <th width=18% style="padding: 12px; text-align:center;">Additional</td>
                                     <td class="name" style="display: none;"> </td>
                                     <th width=10% style="padding: 12px; width: 6% !important;">Action</th>
                                 </tr>
@@ -529,6 +568,9 @@
                                                             <hr style="color: #FFF; padding: 0px; margin: 0px;">
                                                             <li><a id='tshirt_inventory/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal">
                                                                 <span>Delete</span></a>
+                                                            </li>
+                                                            <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                            <li><a id='tshirt_inventory/history/{{ data.id }}' onclick=historyfunction(this,"{{ data.order_date }}") data-bs-toggle="modal" data-bs-target="#historyModal"><span>History</span></a>
                                                             </li>
                                                         </ul>
                                                     </div>

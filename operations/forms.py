@@ -216,7 +216,7 @@ class editTshirtForm(addTshirtForm, ModelForm):
 class AddJoiningForm(ModelForm):
     class Meta:
         model = engagementJoining
-        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account')
+        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf')
         widgets = {
             'employee_name': TextInput(attrs={'type':'text', 'class':"required form-control"}),
             'details': Select(attrs={'type': 'select', 'class': "form-select"}), 
@@ -229,7 +229,7 @@ class AddJoiningForm(ModelForm):
             'relieving_letter': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'experience_letter': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'laptop_charger': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'mouse_mousePad': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'mouse_mousepad': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'bag': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'id_card': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'induction': TextInput(attrs={'type':'text', 'class':"form-control"}),
@@ -242,13 +242,14 @@ class AddJoiningForm(ModelForm):
             'microsoft_account_deleted': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'gmail_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'skype_id': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'system_configration': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'system_configuration': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'system_format': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'email_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'upwork_account_Add_to_team': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'upwork_account_Add_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'upwork_account_Remove_from_team': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'upwork_account_Close_account': TextInput(attrs={'type':'text', 'class':"form-control"})
+            'add_upwork_account_to_team': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'add_upwork_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'remove_upwork_account_from_team': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'close_upwork_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'fnf': TextInput(attrs={'type':'text', 'class':"form-control"})
         }
 
 class EditJoiningForm(AddJoiningForm, ModelForm):

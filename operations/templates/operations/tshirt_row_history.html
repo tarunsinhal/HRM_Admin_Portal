@@ -1,0 +1,29 @@
+{% for data in tshirt_row_history %}
+    <tr>
+        <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+            {{ data.history_date }}</td>
+        <td class="name" width=13% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
+        <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.previous_stock }}</td>
+        <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
+        <td class="name" style="padding: 2px 5px; text-align:center;">{{ data.user_name }}</td>
+
+        {% if data.history_type == "+" %}
+        <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="12%">Created</td>  
+        {% elif data.history_type == "~" %}
+        <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="12%">Updated</td> 
+        {% else %}
+        <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="12%">Deleted</td>   
+        {% endif %}                                          
+        
+        <td class="name" width=10% style="display: none;">{{ data.order_date }}</td>
+        <td class="name" width=10% style="display: none;">{{ data.receiving_date }}</td>
+        <td class="name" width=10% style="display: none;">{{ data.total_quantity }}</td>
+        <td class="name" width=10% style="display: none;">{{ data.allotted }}</td>
+        <td class="name" width=12% style="display: none;">{{ data.remaining }}</td>
+        <td class="name" width=10% style="display: none;">{{ data.paid_by }}</td>
+        <td class="name" width=10% style="display: none;">{{ data.additional }}</td>
+        <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+        <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+        <td width="2%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
+    </tr>
+{% endfor %}

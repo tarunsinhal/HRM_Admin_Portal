@@ -1,6 +1,8 @@
+var dataTableRes, dataTableRes1;
+
 function format ( d ) {
     return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
-	'<div><p class="font-weight-bold">Additional Parameters:</p></div>'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
 	'<div class="row"><div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
 	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div><br>'+
 	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks</span><div>'+d[8]+'</div></div></div><br>'+
@@ -10,7 +12,7 @@ function format ( d ) {
 function format_and_diff(d,res){
 
 	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
-	'<div><p class="font-weight-bold">Additional Parameters:</p></div>'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
 	'<div class="row"><div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
 	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div><br>'+
 	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks</span><div>'+d[8]+'</div></div></div><br>'+
@@ -45,7 +47,6 @@ function format_and_diff(d,res){
     return b;
 }
 
-var dataTableRes;
 
 //...datatable plugin for pagination and search tab in tables...//
 $(document).ready(function () {
@@ -141,3 +142,115 @@ $(document).ready(function () {
     var r = dataTableRes.data()
 }); 
 
+//...called when history button is clicked...//
+function historyfunction(obj, obj2){
+	debugger
+	var url = $("#historyModal").attr("data-history-url");
+	var rowId = obj2;
+
+	$.ajax({                       // initialize an AJAX request
+		url: url,
+		async: false,
+		data: {
+			'id': rowId
+		},
+		success: function (data) {
+			$("#tbody-content").html(data);
+		}
+	});
+	dataTableRes1 = $('.historyTable1').DataTable({
+		dom: 'Bfrtip',
+		destroy: true,
+		retrieve: true,
+		buttons: [{
+			extend: 'csv',
+			text: 'Export',
+			title: 'Office Events History',
+			exportOptions: {
+				columns: [0, 1, 2, 6, 7]
+			},
+		}
+		],
+		order: [],
+		columnDefs: [
+			{ orderable: false, targets: 2 },
+			{ orderable: false, targets: 3 },
+			{ orderable: false, targets: 8 },
+			{ orderable: false, targets: 9 },
+			{ orderable: false, targets: 11 }
+		],
+
+		'pageLength': 6,
+		"bLengthChange": false,
+		"autoWidth": false		
+	});	
+	
+	debugger
+	var r = dataTableRes1.data()
+
+	//  Array to track the ids of the details displayed rows
+	var detailRows = [];
+
+	$('#historyTableId tbody').on( 'click', 'tr td.details-control', function () {
+		debugger
+		var res
+		var tr = $(this).closest('tr');
+
+		var row = dataTableRes1.row( tr );
+
+		var id = tr[0].children[9].innerText;
+		var history_id = tr[0].children[10].innerText;
+		var url = $("#historyTableId").attr("data-previous-url");
+		$.ajax({
+			url: url,
+			async: false,
+			type: 'GET',
+			data: {"id": id, "history_id": history_id},
+			dataType: 'json',
+			success: function(data){
+				debugger
+				if (data['data']){
+					res = data['data'];
+				}
+				else{
+					res = null
+				}
+			}
+		})
+
+
+		var idx = $.inArray( tr.attr('id'), detailRows );
+		if ( row.child.isShown() ) {
+			tr.removeClass( 'details' );
+			row.child.hide();
+			// Remove from the 'open' array
+			detailRows.splice( idx, 1 );
+		}
+		else {
+			tr.addClass( 'details' );
+			if (res){
+				row.child( format_and_diff( row.data(), res ) ).show();
+			}
+			else{
+				row.child( format( row.data()) ).show();
+			}
+			// Add to the 'open' array
+			if ( idx === -1 ) {
+				detailRows.push( tr.attr('id') );
+			}
+		}
+	});
+
+	// On each draw, loop over the `detailRows` array and show any child rows
+	dataTableRes1.on( 'draw', function () {
+		 $.each( detailRows, function ( i, id ) {
+			 $('#'+id+' td.details-control').trigger( 'click' );
+		 } );
+	 } );
+
+    var r = dataTableRes1.data()
+}
+
+$('#historyModal').on('hidden.bs.modal', function () {
+	window.location.reload();
+})

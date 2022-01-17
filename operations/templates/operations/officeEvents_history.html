@@ -40,8 +40,43 @@
                         <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
                     </div> -->
                     <div class="col-8" id="foodtitle">
-                        <h2><b>Version History</b></h2>
+                        <h2><b>Deleted History</b></h2>
                     </div>
+
+                    <div class="modal fade" id="historyModal" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" data-history-url="{% url 'operations:officeEvents_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content" style="justify-content: center;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="historyModalLabel">Version History</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="historyTable1" id="historyTableId" data-previous-url="{% url 'operations:ajax_load_previous_officeEvents_history' %}">
+                                        <thead class="table tbl-header table-bordered">
+                                            <tr>
+                                                <th width=18% style="padding: 12px; text-align:center;">History Date</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Date</th>
+                                                <th width=12% style="padding: 12px; text-align:center;">Event Name</th>
+                                                <th width=14% style="padding: 12px; text-align:center;">Activity Planned</th>
+                                                <th width=30% style="display: none;">Item</th>
+                                                <th width=30% style="display: none;">Food</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th> 
+                                                <th width=8% style="display: none;">Remarks</th>                              
+                                                <th width=8% id="rowId" style="display: none;">Id</th>
+                                                <th width=8% id="rowHistoryId" style="display: none;">History Id</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbl-content table table-bordered" id="tbody-content">
+                                        </tbody>
+                                    </table>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+
+
                 </div>
             </div>
         </div>
@@ -77,6 +112,7 @@
                                         <th width=8% style="display: none;">Remarks</th>                              
                                         <th width=8% id="rowId" style="display: none;">Id</th>
                                         <th width=8% id="rowHistoryId" style="display: none;">History Id</th>
+                                        <th width=15% style="padding: 12px; text-align:center;">History</th>
                                         <th width="5%"></th>
                                     </tr>
                                 </thead>
@@ -139,7 +175,7 @@
                                             <td width="8%" class="name" style="display: none;">{{ data.remarks }}</td>
                                             <td width="8%" class="name" style="display: none;">{{ data.id }}</td>
                                             <td width="8%" class="name" style="display: none;">{{ data.history_id }}</td>
-
+                                            <td class="name" width=15% style="padding: 2px 5px; text-align:center;"><a onclick=historyfunction(this,{{ data.id }}) data-bs-toggle="modal" data-bs-target="#historyModal"><span style="color: blue;">click here</span></a></td>
                                             <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
 
                                         </tr>

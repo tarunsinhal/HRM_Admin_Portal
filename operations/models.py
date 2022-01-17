@@ -45,23 +45,14 @@ class recurringItems(models.Model):
     product = models.ForeignKey(Product_type, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
     unit = models.CharField(max_length=50)
-    price = models.PositiveIntegerField()
-    discount = models.PositiveIntegerField(default=0)
-    amount = models.PositiveIntegerField(null=True)
+    price = models.PositiveIntegerField(blank=True, null=True)
+    discount = models.PositiveIntegerField(blank=True, default=0)
+    amount = models.PositiveIntegerField(default=0)
     paid_by = models.CharField(max_length=50)
     purchase_date = models.DateField()
     next_order_date = models.DateField(null=True, blank=True)
     history = HistoricalRecords()
     additional_info = models.CharField(max_length=200, blank=True)
-    __history_date = None
-
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = value
 
     def __str__(self):
         return str(self.product)
@@ -87,16 +78,7 @@ class AdhocItems(models.Model):
     received_date = models.DateField(blank=True, null=True)
     additional_info = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
-    __history_date = None
-
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = value
-
+    
     def __str__(self):
         return str(self.product)
 
@@ -110,15 +92,6 @@ class vendorContactList(models.Model):
     nominal_charges = models.PositiveIntegerField(null=True, blank=True)
     aditional_info = models.CharField(max_length=200, blank=True, null=True, )
     history = HistoricalRecords()
-    __history_date = None
-
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = value
 
     def __str__(self):
         return str(self.service)
@@ -136,16 +109,7 @@ class repairServices(models.Model):
     next_service_date = models.DateField()
     aditional_info = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
-    __history_date = None
-
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = value
-
+    
     def __str__(self):
         return str(self.service_of)
 
@@ -165,16 +129,7 @@ class t_shirt_inventory(models.Model):
     additional = models.CharField(max_length=500, blank=True, null=True)
     user_name = models.CharField(max_length=50, default="Admin")
     history = HistoricalRecords()
-    __history_date = None
-
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = value
-    
+   
     class Meta:
         ordering = ['-receiving_date']
 
@@ -187,47 +142,39 @@ class Detail_types(models.Model):
 
 class engagementJoining(models.Model):
     employee_name = models.CharField(max_length=50)
-    details = models.ForeignKey(Detail_types, on_delete=models.CASCADE, default=1)
+    details = models.ForeignKey(Detail_types, on_delete=models.CASCADE)
     loi = models.CharField(max_length=100, blank=True)
     offer_letter = models.CharField(max_length=100, blank=True)
-    nda_signed = models.CharField(max_length=100, blank=True)
+    nda_signed = models.CharField(max_length=100)
     joining_letter = models.CharField(max_length=100, blank=True)
     joining_documents = models.CharField(max_length=100, blank=True)
     joining_hamper = models.CharField(max_length=100, blank=True)
     relieving_letter = models.CharField(max_length=100, blank=True)
     experience_letter = models.CharField(max_length=100, blank=True)
-    laptop_charger = models.CharField(max_length=100, blank=True)
-    mouse_mousePad = models.CharField(max_length=100, blank=True)
-    bag = models.CharField(max_length=100, blank=True)
+    laptop_charger = models.CharField(max_length=100)
+    mouse_mousepad = models.CharField(max_length=100)
+    bag = models.CharField(max_length=100)
     id_card = models.CharField(max_length=100, blank=True)
     induction = models.CharField(max_length=100, blank=True)
     add_to_skype_group = models.CharField(max_length=100, blank=True)
     add_to_whatsapp_group = models.CharField(max_length=100, blank=True)
     remove_from_skype_group = models.CharField(max_length=100, blank=True)
     remove_from_whatsapp_group = models.CharField(max_length=100, blank=True)
-    onedrive_access = models.CharField(max_length=100, blank=True)
+    onedrive_access = models.CharField(max_length=100)
     microsoft_account_created = models.CharField(max_length=100, blank=True)
     microsoft_account_deleted = models.CharField(max_length=100, blank=True)
-    gmail_account = models.CharField(max_length=100, blank=True)
-    skype_id = models.CharField(max_length=100, blank=True)
-    system_configration = models.CharField(max_length=100, blank=True)
+    gmail_account = models.CharField(max_length=100)
+    skype_id = models.CharField(max_length=100)
+    system_configuration = models.CharField(max_length=100, blank=True)
     system_format = models.CharField(max_length=100, blank=True)
-    email_account = models.CharField(max_length=100, blank=True)
-    upwork_account_Add_to_team = models.CharField(max_length=100, blank=True)
-    upwork_account_Add_account = models.CharField(max_length=100, blank=True)
-    upwork_account_Remove_from_team = models.CharField(max_length=100, blank=True)
-    upwork_account_Close_account = models.CharField(max_length=100, blank=True)
+    email_account = models.CharField(max_length=100)
+    add_upwork_account_to_team = models.CharField(max_length=100, blank=True)
+    add_upwork_account = models.CharField(max_length=100, blank=True)
+    remove_upwork_account_from_team = models.CharField(max_length=100, blank=True)
+    close_upwork_account = models.CharField(max_length=100, blank=True)
+    fnf = models.CharField(max_length=100, blank=True)
     history = HistoricalRecords()
-    __history_date = None
-
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = value
- 
+   
     def __str__(self):
         return str(self.employee_name)
 
@@ -240,15 +187,6 @@ class officeEvents(models.Model):
     food = models.JSONField(max_length=100, blank=True, null=True)
     remarks = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
-    __history_date = None
-
-    @property
-    def _history_date(self):
-        return self.__history_date
-
-    @_history_date.setter
-    def _history_date(self, value):
-        self.__history_date = value
  
     def __str__(self):
         return str(self.event_name)

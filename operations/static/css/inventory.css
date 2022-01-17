@@ -302,7 +302,7 @@ font-weight: bold;
 }
 
 .dropout {
-  z-index: 9001;
+  z-index: 1;
   width: fit-content;
   position: relative;
   margin-left: auto;

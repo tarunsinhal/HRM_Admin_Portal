@@ -1,22 +1,24 @@
+var minDate, maxDate, dataTableRes, dataTableRes1;
+
 function format ( d ) {
     return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
-	'<div><p class="font-weight-bold">Additional Parameters:</p></div>'+
-	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Alternate No.: </span>'+d[6]+'</div><br>'+
-	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Nominal Charges: </span>'+d[7]+'</div></div><br>'+
-        '<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[8]+'</div></div><br>'+
-        '</div></div>';
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col-6" style="text-align: left"><span class="font-weight-bold">Alternate No.: </span>'+d[6]+'</div><br>'+
+	'<div class="col-6" style="text-align: left"><span class="font-weight-bold">Nominal Charges: </span>'+d[7]+'</div></div><br>'+
+	'<div class="row"><div class="col-6" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[8]+'</div></div><br>'+
+	'</div></div>';
 }
 
 function format_and_diff(d,res){
 
 	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
-	'<div><p class="font-weight-bold">Additional Parameters:</p></div>'+
-	'<div class="row"><div class="col-3" style="text-align: left"><span class="font-weight-bold">Alternate No.: </span>'+d[6]+'</div><br>'+
-	'<div class="col-3" style="text-align: left"><span class="font-weight-bold">Nominal Charges: </span>'+d[7]+'</div></div><br>'+
-        '<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[8]+'</div></div><br>'+
-        '</div>'+
-		'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
-			'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col-6" style="text-align: left"><span class="font-weight-bold">Alternate No.: </span>'+d[6]+'</div><br>'+
+	'<div class="col-6" style="text-align: left"><span class="font-weight-bold">Nominal Charges: </span>'+d[7]+'</div></div><br>'+
+	'<div class="row"><div class="col-6" style="text-align: left"><span class="font-weight-bold">Additonal Info: </span>'+d[8]+'</div></div><br>'+
+	'</div>'+
+	'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
+	'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
 	for (let key in res){
 		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
 		b += d
@@ -25,7 +27,6 @@ function format_and_diff(d,res){
     return b;
 }
 
-var minDate, maxDate, dataTableRes;
 
 //...datatable plugin for pagination and search tab in tables...//
 $(document).ready(function () {
@@ -50,40 +51,7 @@ $(document).ready(function () {
 		
 		'pageLength': 12,
 		"bLengthChange": false,
-		"autoWidth": false,
-		initComplete: function () {		
-			$.fn.dataTable.ext.search.push(
-				function (settings, data, dataIndex) {	
-					debugger;	
-					let activeTabId = $('.tablinks.active').attr('data-tab-id');
-					let pur_min =$('#pur_min_'+activeTabId).val();
-					let pur_max = $('#pur_max_'+activeTabId).val();
-					let next_min =$('#next_min_'+activeTabId).val();
-					let next_max = $('#next_max_'+activeTabId).val();
-					
-					pur_min = (pur_min != "")?new Date(pur_min):null ;
-					pur_max = (pur_max != "")?new Date(pur_max):null;
-					next_min = (next_min != "")?new Date(next_min):null ;
-					next_max = (next_max != "")?new Date(next_max):null;
-
-					let purchaseDate = new Date(data[0]);
-					let recordType  = data[7]
-
-					if(activeTabId == recordType){
-						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null )) 
-							return true;
-						if ((pur_min == null && purchaseDate <= pur_max) && (next_min == null && nextDate <= next_max ))
-							return true;
-						if ((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)) || (next_max == null && (next_min != null && nextDate >= next_min )))
-							return true;
-						if ((purchaseDate <= pur_max && purchaseDate >= pur_min) || ( (nextDate <= next_max && nextDate >= next_min)))
-							return true;
-					}else{
-						return true;
-					}	
-				}		
-			)	
-		}		
+		"autoWidth": false
 	});	
 
 	debugger
@@ -154,20 +122,113 @@ $(document).ready(function () {
     var r = dataTableRes.data()
 }); 
 
+//...called when click here link clicked in history...//
+function historyfunction(obj, obj2){
+	debugger
+	var url = $("#historyModal").attr("data-history-url");
+	var rowId = obj2;
 
-$('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3').on('change', function (e) {
-	let selDateType = e.target.getAttribute('data-attr-type')
-	let selDateTypeVal = (selDateType == "pur")?"next":"pur";
-	let activeTabId = $('.tablinks.active').attr('data-tab-id');
-	let resetDateIdMin = selDateTypeVal+"_min_"+activeTabId;
-	let resetDateIdMax = selDateTypeVal+"_max_"+activeTabId;
-	$('#'+resetDateIdMin).val('')
-	$('#'+resetDateIdMax).val('')
-	$('[data-tab-id="+activeTabId+"]').click();
-	dataTableRes.draw();
-});
-$('.daterefresh').on('click', function (e) {
-	let selSecId= e.target.getAttribute('data-section-id')
-	$('.inventory_datepicker_'+selSecId).val('');
-	dataTableRes.draw();
+	$.ajax({                       // initialize an AJAX request
+		url: url,
+		async: false,
+		data: {
+			'id': rowId
+		},
+		success: function (data) {
+			$("#tbody-content").html(data);
+		}
+	});
+	dataTableRes1 = $('.historyTable1').DataTable({
+		dom: 'Bfrtip',
+		destroy: true,
+		retrieve: true,
+		buttons: [{
+			extend: 'csv',
+			text: 'Export',
+			title: 'Recurring History',
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+			},
+		}
+		],
+		order: [],
+		columnDefs: [
+			{ orderable: false, targets: 4 },
+			{ orderable: false, targets: 5 },
+			{ orderable: false, targets: 11 }
+		],
+
+		'pageLength': 6,
+		"bLengthChange": false,
+		"autoWidth": false		
+	});	
+	
+	debugger
+	var r = dataTableRes1.data()
+
+	//  Array to track the ids of the details displayed rows
+	var detailRows = [];
+
+	$('#historyTableId tbody').on( 'click', 'tr td.details-control', function () {
+		debugger
+		var res
+		var tr = $(this).closest('tr');
+
+		var row = dataTableRes1.row( tr );
+
+		var id = tr[0].children[9].innerText;
+		var history_id = tr[0].children[10].innerText;
+		var url = $("#historyTableId").attr("data-previous-url");
+		$.ajax({
+			url: url,
+			async: false,
+			type: 'GET',
+			data: {"id": id, "history_id": history_id},
+			dataType: 'json',
+			success: function(data){
+				debugger
+				if (data['data']){
+					res = data['data'];
+				}
+				else{
+					res = null
+				}
+			}
+		})
+
+
+		var idx = $.inArray( tr.attr('id'), detailRows );
+		if ( row.child.isShown() ) {
+			tr.removeClass( 'details' );
+			row.child.hide();
+			// Remove from the 'open' array
+			detailRows.splice( idx, 1 );
+		}
+		else {
+			tr.addClass( 'details' );
+			if (res){
+				row.child( format_and_diff( row.data(), res ) ).show();
+			}
+			else{
+				row.child( format( row.data()) ).show();
+			}
+			// Add to the 'open' array
+			if ( idx === -1 ) {
+				detailRows.push( tr.attr('id') );
+			}
+		}
+	});
+
+	// On each draw, loop over the `detailRows` array and show any child rows
+	dataTableRes1.on( 'draw', function () {
+		 $.each( detailRows, function ( i, id ) {
+			 $('#'+id+' td.details-control').trigger( 'click' );
+		 } );
+	 } );
+
+    var r = dataTableRes1.data()
+}
+
+$('#historyModal').on('hidden.bs.modal', function () {
+	window.location.reload();
 })
