@@ -3,6 +3,7 @@ from itertools import chain
 from django.db.models import fields
 from django.forms import forms, ModelForm, TextInput, MultiWidget,  CharField, IntegerField, ChoiceField, MultiValueField, RegexField, ComboField
 from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget, Textarea, RadioSelect
+from rest_framework import serializers
 from .models import Product_type, recurringItems, t_shirt_inventory, AdhocItems, vendorContactList, repairServices, engagementJoining, officeEvents
 from django.contrib.auth.models import User
 from django import forms
@@ -71,6 +72,7 @@ class AddProducts(ModelForm):
 
 
 class EditProducts(AddProducts, ModelForm):
+    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
     class Meta(AddProducts.Meta):
         fields = ['frequency', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'add_name', 'purchase_date', 'next_order_date', 'additional_info']
 
@@ -182,6 +184,7 @@ class AddRepairServicesForm(ModelForm):
         self.fields['service_of'].queryset = vendorContactList.objects.values_list('service', flat=True).distinct()
         self.fields['vendor_name'].queryset = vendorContactList.objects.none()
 
+
 class EditRepairServicesForm(AddRepairServicesForm, ModelForm):
     class Meta(AddRepairServicesForm.Meta):
         fields = ['service_date', 'service_of', 'service_type', 'charges', 'vendor_name', 'contact_no', 'paid_by', 'add_name', 'payment_mode', 'next_service_date', 'aditional_info']
@@ -216,7 +219,7 @@ class editTshirtForm(addTshirtForm, ModelForm):
 class AddJoiningForm(ModelForm):
     class Meta:
         model = engagementJoining
-        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf')
+        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account')
         widgets = {
             'employee_name': TextInput(attrs={'type':'text', 'class':"required form-control"}),
             'details': Select(attrs={'type': 'select', 'class': "form-select"}), 
