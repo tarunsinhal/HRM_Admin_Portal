@@ -61,6 +61,8 @@ class it_inventory(models.Model):
     status = models.ForeignKey(it_inventory_status, on_delete=models.CASCADE, default=2)
     allottee_id = models.CharField(max_length=50, null=True, blank=True)
     allotte_name = models.CharField(max_length=50, null=True, blank=True)
+    past_allottee_id = models.CharField(max_length=50, null=True, blank=True)
+    past_allottee_name = models.CharField(max_length=50, null=True, blank=True)
     remarks = models.CharField(max_length=500, blank=True, null=True)
     system_names = models.CharField(null=True, blank=True, max_length=1000)
     validity_start_date = models.DateField(null=True, blank=True)
@@ -110,7 +112,7 @@ class software_allotted_items(models.Model):
 def get_image_filename(instance, filename):
     title = instance.allotment.employee_id
     slug = slugify(title)
-    return "post_images/%s-%s" % (slug, filename)  
+    return "post_images/%s/%s" % (slug, filename)  
 
 
 class damage_images(models.Model):

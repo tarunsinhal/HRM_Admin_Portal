@@ -159,7 +159,7 @@ $(document).ready(function () {
 
 
 //...loading page again on closing the add new product form...//
-$('#staticBackdrop').on('hidden.bs.modal', function () {
+$('#staticBackdrop, #editModal').on('hidden.bs.modal', function () {
     debugger
     window.location.reload();
 })
@@ -418,6 +418,113 @@ const addNewallotmentForm = document.getElementById('addAllotmentForm')
 addNewallotmentForm.addEventListener("submit", handleaddnewAllotment)
 
 
+
+//...function called when addAllotment form is submitted...//
+function handleEditAllotment(event) {
+    debugger
+    var items = document.getElementById('editAllotmentForm').getElementsByClassName('edit_item_names')
+    for (var i = 0; i < items.length; i++) { 
+        items[i].disabled = false;
+    }
+    event.preventDefault()
+    const myForm = event.target
+    const myFormData = new FormData(myForm)
+    const url = myForm.getAttribute("action")
+    const method = myForm.getAttribute("method")
+    const xhr = new XMLHttpRequest()
+    xhr.open(method, url)
+
+    xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+    xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+    const responseType = "json"
+    xhr.responseType = responseType
+
+    xhr.onload = function () {
+        if (xhr.status === 201) {
+            const newProduct = xhr.response
+            myForm.reset()
+            window.location.reload();
+        }
+        else if (xhr.status === 400) {
+            debugger
+            var Inval = xhr.response
+            if (Inval['non_field_errors']) {
+                alert("Name already exists.");
+            }
+            $('.chk', myForm).each(function () {
+                debugger
+                var ipVal = $(this).attr('name');
+
+                if (ipVal == 'item_base_name') {
+                    ipVal = 'name'
+                }
+
+                var $parentTag = $(this).parent();
+                if (Inval[ipVal]) {
+                    if (!$parentTag[0].classList.contains("error")) {
+                        $parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 13px">' + Inval[ipVal] + '</span>')
+                    }
+                }
+                else {
+                    if ($(this).nextAll().length == 2) {
+                        $parentTag.removeClass("error");
+                        $(this).nextAll()[1].remove();
+                    } else {
+                        $parentTag.removeClass("error");
+                        $(this).next().remove();
+                    }
+                }
+            });
+        }
+    }
+    xhr.send(myFormData)
+}
+
+
+const editAllotmentForm = document.getElementById('editAllotmentForm')
+editAllotmentForm.addEventListener("submit", handleEditAllotment)
+
+
+//...called when delete button is clicked...//
+function deletefunction(obj) {
+	document.getElementById('deleteAllotmentForm').action = obj.id;
+}
+
+
+//...function called when delete form is submitted...//
+function handleDeleteAllotment(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else {
+			alert('There is some problem in deleting the product.')
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const deleteForm = document.getElementById('deleteAllotmentForm')
+deleteForm.addEventListener("submit", handleDeleteAllotment)
+
+
+
+
 function togglePassword(slf) {
     debugger
     slf.previousElementSibling.type = slf.previousElementSibling.type == "password" ? "text" : "password"
@@ -446,7 +553,7 @@ function allotmentFunction(evt, obj1){
 }
 
 
-function editfunction(evt){
+function editfunction(evt, obj1){
     debugger
     var x = document.getElementById(evt.id).parentElement.parentElement.getElementsByTagName('td')
     
@@ -460,7 +567,7 @@ function editfunction(evt){
     }
 
     y[1].value = x[0].textContent;
-    y[2].value = x[1].textContent
+    y[2].value = x[1].textContent.trim();
 
     $.ajax({
         url: $("#editAllotmentForm").attr('data-edit-allotment-url'),
@@ -471,6 +578,18 @@ function editfunction(evt){
             $("#edit_allotment_body").html(data)
         }
     })
+
+    $.ajax({
+        url: $("#editAllotmentForm").attr('data-edit-image-url'),
+        data: {'allotment_id': obj1},
+        async: false,
+        success: function(data){
+            debugger
+            $("#edit_allotment_body").html(data)
+        }
+    })
+
+    document.getElementById('editAllotmentForm').action = evt.id;
 }
 
 
@@ -481,6 +600,7 @@ function handleEditItemCheckboxclick(evt){
     var td = tr[0].children[0]
 
     if (tr[0].children[0].checked == true){
+        tr[1].children[0].disabled = false
         tr[1].children[0].disabled = false
         var url = $("#addAllotmentForm").attr("data-item_name-url")
         var item_id = evt.value

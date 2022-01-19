@@ -306,8 +306,8 @@ def load_edit_allotment_details(request):
     allotted_hardware = hardware_allotted_items.objects.filter(employee_id=emp_code, status_id=1)
     allotted_software = software_allotted_items.objects.filter(employee_id=emp_code)
 
-    initial_hardware = [{'item': i.item, 'name': i.item.item, 'item_name': i.item_name, 'details': i.details, 'additional': i.additional, 'status': i.status} for i in allotted_hardware]
-    initial_software = [{'item': i.item, 'item_name': i.item_name, 'details': i.details, 'additional': i.additional, 'validity_start_date': i.validity_start_date, 'validity_end_date': i.validity_end_date, 'status': i.status} for i in allotted_software]
+    initial_hardware = [{'id': i.id, 'item': i.item, 'name': i.item.item, 'item_name': i.item_name, 'details': i.details, 'additional': i.additional, 'status': i.status} for i in allotted_hardware]
+    initial_software = [{'id': i.id, 'item': i.item, 'item_name': i.item_name, 'details': i.details, 'additional': i.additional, 'validity_start_date': i.validity_start_date, 'validity_end_date': i.validity_end_date, 'status': i.status} for i in allotted_software]
 
     hardware_items = it_inventory_item.objects.filter(type_id=1).values()
     software_items = it_inventory_item.objects.filter(type_id=2).values()
@@ -340,5 +340,93 @@ def load_edit_allotment_details(request):
                 'initial_hardware': initial_hardware, 'initial_software': initial_software})
 
 
-def it_allotment_edit_view(request):
-    pass
+def load_edit_images(request):
+    allotment_id = request.GET.get('allotment_id')
+    images = damage_images.objects.filter(allotment_id=allotment_id)
+    print(images)
+    return None
+
+
+def it_allotment_edit_view(request, pk):
+    allotment = it_allotment.objects.get(id=pk)
+    print(request.POST)
+    allotment_serializer = it_allotment_serializer(instance=allotment, data=request.POST)
+
+    if allotment_serializer.is_valid():
+        allotment_serializer.save()
+    
+    hardware_items = len(it_inventory_item.objects.filter(type_id=1).values_list())
+    software_items = len(it_inventory_item.objects.filter(type_id=2).values_list())
+
+    #looping over the no. of hardware items
+    for i in range(hardware_items):
+        res = {}
+        if request.POST['hardware-'+str(i)+'-item_name']:
+            res['id'] = request.POST['hardware-'+str(i)+'-id']
+            res['employee_id'] = request.POST['employee_id']
+            res['employee_name'] = request.POST['employee_name']
+            res['item_name'] = it_inventory.objects.get(id=int(request.POST['hardware-'+str(i)+'-item_name'])) 
+            res['details'] = request.POST['hardware-'+str(i)+'-details']
+            res['additional'] = request.POST['hardware-'+str(i)+'-additional']
+            res['item'] = it_inventory_item.objects.get(id=int(request.POST['hardware-'+str(i)+'-item'])) 
+            res['status'] = it_inventory_status.objects.get(status_id=int(request.POST['hardware-'+str(i)+'-status']))
+
+        if res:
+            if res['id']:
+                hardware_serializer = hardware_allotted_items.objects.filter(id=res['id']).update(**res)
+            else:
+                del res['id']
+                hardware_serializer = hardware_allotted_items.objects.create(**res)
+            print(hardware_serializer)
+            if allotment_serializer.is_valid():
+                # hardware_serializer.save()
+
+                inventory = it_inventory.objects.get(id=request.POST['hardware-'+str(i)+'-item_name'])
+                if int(request.POST['hardware-'+str(i)+'-status']) == 1:
+                    inventory.allottee_id = res['employee_id']
+                    inventory.allotte_name = res['employee_name']
+                    inventory.status = it_inventory_status.objects.get(status='Allotted')
+                    inventory.save()
+                else:
+                    inventory.allottee_id = ''
+                    inventory.allotte_name = ''
+                    inventory.past_allottee_id = res['employee_id']
+                    inventory.past_allottee_name = res['employee_name']
+                    inventory.status = it_inventory_status.objects.get(status='Unallotted')
+                    inventory.save()
+
+    for i in range(software_items):
+        res = {}
+        if request.POST['software-'+str(i)+'-item_name']:
+            res['id'] = request.POST['software-'+str(i)+'-id']
+            res['employee_id'] = request.POST['employee_id']
+            res['employee_name'] = request.POST['employee_name']
+            res['item_name'] = it_inventory.objects.get(id=int(request.POST['software-'+str(i)+'-item_name'])) 
+            res['details'] = request.POST['software-'+str(i)+'-details']
+            res['validity_start_date'] = request.POST['software-'+str(i)+'-validity_start_date']
+            res['validity_end_date'] = request.POST['software-'+str(i)+'-validity_end_date']
+            res['additional'] = request.POST['software-'+str(i)+'-additional']
+            res['item'] = it_inventory_item.objects.get(id=int(request.POST['software-'+str(i)+'-item'])) 
+            res['status'] = it_inventory_status.objects.get(status_id=1)
+
+        if res:
+            if res['id']:
+                software_serializer = software_allotted_items.objects.filter(id=res['id']).update(**res)
+            else:
+                del res['id']
+                software_serializer = software_allotted_items.objects.create(**res)
+            if software_serializer.is_valid() and allotment_serializer.is_valid():
+                inventory = it_inventory.objects.get(id=int(request.POST['software-'+str(i)+'-item_name']))
+                inventory.allottee_id = res['employee_id']
+                inventory.allotte_name = res['employee_name']
+                inventory.status = it_inventory_status.objects.get(status='Allotted')
+                inventory.save()
+        
+    return JsonResponse({}, status=201)
+
+
+@api_view(['POST'])
+def delete_allotment(request, pk):
+    product = it_allotment.objects.get(id=pk)
+    product.delete()
+    return Response({}, status=201)

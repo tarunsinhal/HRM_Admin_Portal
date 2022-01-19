@@ -365,7 +365,8 @@
                         </div>
                     </form>
 
-                    <form method="POST" id="editAllotmentForm" data-edit-allotment-url="{% url 'IT_Infra:ajax_edit_allotment_details' %}">
+                    <form method="POST" id="editAllotmentForm" data-edit-allotment-url="{% url 'IT_Infra:ajax_edit_allotment_details' %}"
+                    data-edit-image-url="{% url 'IT_Infra:ajax_edit_damage_images' %}">
                         {% csrf_token %}
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -527,7 +528,6 @@
                                                 value="Previous" />
                                         </fieldset>
 
-
                                         <fieldset>
                                             <div class="form-card">
 
@@ -544,7 +544,6 @@
                                                 value="Previous" />
                                         </fieldset>
 
-
                                     </div>
                                     <!-- <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary"
@@ -556,7 +555,7 @@
                         </div>
                     </form>
 
-                    <form method="POST" id="deleteForm">
+                    <form method="POST" id="deleteAllotmentForm">
                         {% csrf_token %}
                         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
                             aria-hidden="true">
@@ -580,8 +579,6 @@
                             </div>
                         </div>
                     </form>
-
-
 
                     <div class="modal fade" id="allotmentModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-allotment-url="{% url 'IT_Infra:ajax_load_allotted_items' %}">
@@ -666,7 +663,7 @@
                                     <td class="name edit_accounts" style="display: none;">{{ rows.skype_email_password }}</td>
                                     <td style="padding: 2px 5px;"><a onclick="allotmentFunction(this, '{{ rows.employee_id }}')" data-bs-toggle="modal" data-bs-target="#allotmentModal" title="Allotment Details" style="color: blue; text-decoration: underline;">Click here</a></td>
                                     <td width=10% style="padding: 2px 5px;">
-                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this)
+                                        <a id='edit/{{ rows.id }}' onclick=editfunction(this,{{ rows.id }})
                                             data-bs-toggle="modal" data-bs-target="#editModal" title="Edit"
                                             style="color: #FFC107; padding: 0px;"><i
                                                 class="material-icons">&#xE254;</i></a>

@@ -13,6 +13,7 @@
             <th>Details</th>
             <th>Additional</th>
             <th>Status</th>
+            <th style="display: none;">Id</th>
         </tr>
     </thead>
 
@@ -35,8 +36,8 @@
         
         <tr>
             {% if item.item_name %}
-            <td class="edit_item" style="text-align: left;"><input type="checkbox" class="form-check-input edit_item" name='{{ item.item.name }}'
-                onclick="handleEditItemCheckboxclick(this);" value={{ form.item.value }} id='{{ form.item.auto_id }}' checked disabled>
+            <td class="edit_item" style="text-align: left;"><input type="checkbox" class="form-check-input edit_item" name='{{ form.item.auto_id }}'
+                onclick="return false;" value={{ form.item.value }} id='{{ form.item.auto_id }}' checked>
             <label for='{{ form.item.auto_id }}'><span>{{ item.item }}</span></label></td>
             {% else %}
             
@@ -48,6 +49,7 @@
             <td>{{ form.details }}</td>
             <td>{{ form.additional }}</td>
             <td>{{ form.status }}</td>
+            <td style="display: none;">{{ form.id }}</td>
         </tr>
         
         {% endfor %}
@@ -74,6 +76,7 @@
             <th>Validity End Date</th>
             <th>Additional</th>
             <th>Status</th>
+            <th style="display: none;">Id</th>
         </tr>
     </thead>
 
@@ -98,6 +101,7 @@
             <td>{{ form.validity_end_date }}</td>
             <td>{{ form.additional }}</td>
             <td>{{ form.status }}</td>
+            <td style="display: none;">{{ form.id }}</td>
         </tr>
         {% endfor %}
         

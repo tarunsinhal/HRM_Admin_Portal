@@ -427,6 +427,8 @@
                                     <th width=12% style="padding: 12px;">Status</th>
                                     <th width=12% style="padding: 12px;">Allotte ID</th>
                                     <th width=15% style="padding: 12px;">Alottee Name</th>
+                                    <th width=15% style="padding: 12px;">Past Allottee Id</th>
+                                    <th width=15% style="padding: 12px;">Past Allottee Name</th>
                                     <th width=15% style="display: none;">Validity Start Date</th>
                                     <th width=15% style="display: none;">Validity End Date</th>
                                     <th width=15% style="display: none;">Purchase type</th>
@@ -449,7 +451,9 @@
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.name }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.status }}</td>
                                     <td class="name" width=12% style="padding: 2px 5px;">{{ rows.allottee_id }}</td>
-                                    <td  style="padding: 2px 5px;">{{ rows.allotte_name }}</td>
+                                    <td  style="padding: 2px 5px; word-wrap: break-word;">{{ rows.allotte_name }}</td>
+                                    <td  style="padding: 2px 5px;">{{ rows.past_allottee_id }}</td>
+                                    <td  style="padding: 2px 5px; word-wrap: break-word;">{{ rows.past_allottee_name }}</td>
                                     <td  style="display: none;">{{ rows.validity_start_date }}</td>
                                     <td  style="display: none;">{{ rows.validity_end_date }}</td>
                                     <td  style="display: none;">{{ rows.purchase_type }}</td>
