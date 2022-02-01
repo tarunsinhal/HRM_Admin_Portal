@@ -1,3 +1,4 @@
+from distutils import errors
 from django.core.exceptions import RequestAborted, ValidationError
 from django.db.models import fields
 from django.forms.utils import pretty_name
@@ -791,14 +792,12 @@ def engagements_on_off_boarding_view(request):
 # view for adding the joining details of an employee
 @api_view(['POST'])
 def addJoining(request):
-    print('hello123')
     engagementJoining._history_date = datetime.now()
     serializer = joiningSerializer(data=request.POST)
 
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print('hello')
     print(serializer.errors)
     return Response(serializer.errors, status=400)
 
@@ -810,7 +809,8 @@ def editJoining(request, pk):
     serializer = editJoiningSerializer(instance=employee, data=request.POST)
     if serializer.is_valid():
         serializer.save()
-        return Response(serializer.data, status=201)
+        return Response(serializer.data, status=201) 
+    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 # view for deleting the joining details of an employee
@@ -840,16 +840,15 @@ class ImportJoiningView(View):
             resource = JoiningResource()
 
             data = data_set.load(file.read().decode('utf-8'), format=extension)
-            result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
-            # try:
-            #     result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
-            #     return JsonResponse({}, status=201)
-            # except ValidationError as e:
-            #     length = len(e.message_dict)
-            #     return JsonResponse({"error": e.message_dict, "length" : length},status=400)
-            # except Exception:
-            #     return JsonResponse({"error": "Check imported file & try again."},status=400)
-            return JsonResponse({}, status=201)
+            
+            try:
+                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+                return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
         else:
             self.context['form'] = ImportForm()
             return JsonResponse({"error":"Invalid file format."},status=400)
@@ -872,7 +871,7 @@ class ImportExitView(View):
             resource = ExitResource()
 
             data = data_set.load(file.read().decode('utf-8'), format=extension)
-              
+
             try:
                 result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
                 return JsonResponse({}, status=201)

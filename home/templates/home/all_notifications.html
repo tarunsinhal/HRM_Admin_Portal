@@ -75,6 +75,10 @@
                        <div class="col-9">
                         2 or less pieces remained in Tshirt Inventory of size <strong class="font-weight-bold">{{ rows.product }}</strong>
                        </div>
+                       {% elif rows.notification_type == 3 %}
+                       <div class="col-9">
+                        <strong class="font-weight-bold">{{ rows.product }}</strong> is not yet completed !
+                       </div>
                        {% endif %}
                    </div>
                    </div>

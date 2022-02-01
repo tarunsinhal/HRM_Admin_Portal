@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Item_types, Product_type, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining, officeEvents
+from .models import Item_types, Product_type, Adhoc_types, Detail_types, recurringItems, vendorContactList, repairServices,  AdhocItems, t_shirt_inventory, engagementJoining, officeEvents
 from django.contrib.auth.models import User
 from datetime import datetime
 
@@ -175,7 +175,7 @@ class repairServicesSerializer(serializers.ModelSerializer):
     #     if data['service_date'] and data['next_service_date'] :
     #         if data['service_date'] > data['next_service_date'] :
     #             raise serializers.ValidationError("Next Service date should be greater than  Service date!!!")
-        return data
+    #         return data
 
 class editRepairServicesSerializer(repairServicesSerializer):
     class Meta(repairServicesSerializer.Meta):
@@ -271,8 +271,9 @@ class joiningSerializer(serializers.ModelSerializer):
 
 class editJoiningSerializer(joiningSerializer):
     class Meta(joiningSerializer.Meta):
-        fields = '__all__'
+        fields = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date']
 
+    
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = officeEvents

@@ -45,7 +45,104 @@
                         <img src="{% static 'img/employee_onboarding.svg' %}" height="100%" width="100%" alt="...">
                     </div> -->
                     <div class="col-8" id="foodtitle">
-                        <h2><b>Version History</b></h2>
+                        <h2><b>Deleted History</b></h2>
+                    </div>
+
+                    <div class="modal fade" id="historyModal1" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" data-history-url="{% url 'operations:boarding_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content" style="justify-content: center;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="historyModalLabel">Version History</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="historyTable1" id="historyTableId1" data-previous-url="{% url 'operations:ajax_load_previous_engagements_history' %}">
+                                        <thead class="table tbl-header table-bordered">
+                                            <tr>
+                                                <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Employee Name</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Email Account</th> 
+                                                <th width=10% style="padding: 12px; text-align:center;">Skype Id</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Joining Documents</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">NDA Signed</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Induction</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                                <th width=10% style="display: none;">Joining Date</th>
+                                                <th width=10% style="display: none;">LOI</th>
+                                                <th width=10% style="display: none;">Offer Letter</th>
+                                                <th width=10% style="display: none;">Joining Hamper</th>
+                                                <th width=10% style="display: none;">Add to Skype Group</th>
+                                                <th width=10% style="display: none;">Add to Whatsapp Group</th>
+                                                <th width=10% style="display: none;">Microsoft Account Created</th>
+                                                <th width=10% style="display: none;">System Configuration</th>
+                                                <th width=10% style="display: none;">Add Upwork Account to Team</th>
+                                                <th width=10% style="display: none;">Add Upwork Account</th>
+                                                <th width=10% style="display: none;">OneDrive Access</th>
+                                                <th width=10% style="display: none;">Id Card</th>
+                                                <th width=10% style="display: none;">Mouse MousePad</th>
+                                                <th width=10% style="display: none;">Bag</th>
+                                                <th width=10% style="display: none;">Laptop Charger</th>
+                                                <th width=10% style="display: none;">Gmail Account</th>
+                                                <th width=10% style="display: none;">Joining Letter</th>                                
+                                                <th id="rowId" style="display: none;">Id</th>
+                                                <th id="rowHistoryId" style="display: none;">History Id</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbl-content table table-bordered" id="tbody-content1">
+                                        </tbody>
+                                    </table>
+                                </div>  
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal fade" id="historyModal2" tabindex="-1" aria-labelledby="historyModalLabel" aria-hidden="true" data-history-url="{% url 'operations:boarding_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                            <div class="modal-content" style="justify-content: center;">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="historyModalLabel">Version History</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <table class="historyTable2" id="historyTableId2" data-previous-url="{% url 'operations:ajax_load_previous_engagements_history' %}">
+                                        <thead class="table tbl-header table-bordered">
+                                            <tr>
+                                                <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Employee Name</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Email Account</th> 
+                                                <th width=10% style="padding: 12px; text-align:center;">Releiving Letter</th>
+                                                <th width=12% style="padding: 12px; text-align:center;">Experience Letter</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">NDA Signed</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">OneDrive Access</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Skype Id</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Id Card</th>      
+                                                <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                                <th width=10% style="display: none;">Last Working Date</th>
+                                                <th width=10% style="display: none;">Remove from Skype Group</th>
+                                                <th width=10% style="display: none;">Remove from Whatsapp Group</th>
+                                                <th width=10% style="display: none;">Microsoft Account Deleted</th>
+                                                <th width=10% style="display: none;">System Format</th>
+                                                <th width=10% style="display: none;">Remove Upwork Account from Team</th>
+                                                <th width=10% style="display: none;">Close Upwork Account</th>
+                                                <th width=10% style="display: none;">Laptop Charger</th>
+                                                <th width=10% style="display: none;">Mouse MousePad</th>
+                                                <th width=10% style="display: none;">Bag</th>
+                                                <th width=10% style="display: none;">Gmail Account</th>
+                                                <th width=10% style="display: none;">FNF</th>                          
+                                                <th id="rowId" style="display: none;">Id</th>
+                                                <th id="rowHistoryId" style="display: none;">History Id</th>
+                                                <th width="5%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="tbl-content table table-bordered" id="tbody-content2">
+                                        </tbody>
+                                    </table>
+                                </div>  
+                            </div>
+                        </div>
                     </div>
                     
                 </div>
@@ -86,80 +183,81 @@
                              
                             <thead class="table tbl-header table-bordered">
                                 <tr>
-                                    <th width=20% style="padding: 12px; text-align:center;">History Date</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Employee Name</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">LOI</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Offer Letter</th>
-                                    <th width=8% style="padding: 12px; text-align:center;">Joining Letter</th>
-                                    <th width=8% style="padding: 12px; text-align:center;">Joining Documents</th>
-                                    <th width=8% style="padding: 12px; text-align:center;">Joining Hamper</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">History Date</th>
+                                    <th width=12% style="padding: 12px; text-align:center;">Employee Name</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Email Account</th> 
+                                    <th width=10% style="padding: 12px; text-align:center;">Skype Id</th>
+                                    <th width=12% style="padding: 12px; text-align:center;">Joining Documents</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">NDA Signed</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Induction</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Add to Skype Group</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Add to Whatsapp Group</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Microsoft Account Created</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">System Configuration</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Upwork Account-Add to Team</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Upwork Account-Add Account</th>
                                     <th width=10% style="padding: 12px; text-align:center;">User</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Action</th>
-                                    <th width=14% style="display: none;">OneDrive Access</th>
-                                    <th width=14% style="display: none;">NDA-Signed</th>
-                                    <th width=14% style="display: none;">Id Card</th>
-                                    <th width=14% style="display: none;">Mouse-Mouse Pad</th>
-                                    <th width=14% style="display: none;">Bag</th>
-                                    <th width=14% style="display: none;">Laptop-Charger</th>
-                                    <th width=14% style="display: none;">Gmail Account</th>
-                                    <th width=14% style="display: none;">Skype Id</th>
-                                    <th width=14% style="display: none;">Email Account</th>                                 
+                                    <th width=10% style="display: none;">Joining Date</th>
+                                    <th width=10% style="display: none;">LOI</th>
+                                    <th width=10% style="display: none;">Offer Letter</th>
+                                    <th width=10% style="display: none;">Joining Hamper</th>
+                                    <th width=10% style="display: none;">Add to Skype Group</th>
+                                    <th width=10% style="display: none;">Add to Whatsapp Group</th>
+                                    <th width=10% style="display: none;">Microsoft Account Created</th>
+                                    <th width=10% style="display: none;">System Configuration</th>
+                                    <th width=10% style="display: none;">Add Upwork Account to Team</th>
+                                    <th width=10% style="display: none;">Add Upwork Account</th>
+                                    <th width=10% style="display: none;">OneDrive Access</th>
+                                    <th width=10% style="display: none;">Id Card</th>
+                                    <th width=10% style="display: none;">Mouse MousePad</th>
+                                    <th width=10% style="display: none;">Bag</th>
+                                    <th width=10% style="display: none;">Laptop Charger</th>
+                                    <th width=10% style="display: none;">Gmail Account</th>
+                                    <th width=10% style="display: none;">Joining Letter</th>                                
                                     <th id="rowId" style="display: none;">Id</th>
                                     <th id="rowHistoryId" style="display: none;">History Id</th>
-                                    <th width="5%"></th>
+                                    <th width=15% style="padding: 12px; text-align:center; width: 8% !important;">History</th>
+                                    <th style="width: 2% !important;"></th>
                                 </tr>
                             </thead>
 
                             <tbody class="tbl-content table table-bordered" >
 
                                 {% for data in details_type.list %}
-                                        <tr>
-                                            <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
-                                                    {{ data.history_date }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.employee_name }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.loi }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.offer_letter }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.joining_letter }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.joining_documnents }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.joining_hamper }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.induction }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.add_to_skype_group }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.add_to_whatsapp_group }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.microsoft_account_created }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.system_configration }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.upwork_account_Add_to_team }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.upwork_account_Add_account }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
-
-                                            {% if data.history_type == "+" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
-                                            {% elif data.history_type == "~" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
-                                            {% else %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
-                                            {% endif %}                                          
-                                            
-                                            <td class="name" width=10% style="display: none;">{{ data.onedrive_access }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.nda_signed }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.id_card }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.laptop_charger }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.mouse_mousePad }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.bag }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.gmail_account }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.skype_id }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.email_account }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.id }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
-
-                                            <td width="5%" class="details-control details-control1" id="details-control1" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
-                                            
+                                <tr>
+                                    <td style="vertical-align : middle; text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>{{ data.history_date }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.employee_name }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.email_account }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.skype_id }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.joining_documents }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.nda_signed }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.induction }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
+                        
+                                    {% if data.history_type == "+" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+                                    {% elif data.history_type == "~" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+                                    {% else %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+                                    {% endif %}  
+                        
+                                    <td class="name" width=10% style="display: none;">{{ data.joining_date }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.loi }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.offer_letter }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.joining_hamper }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.add_to_skype_group }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.add_to_whatsapp_group }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.microsoft_account_created }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.system_configuration }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.add_upwork_account_to_team }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.add_upwork_account }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.onedrive_access }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.id_card }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.laptop_charger }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.mouse_mousepad }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.bag }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.gmail_account }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.joining_letter }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+                                    <td class="name" width=15% style="padding: 2px 5px; text-align:center; width: 8% !important;"><a onclick=historyfunction1(this,{{ data.id }}) data-bs-toggle="modal" data-bs-target="#historyModal1"><span style="color: blue;">click here</span></a></td>
+                                    <td class="details-control details-control1" id="details-control1" style="padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px; width: 2% !important;"></td>
                                 </tr>
                                 {% endfor %}
                                
@@ -175,73 +273,74 @@
                              
                             <thead class="table tbl-header table-bordered">
                                 <tr>
-                                    <th width=20% style="padding: 12px; text-align:center;">History Date</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Employee Name</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Releiving Letter</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Experience Letter</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Remove from Skype Group</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Remove from Whatsapp Group</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Microsoft Account Deleted</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">System Format</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Upwork Account-Remove from Team</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">Upwork Account-Close Account</th>
-                                    <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">History Date</th>
+                                    <th width=15% style="padding: 12px; text-align:center;">Employee Name</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">Email Account</th> 
+                                    <th width=12% style="padding: 12px; text-align:center;">Releiving Letter</th>
+                                    <th width=14% style="padding: 12px; text-align:center;">Experience Letter</th>
+                                    <th width=10% style="padding: 12px; text-align:center;">NDA Signed</th>
+                                    <th width=12% style="padding: 12px; text-align:center;">OneDrive Access</th>
+                                    <th width=8% style="padding: 12px; text-align:center;">Skype Id</th>
+                                    <th width=8% style="padding: 12px; text-align:center;">Id Card</th>      
+                                    <th width=8% style="padding: 12px; text-align:center;">User</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Action</th>
-                                    <th width=14% style="display: none;">OneDrive Access</th>
-                                    <th width=14% style="display: none;">NDA-Signed</th>
-                                    <th width=14% style="display: none;">Laptop-Charger</th>
-                                    <th width=14% style="display: none;">Mouse-Mouse Pad</th>
-                                    <th width=14% style="display: none;">Bag</th>
-                                    <th width=14% style="display: none;">Id Card</th>
-                                    <th width=14% style="display: none;">Gmail Account</th>
-                                    <th width=14% style="display: none;">Skype Id</th>
-                                    <th width=14% style="display: none;">Email Account</th>                                    
+                                    <th width=10% style="display: none;">Last Working Date</th>
+                                    <th width=10% style="display: none;">Remove from Skype Group</th>
+                                    <th width=10% style="display: none;">Remove from Whatsapp Group</th>
+                                    <th width=10% style="display: none;">Microsoft Account Deleted</th>
+                                    <th width=10% style="display: none;">System Format</th>
+                                    <th width=10% style="display: none;">Remove Upwork Account from Team</th>
+                                    <th width=10% style="display: none;">Close Upwork Account</th>
+                                    <th width=10% style="display: none;">Laptop Charger</th>
+                                    <th width=10% style="display: none;">Mouse MousePad</th>
+                                    <th width=10% style="display: none;">Bag</th>
+                                    <th width=10% style="display: none;">Gmail Account</th>
+                                    <th width=10% style="display: none;">FNF</th>                          
                                     <th id="rowId" style="display: none;">Id</th>
                                     <th id="rowHistoryId" style="display: none;">History Id</th>
-                                    <th width="5%"></th>
+                                    <th style="padding: 12px; text-align:center; width: 8% !important;">History</th>
+                                    <th style="width: 2% !important;"></th>
                                 </tr>
                             </thead>
 
-                            <tbody class="tbl-content table table-bordered" >
-
+                            <tbody class="tbl-content table table-bordered">
                                 {% for data in details_type.list %}
-                                        <tr>
-                                            <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>
-                                                    {{ data.history_date }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.employee_name }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.relieving_letter }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.experience_letter }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.remove_from_skype_group }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.remove_from_whatsapp_group }}</td>
-                                            <td class="name" width=8% style="padding: 2px 5px; text-align:center;">{{ data.microsoft_account_deleted }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.system_format }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.upwork_account_Remove_from_team }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.upwork_account_Close_account }}</td>
-                                            <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
-
-                                            {% if data.history_type == "+" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
-                                            {% elif data.history_type == "~" %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
-                                            {% else %}
-                                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
-                                            {% endif %}                                          
-                                            
-                                            <td class="name" width=10% style="display: none;">{{ data.onedrive_access }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.nda_signed }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.laptop_charger }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.mouse_mousePad }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.bag }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.id_card }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.gmail_account }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.skype_id }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.email_account }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.id }}</td>
-                                            <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
-
-                                            <td width="5%" class="details-control details-control2" id="details-control2" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
-                                            
-
+                                <tr>
+                                    <td style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>{{ data.history_date }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.employee_name }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.email_account }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.relieving_letter }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.experience_letter }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.nda_signed }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.onedrive_access }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.skype_id }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.id_card }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
+                        
+                                    {% if data.history_type == "+" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+                                    {% elif data.history_type == "~" %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+                                    {% else %}
+                                    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+                                    {% endif %}  
+                        
+                                    <td class="name" width=10% style="display: none;">{{ data.last_working_date }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.remove_from_skype_group }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.remove_from_whatsapp_group }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.microsoft_account_deleted }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.system_format }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.remove_upwork_account_from_team }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.close_upwork_account }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.laptop_charger }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.mouse_mousepad }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.bag }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.gmail_account }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.fnf }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+                                    <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+                                    <td class="name" width=10% style="padding: 2px 5px; text-align:center;"><a onclick=historyfunction2(this,{{ data.id }}) data-bs-toggle="modal" data-bs-target="#historyModal2"><span style="color: blue; width: 8% !important;">click here</span></a></td>
+                                    <td class="details-control details-control2" id="details-control2" style="padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px; width: 2% !important;"></td>
                                 </tr>
                                 {% endfor %}
                                
@@ -249,7 +348,6 @@
 
                         </table>
                     </section>
-
 
                     {% endif %}
                     {% endfor %}
@@ -260,7 +358,6 @@
         </div>
     </div>
 </div>
-
 
 
 {% endblock content %}
@@ -276,17 +373,11 @@
 <script src="{% static 'js/boarding_history.js' %}"></script>
 
 
-
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
-
-
 
 
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-
-
-
 
 
 {% endblock addextra %}

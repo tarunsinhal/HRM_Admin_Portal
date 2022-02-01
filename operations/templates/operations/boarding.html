@@ -38,606 +38,1063 @@
 
 <div class="container-lg" style="overflow-y: scroll;">
     <div class="table-responsive">
-        <div>
-            <div class="table-title">
-                <div class="row">
-                    <div class="col-sm-1">
-                        <img src="{% static 'img/employee_offboarding.svg' %}" height="100%" width="100%" alt="...">
-                    </div>
-                    <div class="col-sm-7" id="foodtitle">
-                        <h2><b>On-Boarding & Off-Boarding</b></h2>
-                        <p style="color: black;">Manage food Inventory, find tables and data for the available stock and requirements.</p>
-                    </div>
-                    <div class="col-sm-4" style="padding: 15px;">
-                        <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
-                            data-bs-target="#staticBackdrop" style="background-color: #2f8669; margin-left: 10px;">
-                            +</button>
-                    </div>
-                    
-                    <form method="POST" action="{% url 'operations:addJoining' %}"  id="addJoiningForm" class="needs-validation">
-                        {% csrf_token %} 
+        <div class="table-title">
+            <div class="row">
+                <div class="col-sm-1">
+                    <img src="{% static 'img/employee_offboarding.svg' %}" height="100%" width="100%" alt="...">
+                </div>
+                <div class="col-sm-7" id="foodtitle">
+                    <h2><b>On-Boarding & Off-Boarding</b></h2>
+                    <p style="color: black;">Manage food Inventory, find tables and data for the available stock and requirements.</p>
+                </div>
+                <div class="col-sm-4" style="padding: 15px;">
+                    <button type="button" class="add-new button5" id="addNew" data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop" style="background-color: #2f8669; margin-left: 10px;">
+                        +</button>
+                </div>
+                
+                <form method="POST" action="{% url 'operations:addJoining' %}"  id="addJoiningForm" class="needs-validation">
+                    {% csrf_token %} 
 
-                        <!-- Modal -->
-                        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="staticBackdropLabel">Add Joining Details</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body" style="margin: 0px; padding: 10px 0px;">
-                                        <div class="container">
-                                            <div class="row add-form-container" style="margin-left: 3px;">
-                                                <div class="col" style="padding-left: 0;">
-                                                    <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
-                                                        {{ addJoiningForm.employee_name.label }}</div>
-                                                    <div style="margin-bottom: 15px; padding: 0px;">
-                                                        {{ addJoiningForm.employee_name }}
+                    <!-- Modal -->
+                    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="staticBackdropLabel">Add Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" style="margin: 0px; padding: 10px 0px;">
+                                    <div class="container">
+                                        <div class="row add-form-container" style="margin-left: 3px;">
+                                            <div class="col" style="padding-left: 0;">
+                                                <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                    {{ addJoiningForm.employee_name.label }}</div>
+                                                <div style="margin-bottom: 15px; padding: 0px;">
+                                                    {{ addJoiningForm.employee_name }}
+                                                </div>
+                                            </div> 
+                                            <div class="col">
+                                                <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                    {{ addJoiningForm.details.label }}</div>
+                                                <div style="margin-bottom: 15px; padding: 0px;">
+                                                    {{ addJoiningForm.details }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row add-form-container" style="margin-left: 3px;">
+                                            <div class="col" style="padding-left: 0;">
+                                                <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                    {{ addJoiningForm.joining_date.label }}</div>
+                                                <div class="joinDate joiningC" style="margin-bottom: 15px; padding: 0px;">
+                                                    {{ addJoiningForm.joining_date }}
+                                                </div>
+                                            </div> 
+                                            <div class="col" style="padding-left: 0;">
+                                                <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                    {{ addJoiningForm.last_working_date.label }}</div>
+                                                <div class="exitDate exitC" style="margin-bottom: 15px; padding: 0px;">
+                                                    {{ addJoiningForm.last_working_date }}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <hr class="font-weight-bold">
+
+                                        <ul id="progressbar">
+                                            <li class="active12">Management</li>
+                                            <li>Admin</li>
+                                            <li>HR</li>
+                                        </ul>
+                                        <fieldset>
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.email_account.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.email_account }}
                                                     </div>
-                                                </div> 
-                                                <div class="col">
-                                                    <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
-                                                        {{ addJoiningForm.details.label }}</div>
-                                                    <div style="margin-bottom: 15px; padding: 0px;">
-                                                        {{ addJoiningForm.details }}
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.add_upwork_account_to_team.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.add_upwork_account_to_team }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.add_upwork_account.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.add_upwork_account }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.remove_upwork_account_from_team.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.remove_upwork_account_from_team }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.close_upwork_account.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.close_upwork_account }}
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <hr class="font-weight-bold">
-
-                                            <ul id="progressbar">
-                                                <li class="active12">Madan/Tarun</li>
-                                                <li>Admin</li>
-                                                <li>HR</li>
-                                            </ul>
-                                            <fieldset>
-                                                <div class="container">
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.email_account.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.email_account }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Add_to_team.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Add_to_team }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Add_account.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Add_account }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Remove_from_team.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Remove_from_team }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Close_account.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Close_account }}
-                                                        </div>
+                                            <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 300px;">Save</button>
+                                            <input type="button" name="next" class="next action-button" value="Next"/>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="container">
+                                                
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.laptop_charger.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.laptop_charger }}
                                                     </div>
                                                 </div>
-                                                <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 300px;">Save</button>
-                                                <input type="button" name="next" class="next action-button" value="Next"/>
-                                            </fieldset>
-                                            <fieldset>
-                                                <div class="container">
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.onedrive_access.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.onedrive_access }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.microsoft_account_created.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.microsoft_account_created }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.microsoft_account_deleted.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.microsoft_account_deleted }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.gmail_account.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.gmail_account }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.skype_id.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.skype_id }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.system_configration.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.system_configration }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.system_format.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.system_format }}
-                                                        </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.mouse_mousepad.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.mouse_mousepad }}
                                                     </div>
                                                 </div>
-                                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
-                                                <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 180px;">Save</button>
-                                                <input type="button" name="next" class="next action-button" value="Next"/>
-                                            </fieldset>
-                                            <fieldset>
-                                                <div class="container">
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.loi.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.loi }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.offer_letter.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.offer_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.nda_signed.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.nda_signed }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.joining_letter.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.joining_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.joining_documents.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.joining_documents }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.joining_hamper.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.joining_hamper }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.relieving_letter.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.relieving_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.experience_letter.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.experience_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.laptop_charger.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.laptop_charger }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.mouse_mousePad.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.mouse_mousePad }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.bag.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.bag }}
-                                                        </div>
-                                                    </div><div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.id_card.label }}</div>
-                                                        <div class="col-7 commonC" style="margin: 5px">
-                                                            {{ addJoiningForm.id_card }}
-                                                        </div>
-                                                    </div><div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.induction.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.induction }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.add_to_skype_group.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.add_to_skype_group }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.add_to_whatsapp_group.label }}</div>
-                                                        <div class="col-7 joiningC" style="margin: 5px">
-                                                            {{ addJoiningForm.add_to_whatsapp_group }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.remove_from_skype_group.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.remove_from_skype_group }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.remove_from_whatsapp_group.label }}</div>
-                                                        <div class="col-7 exitC" style="margin: 5px">
-                                                            {{ addJoiningForm.remove_from_whatsapp_group }}
-                                                        </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.bag.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.bag }}
                                                     </div>
                                                 </div>
-                                                <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
-                                                <button type="submit" name="addButton" value="save" class="action-button btnStyle"style="margin-left: 280px;">Save</button>
-                                            </fieldset>
-                                        </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.microsoft_account_created.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.microsoft_account_created }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.microsoft_account_deleted.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.microsoft_account_deleted }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.gmail_account.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.gmail_account }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.skype_id.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.skype_id }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.system_configuration.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.system_configuration }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.system_format.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.system_format }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                                            <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 180px;">Save</button>
+                                            <input type="button" name="next" class="next action-button" value="Next"/>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.onedrive_access.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.onedrive_access }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ addJoiningForm.loi.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.loi }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.offer_letter.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.offer_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ addJoiningForm.nda_signed.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.nda_signed }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.joining_letter.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.joining_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.joining_documents.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.joining_documents }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.joining_hamper.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.joining_hamper }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.relieving_letter.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.relieving_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.experience_letter.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.experience_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.id_card.label }}</div>
+                                                    <div class="col-7 commonC" style="margin: 5px">
+                                                        {{ addJoiningForm.id_card }}
+                                                    </div>
+                                                </div><div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.induction.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.induction }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.add_to_skype_group.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.add_to_skype_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.add_to_whatsapp_group.label }}</div>
+                                                    <div class="col-7 joiningC" style="margin: 5px">
+                                                        {{ addJoiningForm.add_to_whatsapp_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.remove_from_skype_group.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.remove_from_skype_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ addJoiningForm.remove_from_whatsapp_group.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.remove_from_whatsapp_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ addJoiningForm.fnf.label }}</div>
+                                                    <div class="col-7 exitC" style="margin: 5px">
+                                                        {{ addJoiningForm.fnf }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                                            <button type="submit" name="addButton" value="save" class="action-button btnStyle"style="margin-left: 280px;">Save</button>
+                                        </fieldset>
                                     </div>
-                                    <!-- <div class="modal-footer">
-                                        <button type="submit" name="addButton" value="save" class="action-button btn btn-success">Save</button>
-                                        <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
-                                        <input type="button" name="next" class="next action-button" value="Next"/>
-                                    </div> -->
                                 </div>
+                                <!-- <div class="modal-footer">
+                                    <button type="submit" name="addButton" value="save" class="action-button btn btn-success">Save</button>
+                                    <input type="button" name="previous" class="previous action-button-previous" value="Previous"/>
+                                    <input type="button" name="next" class="next action-button" value="Next"/>
+                                </div> -->
                             </div>
-                        </div>   
-                    </form>
+                        </div>
+                    </div>   
+                </form>
 
-                    <form method="POST" id="editJoiningForm">
-                        {% csrf_token %}
-                        <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
-                            tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-scrollable modal-lg">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="editLabel">Update Joining Details</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body" style="margin: 0px; padding: 10px 0px;">
-                                        <div class="container">
-                                            <div class="row" style="margin: 15px;">
-                                                <div class="col-3 font-weight-bold" style="padding: 0px; margin-left: 70px; font-size: 15px;">                                                           
+                <form method="POST" id="editJoiningForm">
+                    {% csrf_token %}
+                    <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                        tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editLabel">Update Joining Details</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body" style="margin: 0px; padding: 10px 0px;">
+                                    <div class="container">
+                                        <div class="row add-form-container" style="margin-left: 3px;">
+                                            <div class="col" style="padding-left: 0;">
+                                                <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
                                                     {{ editJoiningForm.employee_name.label }}</div>
-                                                <div class="col-6 exFd jsFd" style="padding: 0px;">
+                                                <div class="form-label exFd jsFd" style="margin-bottom: 15px; padding: 0px;">
                                                     {{ editJoiningForm.employee_name }}
                                                 </div> 
                                             </div>
+                                            <div class="col" style="padding-left: 0;">
+                                                <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                    {{ editJoiningForm.joining_date.label }}</div>
+                                                <div class="joinDate joiningC jsFd" style="margin-bottom: 15px; padding: 0px;">
+                                                    {{ editJoiningForm.joining_date }}
+                                                </div>
+                                            </div> 
+                                            <div class="col" style="padding-left: 0;">
+                                                <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                    {{ editJoiningForm.last_working_date.label }}</div>
+                                                <div class="exitDate exitC exFd" style="margin-bottom: 15px; padding: 0px;">
+                                                    {{ editJoiningForm.last_working_date }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr class="font-weight-bold">
 
-                                            <hr class="font-weight-bold">
+                                        <ul id="progressbar">
+                                            <li class="active12">Management</li>
+                                            <li>Admin</li>
+                                            <li>HR</li>
+                                        </ul>
+                                        <fieldset>
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.email_account.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.email_account }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_upwork_account_to_team.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_upwork_account_to_team }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_upwork_account.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_upwork_account }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.remove_upwork_account_from_team.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.remove_upwork_account_from_team }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.close_upwork_account.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.close_upwork_account }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 300px;">Save</button>
+                                            <button type="button" name="next" class="next action-button" value="Next">Next</button>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.laptop_charger.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.laptop_charger }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.mouse_mousepad.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.mouse_mousepad }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.bag.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.bag }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.microsoft_account_created.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.microsoft_account_created }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.microsoft_account_deleted.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.microsoft_account_deleted }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.gmail_account.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.gmail_account }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.skype_id.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.skype_id }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.system_configuration.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.system_configuration }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.system_format.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.system_format }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" name="previous" class="previous action-button-previous" value="Previous">Previous</button>
+                                            <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 180px;">Save</button>
+                                            <button type="button" name="next" class="next action-button" value="Next">Next</button>
+                                        </fieldset>
+                                        <fieldset>
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.onedrive_access.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.onedrive_access }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ editJoiningForm.loi.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.loi }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.offer_letter.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.offer_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ editJoiningForm.nda_signed.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.nda_signed }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.joining_letter.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.joining_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.joining_documents.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.joining_documents }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.joining_hamper.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.joining_hamper }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.relieving_letter.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.relieving_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.experience_letter.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.experience_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.id_card.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.id_card }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.induction.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.induction }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_to_skype_group.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_to_skype_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_to_whatsapp_group.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_to_whatsapp_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.remove_from_skype_group.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.remove_from_skype_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.remove_from_whatsapp_group.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.remove_from_whatsapp_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ editJoiningForm.fnf.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.fnf }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" name="previous" class="previous action-button-previous" value="Previous">Previous</button>
+                                            <button type="submit" name="addButton" value="save" class="action-button btnStyle"style="margin-left: 280px;">Save</button>
+                                        </fieldset>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
 
-                                            <ul id="progressbar">
-                                                <li class="active12">Madan/Tarun</li>
-                                                <li>Admin</li>
-                                                <li>HR</li>
-                                            </ul>
-                                            <fieldset>
-                                                <div class="container">
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.email_account.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.email_account }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Add_to_team.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Add_to_team }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Add_account.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Add_account }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Remove_from_team.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Remove_from_team }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.upwork_account_Close_account.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.upwork_account_Close_account }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 300px;">Save</button>
-                                                <button type="button" name="next" class="next action-button" value="Next">Next</button>
-                                            </fieldset>
-                                            <fieldset>
-                                                <div class="container">
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.onedrive_access.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.onedrive_access }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.microsoft_account_created.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.microsoft_account_created }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.microsoft_account_deleted.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.microsoft_account_deleted }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.gmail_account.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.gmail_account }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.skype_id.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.skype_id }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.system_configration.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.system_configration }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.system_format.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.system_format }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <button type="button" name="previous" class="previous action-button-previous" value="Previous">Previous</button>
-                                                <button type="submit" name="addButton" value="save" class="action-button btnStyle" style="margin-left: 180px;">Save</button>
-                                                <button type="button" name="next" class="next action-button" value="Next">Next</button>
-                                            </fieldset>
-                                            <fieldset>
-                                                <div class="container">
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.loi.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.loi }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.offer_letter.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.offer_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.nda_signed.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.nda_signed }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.joining_letter.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.joining_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.joining_documents.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.joining_documents }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.joining_hamper.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.joining_hamper }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.relieving_letter.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.relieving_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.experience_letter.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.experience_letter }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.laptop_charger.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.laptop_charger }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.mouse_mousePad.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.mouse_mousePad }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.bag.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.bag }}
-                                                        </div>
-                                                    </div><div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.id_card.label }}</div>
-                                                        <div class="col-7 commonC exFd jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.id_card }}
-                                                        </div>
-                                                    </div><div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.induction.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.induction }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.add_to_skype_group.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.add_to_skype_group }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.add_to_whatsapp_group.label }}</div>
-                                                        <div class="col-7 joiningC jsFd" style="margin: 5px">
-                                                            {{ addJoiningForm.add_to_whatsapp_group }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.remove_from_skype_group.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.remove_from_skype_group }}
-                                                        </div>
-                                                    </div>
-                                                    <div class="row" style="text-align: left; font-size: 15px;">
-                                                        <div class="col-4" style="margin: 5px; text-align: left;">
-                                                            {{ addJoiningForm.remove_from_whatsapp_group.label }}</div>
-                                                        <div class="col-7 exitC exFd" style="margin: 5px">
-                                                            {{ addJoiningForm.remove_from_whatsapp_group }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <button type="button" name="previous" class="previous action-button-previous" value="Previous">Previous</button>
-                                                <button type="submit" name="addButton" value="save" class="action-button btnStyle"style="margin-left: 280px;">Save</button>
-                                            </fieldset>
+                <form method="POST" id="deleteJoiningForm">
+                    {% csrf_token %}
+                    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampledeleteModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content"
+                                style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampledeleteModalLabel">Delete</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this product?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btnStyle" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btnStyle">Delete</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form method="POST" enctype="multipart/form-data" id="importJoiningForm" action="{% url 'operations:import_joining' %}">
+                    {% csrf_token %}
+                    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content"
+                                style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Import</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body row">
+                                    {%for field in importForm%}
+                                        {%if field.field.widget.input_type == 'file'%}
+                                            <div class="form-group mb-0 files col-10">
+                                                {{field}}
+                                            </div>
+                                        {%else%}
+                                            {{field}}
+                                        {%endif%}
+                                    {%endfor%}
+                                    <div class="col-2">
+                                        <i class="fa fa-info-circle fa-lg info"></i>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btnStyle" id="submitBtn">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <form method="POST" enctype="multipart/form-data" id="importExitForm" action="{% url 'operations:import_exit' %}">
+                    {% csrf_token %}
+                    <div class="modal fade" id="importModal1" tabindex="-1" aria-labelledby="exampleExitModalLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content"
+                                style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleExitModalLabel">Import</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body row">
+                                    {%for field in importForm%}
+                                        {%if field.field.widget.input_type == 'file'%}
+                                            <div class="form-group mb-0 files col-10"  id="import_file">
+                                                {{field}}
+                                            </div>
+                                        {%else%}
+                                            {{field}}
+                                        {%endif%}
+                                    {%endfor%}
+                                    <div class="col-2">
+                                        <i class="fa fa-info-circle fa-lg info"></i>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btnStyle" id="submitBtnExit">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="modal fade" id="historyModal1" tabindex="-1" aria-labelledby="historyModalLabel1" aria-hidden="true" data-history-url="{% url 'operations:boarding_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                        <div class="modal-content" style="justify-content: center;">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="historyModalLabel1">Version History</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="historyTable1" id="historyTableId1" data-previous-url="{% url 'operations:ajax_load_previous_engagements_history' %}">
+                                    <thead class="table tbl-header table-bordered">
+                                        <tr>
+                                            <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Employee Name</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Email Account</th> 
+                                            <th width=10% style="padding: 12px; text-align:center;">Skype Id</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Joining Documents</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">NDA Signed</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Induction</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                            <th width=10% style="display: none;">Joining Date</th>
+                                            <th width=10% style="display: none;">LOI</th>
+                                            <th width=10% style="display: none;">Offer Letter</th>
+                                            <th width=10% style="display: none;">Joining Hamper</th>
+                                            <th width=10% style="display: none;">Add to Skype Group</th>
+                                            <th width=10% style="display: none;">Add to Whatsapp Group</th>
+                                            <th width=10% style="display: none;">Microsoft Account Created</th>
+                                            <th width=10% style="display: none;">System Configuration</th>
+                                            <th width=10% style="display: none;">Add Upwork Account to Team</th>
+                                            <th width=10% style="display: none;">Add Upwork Account</th>
+                                            <th width=10% style="display: none;">OneDrive Access</th>
+                                            <th width=10% style="display: none;">Id Card</th>
+                                            <th width=10% style="display: none;">Mouse MousePad</th>
+                                            <th width=10% style="display: none;">Bag</th>
+                                            <th width=10% style="display: none;">Laptop Charger</th>
+                                            <th width=10% style="display: none;">Gmail Account</th>
+                                            <th width=10% style="display: none;">Joining Letter</th>                         
+                                            <th id="rowId" style="display: none;">Id</th>
+                                            <th id="rowHistoryId" style="display: none;">History Id</th>
+                                            <th width="5%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="tbl-content table table-bordered" id="tbody-content1">
+                                    </tbody>
+                                </table>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="historyModal2" tabindex="-1" aria-labelledby="historyModalLabel2" aria-hidden="true" data-history-url="{% url 'operations:boarding_row_history' %}" data-bs-keyboard="false" data-bs-backdrop="static">
+                    <div class="modal-dialog modal-dialog-scrollable modal-xl">
+                        <div class="modal-content" style="justify-content: center;">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="historyModalLabel2">Version History</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="historyTable2" id="historyTableId2" data-previous-url="{% url 'operations:ajax_load_previous_engagements_history' %}">
+                                    <thead class="table tbl-header table-bordered">
+                                        <tr>
+                                            <th width=20% style="padding: 12px; text-align:center;">History Date</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Employee Name</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Email Account</th> 
+                                            <th width=10% style="padding: 12px; text-align:center;">Releiving Letter</th>
+                                            <th width=12% style="padding: 12px; text-align:center;">Experience Letter</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">NDA Signed</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">OneDrive Access</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Skype Id</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Id Card</th>      
+                                            <th width=10% style="padding: 12px; text-align:center;">User</th>
+                                            <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                            <th width=10% style="display: none;">Last Working Date</th>
+                                            <th width=10% style="display: none;">Remove from Skype Group</th>
+                                            <th width=10% style="display: none;">Remove from Whatsapp Group</th>
+                                            <th width=10% style="display: none;">Microsoft Account Deleted</th>
+                                            <th width=10% style="display: none;">System Format</th>
+                                            <th width=10% style="display: none;">Remove Upwork Account from Team</th>
+                                            <th width=10% style="display: none;">Close Upwork Account</th>
+                                            <th width=10% style="display: none;">Laptop Charger</th>
+                                            <th width=10% style="display: none;">Mouse MousePad</th>
+                                            <th width=10% style="display: none;">Bag</th>
+                                            <th width=10% style="display: none;">Gmail Account</th> 
+                                            <th width=10% style="display: none;">FNF</th>                         
+                                            <th id="rowId" style="display: none;">Id</th>
+                                            <th id="rowHistoryId" style="display: none;">History Id</th>
+                                            <th width="5%"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="tbl-content table table-bordered" id="tbody-content2">
+                                    </tbody>
+                                </table>
+                            </div>  
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="viewModal" data-bs-backdrop="static" data-bs-keyboard="false"
+                    tabindex="-1" aria-labelledby="viewLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-scrollable modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" id="viewLabel">Record</h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="margin: 0px; padding: 10px 0px;">
+                                <div class="container">
+                                    <div class="row add-form-container" style="margin-left: 3px;">
+                                        <div class="col" style="padding-left: 0;">
+                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                {{ editJoiningForm.employee_name.label }}</div>
+                                            <div class="form-label exFd jsFd" style="margin-bottom: 15px; padding: 0px;">
+                                                {{ editJoiningForm.employee_name }}
+                                            </div> 
+                                        </div>
+                                        <div class="col" style="padding-left: 0;">
+                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                {{ editJoiningForm.joining_date.label }}</div>
+                                            <div class="joinDate joiningC jsFd" style="margin-bottom: 15px; padding: 0px;">
+                                                {{ editJoiningForm.joining_date }}
+                                            </div>
+                                        </div> 
+                                        <div class="col" style="padding-left: 0;">
+                                            <div class="form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; font-size: 15px; text-align: left;">                                                           
+                                                {{ editJoiningForm.last_working_date.label }}</div>
+                                            <div class="exitDate exitC exFd" style="margin-bottom: 15px; padding: 0px;">
+                                                {{ editJoiningForm.last_working_date }}
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                                    
+                                    <hr class="font-weight-bold">
+                                    <div class="tabset" style="margin: 0px 0px 0px 50px;">
+                                        <!-- Tab 1 -->
+                                        <input type="radio" data-tab-id ="v1" name="tabsetview" id="default" class="tablink" aria-controls="Management" onclick="openTabView(event, 'v1')" data-toggle="tabview">
+                                        <label style="margin: 0px 50px 20px 50px;" for="default">MANAGEMENT</label>
+                                        <!-- Tab 2 -->
+                                        <input type="radio" data-tab-id ="v2" name="tabsetview" id="t2" class="tablink" aria-controls="Admin" onclick="openTabView(event, 'v2')" data-toggle="tabview">
+                                        <label style="margin: 0px 50px 20px 50px;" for="t2">ADMIN</label>
+                                        <!-- Tab 3 -->
+                                        <input type="radio" data-tab-id ="v3" name="tabsetview" id="t3" class="tablink" aria-controls="HR" onclick="openTabView(event, 'v3')" data-toggle="tabview">
+                                        <label style="margin: 0px 50px 20px 50px;" for="t3">HR</label>
 
-                    <form method="POST" id="deleteJoiningForm">
-                        {% csrf_token %}
-                        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content"
-                                    style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Delete</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure you want to delete this product?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btnStyle"
-                                            data-bs-dismiss="modal">Close</button>
-                                        <button type="submit" class="btnStyle">Delete</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-
-                    <form method="POST" enctype="multipart/form-data" id="importJoiningForm" action="{% url 'operations:import_joining' %}">
-                        {% csrf_token %}
-                        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="exampleModalLabel"
-                            aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content"
-                                    style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Import</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                            aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        {%for field in importForm%}
-                                            {%if field.field.widget.input_type == 'file'%}
-                                                <div class="form-group mb-0 files">
-                                                    {{field}}
+                                        <section id="v1" class="tab-panel-view">
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.email_account.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.email_account }}
+                                                    </div>
                                                 </div>
-                                                <p style="color: darkblue; font-size: 13px; margin-left: 5px; margin-top: 5px;">{ Supported .csv file extension }</p>
-                                            {%else%}
-                                                {{field}}
-                                            {%endif%}
-                                        {%endfor%}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btnStyle" id="submitBtn">Submit</button>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_upwork_account_to_team.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_upwork_account_to_team }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_upwork_account.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_upwork_account }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.remove_upwork_account_from_team.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.remove_upwork_account_from_team }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.close_upwork_account.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.close_upwork_account }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                        <section id="v2" class="tab-panel-view">
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.laptop_charger.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.laptop_charger }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.mouse_mousepad.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.mouse_mousepad }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.bag.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.bag }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.microsoft_account_created.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.microsoft_account_created }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.microsoft_account_deleted.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.microsoft_account_deleted }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.gmail_account.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.gmail_account }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.skype_id.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.skype_id }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.system_configuration.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.system_configuration }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.system_format.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.system_format }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+                                        <section id="v3" class="tab-panel-view">
+                                            <div class="container">
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.onedrive_access.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.onedrive_access }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ editJoiningForm.loi.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.loi }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.offer_letter.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.offer_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ editJoiningForm.nda_signed.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.nda_signed }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.joining_letter.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.joining_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.joining_documents.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.joining_documents }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.joining_hamper.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.joining_hamper }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.relieving_letter.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.relieving_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.experience_letter.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.experience_letter }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.id_card.label }}</div>
+                                                    <div class="col-7 commonC exFd jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.id_card }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.induction.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.induction }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_to_skype_group.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_to_skype_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.add_to_whatsapp_group.label }}</div>
+                                                    <div class="col-7 joiningC jsFd" style="margin: 5px">
+                                                        {{ editJoiningForm.add_to_whatsapp_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.remove_from_skype_group.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.remove_from_skype_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left;">
+                                                        {{ editJoiningForm.remove_from_whatsapp_group.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.remove_from_whatsapp_group }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-4" style="margin: 5px; text-align: left; text-transform: uppercase;">
+                                                        {{ editJoiningForm.fnf.label }}</div>
+                                                    <div class="col-7 exitC exFd" style="margin: 5px">
+                                                        {{ editJoiningForm.fnf }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </form>
+                    </div>
                 </div>
+
             </div>
         </div>
     </div>
+    
 
     <form>
         <i class="fa fa-arrow-left" aria-hidden="true"></i>
@@ -660,7 +1117,7 @@
                 <label for="tab2">Exit Formalities</label>
                 
                 <a type="button" href="{% url 'operations:Boarding_history' %}"><button style="background-color: #5f4266; color: white; float: right; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; cursor: pointer; font-size: 14px;">
-                    <span><i class="fa fa-history" aria-hidden="true"></i></span><span style="margin-left: 5px;">Version History</span>
+                    <span><i class="fa fa-history" aria-hidden="true"></i></span><span style="margin-left: 5px;">History</span>
                 </button></a>
 
                 <div class="tab-panels">
@@ -674,67 +1131,72 @@
                         <table class="productTable1" id="boardingTable">
                             
                             <thead class="table tbl-header table-bordered">
-                                <tr>
+                                <!-- <tr>
                                     <th style="padding: 12px;  background-color: white; border-right: 2px solid #143d0c;" rowspan="2">Employee Name</th>
-                                    <th colspan="3" style="padding: 12px; color: #b11ca4;">Madan/Tarun</th>
+                                    <th colspan="3" style="padding: 12px; color: #b11ca4;">Management</th>
                                     <th  colspan="5" style="padding: 12px; color: #b11ca4; border-left: 2px solid #143d0c;">Admin</th>
                                     <th  colspan="13" style="padding: 12px; color:#b11ca4; border-left: 2px solid #143d0c;">HR</th>
                                     <td class="name" style="display: none;"> </td>
                                     <th style="padding: 12px; background-color: white; border-left: 2px solid #143d0c; width:6% !important;" rowspan="2">Action</th>
-                                </tr>
+                                </tr> -->
                                 <tr>
+                                    <th style="padding: 12px;">Employee Name</th>
+                                    <th style="display: none;">Joining Date</th>
                                     <th style="padding: 12px;">Email Account</th>
-                                    <th style="padding: 12px;">Upwork Account-Add to Team</th>
-                                    <th style="padding: 12px;">Upwork Account-Add Account</th>
-                                    <th style="padding: 12px; border-left: 2px solid #143d0c;">Onedrive Access</th>
+                                    <th style="display: none;">Add Upwork Account to Team</th>
+                                    <th style="display: none;">Add Upwork Account</th>
+                                    <th style="display: none; border-left: 2px solid #143d0c;">Laptop Charger</th>
+                                    <th style="display: none;">Mouse Mousepad</th>
+                                    <th style="display: none;">Bag</th>
                                     <th style="padding: 12px;">Microsoft Account Created</th>
-                                    <th style="padding: 12px;">Gmail Account</th>
+                                    <th style="display: none;">Gmail Account</th>
                                     <th style="padding: 12px;">Skype Id</th>
-                                    <th style="padding: 12px;">System Config.</th>
-                                    <th style="padding: 12px; border-left: 2px solid #143d0c;">LOI</th>
-                                    <th style="padding: 12px;">Offer Letter</th>
-                                    <th style="padding: 12px;">NDA-Signed</th>
-                                    <th style="padding: 12px;">Joining Letter</th>
-                                    <th style="padding: 12px;">Joining Docs</th>
-                                    <th style="padding: 12px;">Joining Hamper</th>
-                                    <th style="padding: 12px;">Laptop-Charger</th>
-                                    <th style="padding: 12px;">Mouse</th>
-                                    <th style="padding: 12px;">Bag</th>
-                                    <th style="padding: 12px;">Id Card</th>
+                                    <th style="display: none;">System Configuration</th>
+                                    <th style="display: none;">Onedrive Access</th>
+                                    <th style="display: none; border-left: 2px solid #143d0c;">LOI</th>
+                                    <th style="display: none;">Offer Letter</th>
+                                    <th style="padding: 12px;">NDA Signed</th>
+                                    <th style="display: none;;">Joining Letter</th>
+                                    <th style="padding: 12px;">Joining Documents</th>
+                                    <th style="display: none;">Joining Hamper</th>
+                                    <th style="display: none;">Id Card</th>
                                     <th style="padding: 12px;">Induction</th>
-                                    <th style="padding: 12px;">Add to Skype Group</tdh>
-                                    <th style="padding: 12px;">Add to Whatsapp Group</th>
+                                    <th style="display: none;">Add to Skype Group</tdh>
+                                    <th style="display: none;">Add to Whatsapp Group</th>
                                     <td class="name" style="display: none;"> </td>
+                                    <th style="padding: 12px; width:5% !important;">Action</th>
+                                    <th style="padding: 12px; width:4% !important;"></th>
                                 </tr>
                             </thead>
                 
                             <tbody class="tbl-content table table-bordered">
                                 {% for data in details_type.list %}
                                         <tr>
-                                            <td class="name font-weight-bold" style="vertical-align : middle;text-align:center; padding: 2px 5px; background-color: #f0f0f0; border-right: 2px solid #143d0c;">{{ data.employee_name }}</td>
+                                            <td class="name font-weight-bold" style="vertical-align: middle; text-align:center; padding: 2px 5px;">{{ data.employee_name }}</td>
+                                            <td class="name" style="display: none;">{{ data.joining_date }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.email_account }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.upwork_account_Add_to_team }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.upwork_account_Add_account }}</td>
-                                            <td class="name" style="padding: 2px 5px; border-left: 2px solid #143d0c;">{{ data.onedrive_access }}</td>
+                                            <td class="name" style="display: none;">{{ data.add_upwork_account_to_team }}</td>
+                                            <td class="name" style="display: none;">{{ data.add_upwork_account }}</td>
+                                            <td class="name" style="display: none; border-left: 2px solid #143d0c;">{{ data.laptop_charger }}</td>
+                                            <td class="name" style="display: none;">{{ data.mouse_mousepad }}</td>
+                                            <td class="name" style="display: none;">{{ data.bag }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.microsoft_account_created }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.gmail_account }}</td>
+                                            <td class="name" style="display: none;">{{ data.gmail_account }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.skype_id }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.system_configration }}</td>
-                                            <td class="name" style="padding: 2px 5px; border-left: 2px solid #143d0c;">{{ data.loi }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.offer_letter }}</td> 
+                                            <td class="name" style="display: none;">{{ data.system_configuration }}</td>
+                                            <td class="name" style="display: none;">{{ data.onedrive_access }}</td> 
+                                            <td class="name" style="display: none; border-left: 2px solid #143d0c;">{{ data.loi }}</td>
+                                            <td class="name" style="display: none;">{{ data.offer_letter }}</td> 
                                             <td class="name" style="padding: 2px 5px;">{{ data.nda_signed }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.joining_letter }}</td>
+                                            <td class="name" style="display: none;">{{ data.joining_letter }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.joining_documents }}</td>
-                                            <td class="name" style="padding: 2px 5px;;">{{ data.joining_hamper }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.laptop_charger }}</td> 
-                                            <td class="name" style="padding: 2px 5px;">{{ data.mouse_mousePad }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.bag }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.id_card }}</td>                                            
+                                            <td class="name" style="display: none;">{{ data.joining_hamper }}</td>
+                                            <td class="name" style="display: none;">{{ data.id_card }}</td>                                            
                                             <td class="name" style="padding: 2px 5px;">{{ data.induction }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.add_to_skype_group }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.add_to_whatsapp_group }}</td>
+                                            <td class="name" style="display: none;">{{ data.add_to_skype_group }}</td>
+                                            <td class="name" style="display: none;">{{ data.add_to_whatsapp_group }}</td>
                                             <td class="name" style="display: none;">{{ details_type.grouper }}</td>
-                                            <td style="padding: 2px 5px; border-left: 2px solid #143d0c; background-color: #f0f0f0;">
+                                            <td style="padding: 2px 5px;">
                                                 <div class="dropout">
                                                     <button class="more">
                                                         <span></span>
@@ -747,13 +1209,13 @@
                                                         <hr style="color: #FFF; padding: 0px; margin: 0px;">
                                                         <li><a id='Boarding/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal"><span>Delete</span></a>
                                                         </li>
+                                                        <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                        <li><a id='Boarding/history/{{ data.id }}' onclick=historyfunction1(this,{{ data.id }}) data-bs-toggle="modal" data-bs-target="#historyModal1"><span>History</span></a>
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </td>
-                                            <!-- <td style="padding: 2px 5px; border-left: 2px solid #143d0c; background-color: #f0f0f0;">
-                                                <a id='Boarding/edit/{{ data.id }}' onclick=editfunction(this) data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" style="color: #6e6c64; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
-                                                <a id='Boarding/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete" style="color: #6e6c64; padding: 0px;"><i class="material-icons">&#xE872;</i></a>
-                                            </td> -->
+                                            <td class="name" style="padding: 2px 5px;"><a id='view/{{ data.id }}' onclick=viewfunction(this) data-bs-toggle="modal" data-bs-target="#viewModal" style="color: green;"><i class="fa fa-eye fa-lg"></i></a></td>
                                         </tr>
                                 {% endfor %}
                             </tbody>
@@ -762,65 +1224,72 @@
                 {% else %}
                     <section class="tab-panel" id='{{ details_type.grouper }}'>
 
-                        <button data-bs-toggle="modal" data-bs-target="#importModal"  style="background-color: #5f4266; color: white; float: left; margin-bottom: 2px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
+                        <button data-bs-toggle="modal" data-bs-target="#importModal1"  style="background-color: #5f4266; color: white; float: left; margin-bottom: 2px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
                             <span>Import</span>
                         </button>
                         <table class="productTable2" id="boardingTable2">
                             
                             <thead class="table tbl-header table-bordered">
-                                <tr>
+                                <!-- <tr>
                                     <th style="padding: 12px; background-color: white; border-right: 2px solid #143d0c;" rowspan="2">Employee Name</th>
-                                    <th colspan="3" style="padding: 12px; color: #b11ca4;">Madan/Tarun</th>
+                                    <th colspan="3" style="padding: 12px; color: #b11ca4;">Management</th>
                                     <th colspan="5" style="padding: 12px; color: #b11ca4; border-left: 2px solid #143d0c;">Admin</th>
                                     <th colspan="9" style="padding: 12px; color: #b11ca4; border-left: 2px solid #143d0c;">HR</th>
                                     <td class="name" style="display: none;"> </td>
                                     <th style="padding: 12px; background-color: white; border-left: 2px solid #143d0c; width:6% !important;" rowspan="2">Action</th>
-                                </tr>
+                                </tr> -->
                                 <tr>
+                                    <th style="padding: 12px;">Employee Name</th>
+                                    <th style="display: none;">Last Working Date</th>
                                     <th style="padding: 12px;">Email Account</th>
-                                    <th style="padding: 12px;">Upwork Account-Remove from Team</th>
-                                    <th style="padding: 12px;">Upwork Account-Close Account</th>
-                                    <th style="padding: 12px; border-left: 2px solid #143d0c;">Onedrive Access</th>
+                                    <th style="display: none;">Remove Upwork Account from Team</th>
+                                    <th style="display: none;">Close Upwork Account</th>
+                                    <th style="display: none; border-left: 2px solid #143d0c;">Laptop Charger</th>
+                                    <th style="display: none;">Mouse Mousepad</th>
+                                    <th style="display: none;">Bag</th>
                                     <th style="padding: 12px;">Microsoft Account Deleted</th>
-                                    <th style="padding: 12px;">Gmail Account</th>
+                                    <th style="display: none;">Gmail Account</th>
                                     <th style="padding: 12px;">Skype Id</th>
-                                    <th style="padding: 12px;">System format</th>
-                                    <th style="padding: 12px; border-left: 2px solid #143d0c;">Id Card</th>
-                                    <th style="padding: 12px;">Laptop-Charger</th>
-                                    <th style="padding: 12px;">Mouse</th>
-                                    <th style="padding: 12px;">Bag</th>
-                                    <th style="padding: 12px;">NDA-Signed</th>
+                                    <th style="display: none;">System format</th>
+                                    <th style="padding: 12px;">Onedrive Access</th>
+                                    <th style="padding: 12px;">Id Card</th>
+                                    <th style="padding: 12px;">NDA Signed</th>
                                     <th style="padding: 12px;">Relieving Letter</th>
                                     <th style="padding: 12px;">Experience Letter</th>
-                                    <th style="padding: 12px;">Remove from Skype Group</th>
-                                    <th style="padding: 12px;">Remove from Whatsapp Group</th>
+                                    <th style="display: none;">Remove from Skype Group</th>
+                                    <th style="display: none;">Remove from Whatsapp Group</th>
+                                    <th style="display: none;">FNF</th>
                                     <td class="name" style="display: none;"> </td>
+                                    <th style="padding: 12px; width:5% !important;">Action</th>
+                                    <th style="padding: 12px; width:4% !important;"></th>
                                 </tr>
                             </thead>
             
                             <tbody class="tbl-content table table-bordered">
                                 {% for data in details_type.list %}
                                         <tr>
-                                            <td class="name font-weight-bold" style="vertical-align : middle;text-align:center; padding: 2px 5px; background-color: #f0f0f0; border-right: 2px solid #143d0c;">{{ data.employee_name }}</td>
+                                            <td class="name font-weight-bold" style="vertical-align : middle;text-align:center; padding: 2px 5px;">{{ data.employee_name }}</td>
+                                            <td class="name" style="display: none;">{{ data.last_working_date }}</td> 
                                             <td class="name" style="padding: 2px 5px;">{{ data.email_account }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.upwork_account_Remove_from_team }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.upwork_account_Close_account }}</td>
-                                            <td class="name" style="padding: 2px 5px; border-left: 2px solid #143d0c;">{{ data.onedrive_access }}</td>
+                                            <td class="name" style="display: none;">{{ data.remove_upwork_account_from_team }}</td>
+                                            <td class="name" style="display: none;">{{ data.close_upwork_account }}</td>
+                                            <td class="name" style="display: none; border-left: 2px solid #143d0c;">{{ data.laptop_charger }}</td> 
+                                            <td class="name" style="display: none;">{{ data.mouse_mousepad }}</td>
+                                            <td class="name" style="display: none;">{{ data.bag }}</td>            
                                             <td class="name" style="padding: 2px 5px;">{{ data.microsoft_account_deleted }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.gmail_account }}</td>
+                                            <td class="name" style="display: none;">{{ data.gmail_account }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.skype_id }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.system_format }}</td>
-                                            <td class="name" style="padding: 2px 5px; border-left: 2px solid #143d0c;">{{ data.id_card }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.laptop_charger }}</td> 
-                                            <td class="name" style="padding: 2px 5px;">{{ data.mouse_mousePad }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.bag }}</td>              
+                                            <td class="name" style="display: none;">{{ data.system_format }}</td>
+                                            <td class="name" style="padding: 2px 5px;">{{ data.onedrive_access }}</td>  
+                                            <td class="name" style="padding: 2px 5px;">{{ data.id_card }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.nda_signed }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.relieving_letter }}</td>
                                             <td class="name" style="padding: 2px 5px;">{{ data.experience_letter }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.remove_from_skype_group }}</td>
-                                            <td class="name" style="padding: 2px 5px;">{{ data.remove_from_whatsapp_group }}</td>
+                                            <td class="name" style="display: none;">{{ data.remove_from_skype_group }}</td>
+                                            <td class="name" style="display: none;">{{ data.remove_from_whatsapp_group }}</td>
+                                            <td class="name" style="display: none;">{{ data.fnf }}</td>
                                             <td class="name" style="display: none;">{{ details_type.grouper }}</td>
-                                            <td style="padding: 2px 5px; border-left: 2px solid #143d0c; background-color: #f0f0f0;">
+                                            <td style="padding: 2px 5px;">
                                                 <div class="dropout">
                                                     <button class="more">
                                                         <span></span>
@@ -833,12 +1302,12 @@
                                                         <hr style="color: #FFF; padding: 0px; margin: 0px;">
                                                         <li><a id='Boarding/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal"><span>Delete</span></a>
                                                         </li>
+                                                        <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                        <li><a id='Boarding/history/{{ data.id }}' onclick=historyfunction2(this,{{ data.id }}) data-bs-toggle="modal" data-bs-target="#historyModal2"><span>History</span></a>
+                                                        </li>
                                                 </div>
                                             </td>
-                                            <!-- <td style="padding: 2px 5px; border-left: 2px solid #143d0c; background-color: #f0f0f0;">
-                                                <a id='Boarding/edit/{{ data.id }}' onclick=editfunction(this) data-bs-toggle="modal" data-bs-target="#editModal" title="Edit" style="color: #6e6c64; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
-                                                <a id='Boarding/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal" title="Delete" style="color: #6e6c64; padding: 0px;"><i class="material-icons">&#xE872;</i></a>
-                                            </td> -->
+                                            <td class="name" style="padding: 2px 5px;"><a id='view/{{ data.id }}' onclick=viewfunction(this) data-bs-toggle="modal" data-bs-target="#viewModal" style="color: green;"><i class="fa fa-eye fa-lg"></i></a></td>
                                         </tr>
                                 {% endfor %}
                             </tbody>

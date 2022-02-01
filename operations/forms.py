@@ -219,10 +219,12 @@ class editTshirtForm(addTshirtForm, ModelForm):
 class AddJoiningForm(ModelForm):
     class Meta:
         model = engagementJoining
-        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account')
+        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date')
         widgets = {
             'employee_name': TextInput(attrs={'type':'text', 'class':"required form-control"}),
             'details': Select(attrs={'type': 'select', 'class': "form-select"}), 
+            'joining_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
+            'last_working_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
             'loi': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'offer_letter': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'nda_signed': TextInput(attrs={'type':'text', 'class':"form-control"}),
@@ -257,7 +259,7 @@ class AddJoiningForm(ModelForm):
 
 class EditJoiningForm(AddJoiningForm, ModelForm):
     class Meta(AddJoiningForm.Meta):
-        exclude = ['details']
+        fields = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date'  ]
 
 
 # import form

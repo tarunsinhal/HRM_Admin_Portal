@@ -1,11 +1,10 @@
-from operations.models import t_shirt_inventory
+from operations.models import t_shirt_inventory, recurringItems, engagementJoining
 from django.http.response import JsonResponse
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control, never_cache
 from datetime import datetime, timedelta, date
 from .models import notifications
-from operations.models import recurringItems
 from .serializers import UpdateUserSerializer, UserSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -15,7 +14,6 @@ from .forms import UpdateUserForm
 from django.db.models import Q
 from django.urls import resolve
 from django.contrib.auth.models import Permission
-# Create your views here.
 
 
 @login_required(login_url='/auth/login')
@@ -40,7 +38,7 @@ def get_noitications(request):
     # creating the list of notifications objects and if that notification is already in notification table or not
     notification_json = [notifications(product=i['product__product_name'], item_id=i['id'], notification_date=(i['next_order_date']-timedelta(days=1)).strftime('%Y-%m-%d'),
                         is_visited=False, notification_type=1) for i in q if (i['id'], 1) not in item_ids]
-    
+
     try:
         # getting the latest record's receiving date from the tshirt inventory model
         tshirt_qs = t_shirt_inventory.objects.values_list().order_by('-receiving_date').values('receiving_date')[0]
@@ -51,6 +49,29 @@ def get_noitications(request):
             if (i['id'], 2) not in item_ids:
                 notification_json.append(notifications(product='T-shirt'+'-'+ i['size'], item_id=i['id'], notification_date=date.today(),
                 is_visited=False, notification_type=2))
+    except:
+        pass
+
+    try:
+        time_threshold_2 = date.today() - timedelta(days=7)
+        # filering the records based on conditions from the tshirt inventory model
+        egmtjoin = engagementJoining.objects.filter(joining_date=time_threshold_2.strftime('%Y-%m-%d')).values('id', 'employee_name', 'details__detail_name')
+       
+        for i in range(len(egmtjoin)):
+            empData = engagementJoining.objects.filter(Q(offer_letter='')|Q(joining_letter='')|Q(joining_documents='')|Q(joining_hamper='')|Q(id_card='')|Q(induction='')|Q(loi='')|Q(add_to_skype_group='')|Q(add_to_whatsapp_group='')|Q(system_configuration='')|Q(add_upwork_account_to_team='')|Q(add_upwork_account=''), id=egmtjoin[i]['id']).values('offer_letter', 'joining_letter', 'joining_documents', 'joining_hamper', 'id_card', 'induction', 'loi', 'add_to_skype_group', 'add_to_whatsapp_group', 'system_configuration', 'add_upwork_account_to_team', 'add_upwork_account')
+            if empData:
+                if (egmtjoin[i]['id'], 3) not in item_ids:
+                    notification_json.append(notifications(product=(egmtjoin[i]['details__detail_name'] +' of '+ egmtjoin[i]['employee_name']), item_id=egmtjoin[i]['id'], notification_date=(date.today()),
+                    is_visited=False, notification_type=3))
+
+        egmtexit = engagementJoining.objects.filter(last_working_date=time_threshold_2.strftime('%Y-%m-%d')).values('id', 'employee_name', 'details__detail_name')
+       
+        for i in range(len(egmtexit)):
+            empData = engagementJoining.objects.filter(Q(relieving_letter='')|Q(experience_letter='')|Q(id_card='')|Q(remove_from_skype_group='')|Q(remove_from_whatsapp_group='')|Q(fnf='')|Q(system_format='')|Q(remove_upwork_account_from_team='')|Q(close_upwork_account=''), id=egmtexit[i]['id']).values('relieving_letter', 'experience_letter', 'id_card', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'fnf', 'system_format', 'remove_upwork_account_from_team', 'close_upwork_account')
+            if empData:
+                if (egmtexit[i]['id'], 3) not in item_ids:
+                    notification_json.append(notifications(product=(egmtexit[i]['details__detail_name'] +' of '+ egmtexit[i]['employee_name']), item_id=egmtexit[i]['id'], notification_date=(date.today()),
+                    is_visited=False, notification_type=3))
     except:
         pass
     
@@ -79,7 +100,6 @@ def get_active_notifications(request):
 def notifications_view(request):
 
     time_threshold = date.today() - timedelta(days=7)
-    print(time_threshold.strftime('%Y-%m-%d'))
 
     # creating list of last 7 days notifications from notification table to display on notifications page
     n = list(notifications.objects.filter(Q(is_visited=False)|Q(notification_date__gte=time_threshold.strftime('%Y-%m-%d'))))
@@ -151,7 +171,6 @@ def delete_user(request, pk):
     user = User.objects.get(id=pk)
     user.delete()
     return Response({}, status=201)
-
 
 def add_permission(request):
     return render(request, 'home/add_permissions.html')

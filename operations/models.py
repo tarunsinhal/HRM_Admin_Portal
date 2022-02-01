@@ -1,4 +1,5 @@
 from email.policy import default
+from datetime import datetime
 from django.db import models
 from django.core.validators import RegexValidator
 from simple_history.models import HistoricalRecords
@@ -59,11 +60,11 @@ class recurringItems(models.Model):
         return str(self.product)
 
 class Adhoc_types(models.Model):
-    type_name = models.CharField(max_length=50)
-    type_id = models.IntegerField(primary_key=True)
+    item_name = models.CharField(max_length=50)
+    item_id = models.IntegerField(primary_key=True)
 
     def __str__(self):
-        return str(self.type_name)
+        return str(self.item_name)
 
 
 class AdhocItems(models.Model):
@@ -135,44 +136,47 @@ class t_shirt_inventory(models.Model):
         ordering = ['-receiving_date']
 
 class Detail_types(models.Model):
-    type_name = models.CharField(max_length=50)
-    type_id = models.IntegerField(primary_key=True)
+    detail_name = models.CharField(max_length=50)
+    detail_id = models.IntegerField(primary_key=True)
 
     def __str__(self):
-        return str(self.type_name)
+        return str(self.detail_name)
 
 class engagementJoining(models.Model):
     employee_name = models.CharField(max_length=50)
     details = models.ForeignKey(Detail_types, on_delete=models.CASCADE)
+    joining_date = models.DateField(blank=True, null=True)
+    last_working_date = models.DateField(blank=True, null=True)
     loi = models.CharField(max_length=100, blank=True)
     offer_letter = models.CharField(max_length=100, blank=True)
-    nda_signed = models.CharField(max_length=100, blank=True)
+    nda_signed = models.CharField(max_length=100)
     joining_letter = models.CharField(max_length=100, blank=True)
     joining_documents = models.CharField(max_length=100, blank=True)
     joining_hamper = models.CharField(max_length=100, blank=True)
     relieving_letter = models.CharField(max_length=100, blank=True)
     experience_letter = models.CharField(max_length=100, blank=True)
-    laptop_charger = models.CharField(max_length=100, blank=True)
-    mouse_mousePad = models.CharField(max_length=100, blank=True)
-    bag = models.CharField(max_length=100, blank=True)
+    laptop_charger = models.CharField(max_length=100)
+    mouse_mousepad = models.CharField(max_length=100)
+    bag = models.CharField(max_length=100)
     id_card = models.CharField(max_length=100, blank=True)
     induction = models.CharField(max_length=100, blank=True)
     add_to_skype_group = models.CharField(max_length=100, blank=True)
     add_to_whatsapp_group = models.CharField(max_length=100, blank=True)
     remove_from_skype_group = models.CharField(max_length=100, blank=True)
     remove_from_whatsapp_group = models.CharField(max_length=100, blank=True)
-    onedrive_access = models.CharField(max_length=100, blank=True)
+    onedrive_access = models.CharField(max_length=100)
     microsoft_account_created = models.CharField(max_length=100, blank=True)
     microsoft_account_deleted = models.CharField(max_length=100, blank=True)
-    gmail_account = models.CharField(max_length=100, blank=True)
-    skype_id = models.CharField(max_length=100, blank=True)
-    system_configration = models.CharField(max_length=100, blank=True)
+    gmail_account = models.CharField(max_length=100)
+    skype_id = models.CharField(max_length=100)
+    system_configuration = models.CharField(max_length=100, blank=True)
     system_format = models.CharField(max_length=100, blank=True)
-    email_account = models.CharField(max_length=100, blank=True)
-    upwork_account_Add_to_team = models.CharField(max_length=100, blank=True)
-    upwork_account_Add_account = models.CharField(max_length=100, blank=True)
-    upwork_account_Remove_from_team = models.CharField(max_length=100, blank=True)
-    upwork_account_Close_account = models.CharField(max_length=100, blank=True)
+    email_account = models.CharField(max_length=100)
+    add_upwork_account_to_team = models.CharField(max_length=100, blank=True)
+    add_upwork_account = models.CharField(max_length=100, blank=True)
+    remove_upwork_account_from_team = models.CharField(max_length=100, blank=True)
+    close_upwork_account = models.CharField(max_length=100, blank=True)
+    fnf = models.CharField(max_length=100, blank=True)
     history = HistoricalRecords()
    
     def __str__(self):

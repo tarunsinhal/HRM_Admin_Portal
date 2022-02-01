@@ -31,7 +31,7 @@ class adhocResource(resources.ModelResource):
     #     attribute='get_type_display',
     #     column_name='Type'
     # )
-    type = fields.Field(column_name='type', attribute='type', widget=ForeignKeyWidget(Adhoc_types, 'type_name'))
+    type = fields.Field(column_name='type', attribute='type', widget=ForeignKeyWidget(Adhoc_types, 'item_name'))
     class Meta:
         model = AdhocItems
 
@@ -43,7 +43,7 @@ admin.site.register(AdhocItems, adhocAdmin)
 
 
 class joiningResource(resources.ModelResource):
-    details = fields.Field(column_name='details', attribute='details', widget=ForeignKeyWidget(Detail_types, 'type_name'))
+    details = fields.Field(column_name='details', attribute='details', widget=ForeignKeyWidget(Detail_types, 'detail_name'))
     class Meta:
         model = engagementJoining
 

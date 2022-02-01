@@ -1,4 +1,5 @@
 from collections import defaultdict
+from multiprocessing.sharedctypes import Value
 
 from django.core.exceptions import ValidationError
 from import_export import widgets,fields,resources
@@ -35,7 +36,7 @@ class AdhocResource(resources.ModelResource):
         first_row = dataset.headers
         dataset.headers = ['_'.join(i.split(' ')).lower() for i in first_row]
 
-    type = fields.Field(column_name='type', attribute='type', widget=ForeignKeyWidget(Adhoc_types, 'type_name'))
+    type = fields.Field(column_name='type', attribute='type', widget=ForeignKeyWidget(Adhoc_types, 'item_name'))
     product = fields.Field(saves_null_values=False, column_name='product', attribute='product', widget=CharRequiredWidget())
     quantity = fields.Field(saves_null_values=False, column_name='quantity', attribute='quantity', widget=CharRequiredWidget())
     amount = fields.Field(saves_null_values=False, column_name='amount', attribute='amount', widget=CharRequiredWidget())
@@ -49,65 +50,28 @@ class JoiningResource(resources.ModelResource):
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         first_row = dataset.headers
         dataset.headers = ['_'.join(i.split(' ')).lower() for i in first_row]
+        dataset.headers.append('details')
 
-    details = fields.Field(column_name='details', attribute='details', widget=ForeignKeyWidget(Detail_types, 'type_name'))
-    # employee_name = fields.Field(saves_null_values=False, column_name='employee_name', attribute='employee_name', widget=CharRequiredWidget())
-    # email_account = fields.Field(saves_null_values=False, column_name='email_account', attribute='email_account', widget=CharRequiredWidget())
-    # # upwork_account_remove_from_team = fields.Field(saves_null_values=True, column_name='upwork_account_remove_from_team', attribute='upwork_account_remove_from_team')
-    # # upwork_account_close_account = fields.Field(saves_null_values=True, column_name='upwork_account_close_account', attribute='upwork_account_close_account')
-    # loi = fields.Field(saves_null_values=False, column_name='loi', attribute='loi', widget=CharRequiredWidget())
-    # offer_letter = fields.Field(saves_null_values=False, column_name='offer_letter', attribute='offer_letter', widget=CharRequiredWidget())
-    # nda_signed = fields.Field(saves_null_values=False, column_name='nda_signed', attribute='nda_signed', widget=CharRequiredWidget())
-    # joining_letter = fields.Field(saves_null_values=False, column_name='joining_letter', attribute='joining_letter', widget=CharRequiredWidget())
-    # joining_hamper = fields.Field(saves_null_values=False, column_name='joining_hamper', attribute='joining_hamper', widget=CharRequiredWidget())
-    # # relieving_letter = fields.Field(saves_null_values=True, column_name='relieving_letter', attribute='relieving_letter')
-    # # experience_letter = fields.Field(saves_null_values=True, column_name='experience_letter', attribute='experience_letter')
-    # laptop_charger = fields.Field(saves_null_values=False, column_name='laptop_charger', attribute='laptop_charger', widget=CharRequiredWidget())
-    # mouse_mousepad = fields.Field(saves_null_values=False, column_name='mouse_mousepad', attribute='mouse_mousepad', widget=CharRequiredWidget())
-    # bag = fields.Field(saves_null_values=False, column_name='bag', attribute='bag', widget=CharRequiredWidget())
-    # induction = fields.Field(saves_null_values=False, column_name='induction', attribute='induction', widget=CharRequiredWidget())
-    # add_to_skype_group = fields.Field(saves_null_values=False, column_name='add_to_skype_group', attribute='add_to_skype_group', widget=CharRequiredWidget())
-    # add_to_whatsapp_group = fields.Field(saves_null_values=False, column_name='add_to_whatsapp_group', attribute='add_to_whatsapp_group', widget=CharRequiredWidget())
-    # # remove_from_skype_group = fields.Field(saves_null_values=True, column_name='remove_from_skype_group', attribute='remove_from_skype_group')
-    # # remove_from_whatsapp_group = fields.Field(saves_null_values=True, column_name='remove_from_whatsapp_group', attribute='remove_from_whatsapp_group')
-    # onedrive_access = fields.Field(saves_null_values=False, column_name='onedrive_access', attribute='onedrive_access', widget=CharRequiredWidget())
-    # microsoft_account_created = fields.Field(saves_null_values=False, column_name='microsoft_account_created', attribute='microsoft_account_created', widget=CharRequiredWidget())
-    # # microsoft_account_deleted = fields.Field(saves_null_values=True, column_name='microsoft_account_deleted', attribute='microsoft_account_deleted')
-    # gmail_account = fields.Field(saves_null_values=False, column_name='gmail_account', attribute='gmail_account', widget=CharRequiredWidget())
-    # skype_id = fields.Field(saves_null_values=False, column_name='skype_id', attribute='skype_id', widget=CharRequiredWidget())
-    # system_configuration = fields.Field(saves_null_values=False, column_name='system_configuration', attribute='system_configuration', widget=CharRequiredWidget())
+    def before_import_row(self, row, row_number=None, **kwargs):
+        row['details'] = '1'
+        return row
+
     class Meta:
         model = engagementJoining
         clean_model_instances=True
-        fields = ('id', 'employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'gmail_account', 'skype_id', 'system_configuration', 'email_account', 'upwork_account_add_to_team', 'upwork_account_add_account')
-        
 
 class ExitResource(resources.ModelResource):
     def before_import(self, dataset, using_transactions, dry_run, **kwargs):
         first_row = dataset.headers
         dataset.headers = ['_'.join(i.split(' ')).lower() for i in first_row]
+        dataset.headers.append('details')
 
-    details = fields.Field(column_name='details', attribute='details', widget=ForeignKeyWidget(Detail_types, 'type_name'))
-    employee_name = fields.Field(saves_null_values=False, column_name='employee_name', attribute='employee_name', widget=CharRequiredWidget())
-    email_account = fields.Field(saves_null_values=False, column_name='email_account', attribute='email_account', widget=CharRequiredWidget())
-    upwork_account_remove_from_team = fields.Field(saves_null_values=False, column_name='upwork_account_remove_from_team', attribute='upwork_account_remove_from_team', widget=CharRequiredWidget())
-    upwork_account_close_account = fields.Field(saves_null_values=False, column_name='upwork_account_close_account', attribute='upwork_account_close_account', widget=CharRequiredWidget())
-    nda_signed = fields.Field(saves_null_values=False, column_name='nda_signed', attribute='nda_signed', widget=CharRequiredWidget())
-    relieving_letter = fields.Field(saves_null_values=False, column_name='relieving_letter', attribute='relieving_letter', widget=CharRequiredWidget())
-    experience_letter = fields.Field(saves_null_values=False, column_name='experience_letter', attribute='experience_letter', widget=CharRequiredWidget())
-    laptop_charger = fields.Field(saves_null_values=False, column_name='laptop_charger', attribute='laptop_charger', widget=CharRequiredWidget())
-    mouse_mousepad = fields.Field(saves_null_values=False, column_name='mouse_mousepad', attribute='mouse_mousepad', widget=CharRequiredWidget())
-    bag = fields.Field(saves_null_values=False, column_name='bag', attribute='bag', widget=CharRequiredWidget())
-    id_card = fields.Field(saves_null_values=False, column_name='id_card', attribute='id_card', widget=CharRequiredWidget())
-    remove_from_skype_group = fields.Field(saves_null_values=False, column_name='remove_from_skype_group', attribute='remove_from_skype_group', widget=CharRequiredWidget())
-    remove_from_whatsapp_group = fields.Field(saves_null_values=False, column_name='remove_from_whatsapp_group', attribute='remove_from_whatsapp_group', widget=CharRequiredWidget())
-    onedrive_access = fields.Field(saves_null_values=False, column_name='onedrive_access', attribute='onedrive_access', widget=CharRequiredWidget())
-    microsoft_account_deleted = fields.Field(saves_null_values=False, column_name='microsoft_account_deleted', attribute='microsoft_account_deleted', widget=CharRequiredWidget())
-    gmail_account = fields.Field(saves_null_values=False, column_name='gmail_account', attribute='gmail_account', widget=CharRequiredWidget())
-    skype_id = fields.Field(saves_null_values=False, column_name='skype_id', attribute='skype_id', widget=CharRequiredWidget())
+    def before_import_row(self, row, row_number=None, **kwargs):
+        row['details'] = '2'
+        return row
+
     class Meta:
         model = engagementJoining
-        fields = ('employee_name', 'details', 'nda_signed', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_format', 'email_account', 'upwork_account_remove_from_team', 'upwork_account_close_account')
         clean_model_instances=True
 
 class VendorResource(resources.ModelResource):
