@@ -2,8 +2,12 @@ from django.core.exceptions import ValidationError
 from django.db.models import fields
 from django.http import request
 from rest_framework import serializers
-from .models import hardware_allotted_items, it_inventory, it_allotment, it_inventory_type, it_inventory_item, software_allotted_items
+from .models import hardware_allotted_items, it_inventory, it_allotment, it_inventory_type, it_inventory_item, software_allotted_items, it_inventory_status
 import json
+from django.db import connection
+
+
+cursor = connection.cursor()
 
 
 class it_inventory_serializer(serializers.ModelSerializer):
@@ -20,8 +24,8 @@ class it_inventory_serializer(serializers.ModelSerializer):
             else:
                 data['name'] = ""
             
-            if json.loads(data["system_names"]):
-                data["status"] = 1        
+            # if json.loads(data["system_names"]):
+            #     data["status"] = 1        
 
             if data['new_item']:
                 try:
@@ -49,11 +53,11 @@ class it_inventory_serializer(serializers.ModelSerializer):
 
 class it_inventory_edit_serializer(it_inventory_serializer):
     class Meta(it_inventory_serializer.Meta):
-        fields = ('item', 'details', 'name', 'purchase_type', 'status', 'system_names', 'validity_start_date', 'validity_end_date', 'remarks')
+        fields = ('item', 'details', 'name', 'purchase_type', 'status', 'validity_start_date', 'validity_end_date', 'remarks')
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
-        self.name = it_inventory.objects.filter(id=instance.pk).values('name')[0]['name']
-
+        self.entry = it_inventory.objects.filter(id=instance.pk).values('name', 'status')[0]
+        
         if data:
             data._mutable = True
             
@@ -62,18 +66,22 @@ class it_inventory_edit_serializer(it_inventory_serializer):
             else:
                 data['name'] = ""
             
-            if json.loads(data["system_names"]):
-                data["status"] = 1        
+            # if json.loads(data["system_names"]):
+            #     data["status"] = 1        
 
             data._mutable = False
             super(it_inventory_serializer, self).__init__(instance=instance, data=data, **kwargs)
         super(it_inventory_serializer, self).__init__(instance=instance, data=data, **kwargs)
 
     def validate(self, data):
-        if data['name'] != self.name:
+        if data['name'] != self.entry['name']:
             q = it_inventory.objects.filter(name=data['name'])
             if q:
                 raise ValidationError({'name': 'Item name already exists!'})
+        if data['status'].status_id == 3:
+            if self.entry['status'] == 1:
+                raise ValidationError({'status': 'Can\'t discard this item now as it is allotted to someone!!'})
+
         return data
 
 
@@ -84,8 +92,24 @@ class it_allotment_serializer(serializers.ModelSerializer):
     
     def __init__(self, *args, instance=None, data=None, **kwargs):
         if data:
+            if data['employee_name'] and instance == None:
+                data._mutable = True
+                cursor.execute("SELECT full_name, employee_code FROM hrm.employee WHERE rid=%s", [data['employee_name']])
+                res = cursor.fetchall()
+                print(res)
+                data['employee_name'] = res[0][0]
+                data['employee_id'] = res[0][1]
+
             super(it_allotment_serializer, self).__init__(instance=instance, data=data, **kwargs)
         super(it_allotment_serializer, self).__init__(instance=instance, data=data, **kwargs)
+
+
+# class it_allotment_edit_serializer(serializers.ModelSerializer):
+#     class Meta(it_allotment_serializer.Meta):
+#         fields = "__all__"
+    
+#     def __init__(self, *args, instance=None, data=None, **kwargs):
+#         pass
 
 
 class hardware_allotted_add_serializer(serializers.ModelSerializer):

@@ -210,9 +210,9 @@ section{
   display: none; /* for Chrome, Safari, and Opera */
 }
 
-#boardingTable::-webkit-scrollX {
+/* #inventoryTable::-webkit-scrollX {
   display: block;
-}
+} */
 
 /* 
 .details-control:after{

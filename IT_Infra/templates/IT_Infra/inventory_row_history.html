@@ -1,0 +1,32 @@
+{% for data in inventory_row_history %}
+<tr>
+    <td style="border-left: 2px solid #007bff; vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=20%>{{ data.history_date }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.item }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.name }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.status }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.allottee_id }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.allotte_name }}</td>
+    <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.history_user }}</td>
+
+    {% if data.history_type == "+" %}
+    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+    {% elif data.history_type == "~" %}
+    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+    {% else %}
+    <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+    {% endif %}                                          
+    
+    <td class="name" width=15% style="display: none;">{{ data.type }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.details }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.past_allottee_id }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.past_allottee_name }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.validity_start_date }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.validity_end_date }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.paid_by }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.remarks }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+    <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+    <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
+</tr>
+{% endfor %}
+

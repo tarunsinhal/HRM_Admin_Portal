@@ -1,4 +1,5 @@
 from distutils.command.upload import upload
+from pyexpat import model
 import re
 from django.db import models
 from django.db.models.base import Model
@@ -64,7 +65,7 @@ class it_inventory(models.Model):
     past_allottee_id = models.CharField(max_length=50, null=True, blank=True)
     past_allottee_name = models.CharField(max_length=50, null=True, blank=True)
     remarks = models.CharField(max_length=500, blank=True, null=True)
-    system_names = models.CharField(null=True, blank=True, max_length=1000)
+    # system_names = models.CharField(null=True, blank=True, max_length=1000)
     validity_start_date = models.DateField(null=True, blank=True)
     validity_end_date = models.DateField(null=True, blank=True)
     history = HistoricalRecords()
@@ -83,8 +84,8 @@ class it_allotment(models.Model):
     skype_email = models.EmailField(max_length=50, null=True, blank=True)
     skype_email_password = models.CharField(max_length=50, null=True, blank=True)
     damage = models.CharField(max_length=500, null=True, blank=True)
-    # images_for_damage = models.FileField(upload_to='media/', null=True, blank=True)
     remarks = models.CharField(max_length=500, null=True, blank=True)
+    history = HistoricalRecords()
 
 
 class hardware_allotted_items(models.Model):
@@ -95,6 +96,8 @@ class hardware_allotted_items(models.Model):
     details = models.CharField(max_length=500)
     additional = models.CharField(max_length=500, null=True, blank=True)
     status = models.ForeignKey(it_inventory_status, on_delete=models.CASCADE)
+    allotment = models.ForeignKey(it_allotment, on_delete=models.CASCADE)
+    history = HistoricalRecords()
 
 
 class software_allotted_items(models.Model):
@@ -107,6 +110,8 @@ class software_allotted_items(models.Model):
     validity_end_date = models.DateField()
     additional = models.CharField(max_length=500, null=True, blank=True)
     status = models.ForeignKey(it_inventory_status, on_delete=models.CASCADE)
+    allotment = models.ForeignKey(it_allotment, on_delete=models.CASCADE)
+    history = HistoricalRecords()
 
 
 def get_image_filename(instance, filename):

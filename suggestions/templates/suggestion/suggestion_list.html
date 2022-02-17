@@ -1,0 +1,116 @@
+{% extends 'home/base.html' %} 
+{% load static %}
+{% block title %}Suggestion {% endblock title %} 
+
+{% block style %}
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/notifications.css' %}" rel="stylesheet" />
+{% endblock style %} 
+
+{% block content %}
+
+<div class="container-lg">
+  <div>
+    <div>
+      <div class="table-title">
+        <div class="row">
+          <div class="col-sm-1" style="text-align: center">
+            <i class="material-icons" style="font-size:48px;color:green">border_color</i>
+        </div>
+          <div
+            class="col-sm-11"
+            id="notification-title"
+            style="justify-content: center; vertical-align: center"
+          >
+            <h2><b>Suggestion</b></h2>
+            <p>
+              Suggestion you've ever received in last 7 days. Showing newest
+              first.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+<!-- New page is going to appear from here -->
+  <button
+    class="btn btn-secondary"
+    style="padding: 5px; float: right"
+    onclick=`${location.href="{% url 'suggestion123:suggestionall' %}"}`
+  >
+    All Suggestion
+  </button>
+
+  <!-- Modal for more text -->
+
+  {% for suggestion in all_suggestions %}
+
+  <div class="modal fade" id="meta-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{suggestion.name}}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          {{suggestion.suggestion}}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
+
+
+  <div class="table-responsive">
+    <div class="table-wrapper1">
+      <div class="table-title">
+        {% if not all_suggestions %}
+        <div><p>You have not received any suggestions yet...</p></div>        
+        {% else %}
+        <table class="table table-bordered">
+          <thead>
+            <tr style="background-color: #007bff;color: white;" class="text-center">
+              <th scope="col">No.</th>
+              <th scope="col">Date</th>
+              <th scope="col">Time</th>
+              <th scope="col">Name</th>
+              <th scope="col">Suggestion</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for suggestion in all_suggestions %}
+            <tr class="text-center">
+              <td  scope="row">{{ forloop.counter }}.</td>
+              <td >{{ suggestion.created_at|date:'d-m-Y' }}</td>
+              <td >{{ suggestion.created_at|time:"g:i A" }}</td>
+              <td >{{ suggestion.name|default:"Anonymous"|capfirst }}</td>
+              <td >  {{suggestion.suggestion|slice:"0:20"}} <a  data-bs-toggle="modal" data-bs-target="#meta-{{forloop.counter}}" style="color: blue; size: 10px;">...more
+              </a>  </td>
+            </tr>
+            {% endfor %}            
+          </tbody>
+        </table>
+        {% endif %}             
+      </div>
+    </div>
+  </div>
+    
+</div>
+
+{% endblock content %}
+
+{% block addextra %}
+
+
+{% endblock addextra %}
+
+

@@ -214,7 +214,7 @@ $(document).ready(function () {
 	// Array to track the ids of the details displayed rows
 	var detailRows = [];
 
-	$('#boardingTable2 tbody').on( 'click', 'tr td.details-control2', function () {
+	$('#boardingTable2 tbody').on( 'click', 'tr td.details-control2', function () { 
 		debugger
 		var res
 		var tr = $(this).closest('tr');

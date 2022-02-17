@@ -43,9 +43,22 @@
             }
 
 
-            document.getElementsByClassName(localStorage.getItem("ddl")).style.display = "block";
+            // document.getElementsByClassName(localStorage.getItem("ddl")).style.display = "block";
 
 
         });
     }
   })()
+
+
+
+
+// Used for three dots click event in action column
+$(".dropout").on('click', function(){
+	debugger
+	if (!this.classList.contains('more')) {
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== this && d.classList.remove('activeActn')
+	)}
+	this.classList.toggle('activeActn')
+});

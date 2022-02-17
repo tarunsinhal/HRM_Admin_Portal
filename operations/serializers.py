@@ -9,7 +9,7 @@ class ItemTypeSerializer(serializers.ModelSerializer):
         model = Item_types
 
 
-# serializer class for 
+# serializer class for reccuring module
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = recurringItems
@@ -19,6 +19,8 @@ class ProductSerializer(serializers.ModelSerializer):
 
         if data:
             data._mutable = True
+            print(data)
+
             data['unit'] = data['unit_0'] + ' ' + data['unit_1']
             data['paid_by'] = data['paid_by'].strip().title()
             data['new_product'] = data['new_product'].strip().title()
@@ -177,6 +179,7 @@ class repairServicesSerializer(serializers.ModelSerializer):
     #             raise serializers.ValidationError("Next Service date should be greater than  Service date!!!")
     #         return data
 
+
 class editRepairServicesSerializer(repairServicesSerializer):
     class Meta(repairServicesSerializer.Meta):
         fields = '__all__'
@@ -250,7 +253,7 @@ class operations_history(serializers.ModelSerializer):
 
 
 # class Meta:
-#     fields = ['history_date', 'size', 'receving date', 'allotted', 'remaining', 'paid_by', 'history_type']
+#     fields = ['history_date', 'size', 'receving  date', 'allotted', 'remaining', 'paid_by', 'history_type']
 
     # class Meta:
     #     fields = ['history_date', 'size', 'receving date', 'allotted', 'remaining', 'paid_by', 'history_type']

@@ -1,0 +1,117 @@
+<div class="tabset">
+    <!-- Tab 1 -->
+    <input type="radio" data-tab-id="1" name="tabset" id="defaultOpen" class="tablinks" onclick="openAllotmentDetailsTab(event, '1')">
+    <label for="defaultOpen">Hardware Items</label>
+    <!-- Tab 2 -->
+    <input type="radio" data-tab-id="2" name="tabset" id="tab2" class="tablinks" aria-controls="Beverages"
+        onclick="openAllotmentDetailsTab(event, '2')">
+    <label for="tab2">Software Items</label>
+
+    <div class="tab-panels">
+
+        <section class="tab-panel" id="1">
+            <table class="table table-bordered border-primary hardwareHistoryTable" id="hardwareHistoryTableId"
+            data-previous-url="{% url 'IT_Infra:ajax_load_hardwareAllotted_item_row_history' %}">
+                <div style="display: flex;">
+                </div>
+
+                <thead class="table tbl-header table-hover table-bordered">
+                    <tr>
+                        <th width=25% style="padding: 12px;">History Date</th>
+                        <th width=25% style="padding: 12px;">Item</th>
+                        <th width=15% style="padding: 12px;">Item name</th>
+                        <th width=12% style="padding: 12px;">Status</th>
+                        <th width=15% style="padding: 12px;">User</th>
+                        <th width=8% style="padding: 12px;">History Type</th>
+                        <th width=25% style="display: none;">Details</th>
+                        <th width=25% style="display: none;">Additional</th>
+                        <th id="rowId" style="display: none;">Id</th>
+                        <th id="rowHistoryId" style="display: none;">History Id</th>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+
+                <tbody class="table table-bordered table-hover">
+                    {% for data in hardware_allotted_items %}
+                    <tr>
+                        <td class="name" width=12% style="padding: 2px 5px;">{{ data.history_date }}</td>
+                        <td class="name" width=12% style="padding: 2px 5px;">{{ data.item }}</td>
+                        <td class="name" width=12% style="padding: 2px 5px;">{{ data.item_name }}</td>
+                        <td class="name" width=15%>{{ data.status }}</td>
+                        <td class="name" width=15%>{{ data.history_user }}</td>
+                        {% if data.history_type == "+" %}
+                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+                        {% elif data.history_type == "~" %}
+                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+                        {% else %}
+                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+                        {% endif %}            
+                        <td class="name" style="display: none;">{{ data.details }}</td>
+                        <td class="name" style="display: none;">{{ data.additional }}</td>
+                        <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+                        <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+                        <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </section>
+
+        <section class="tab-panel" id="2" style="display: none;">
+            <table class="table table-bordered border-primary softwareHistoryTable" id="softwareHistoryTableId"
+            data-previous-url="{% url 'IT_Infra:ajax_load_softwareAllotted_item_row_history' %}">
+                <div style="display: flex;">
+                </div>
+
+                <thead class="table tbl-header table-hover table-bordered">
+                    <tr>
+                        <th width=25% style="padding: 12px;">History Date</th>
+                        <th width=25% style="padding: 12px;">Item</th>
+                        <th width=15% style="padding: 12px;">Item name</th>
+                        <th width=12% style="padding: 12px;">Status</th>
+                        <th width=15% style="padding: 12px;">User</th>
+                        <th width=8% style="padding: 12px;">History Type</th>
+                        <th width=8% style="display: none;">Validity Start Date</th>
+                        <th width=8% style="display: none;">Validity End Date</th>
+                        <th width=25% style="display: none;">Details</th>
+                        <th width=25% style="display: none;">Additional</th>
+                        <th id="rowId" style="display: none;">Id</th>
+                        <th id="rowHistoryId" style="display: none;">History Id</th>
+                        <th width="5%"></th>
+                    </tr>
+                </thead>
+
+                <tbody class="table table-bordered table-hover">
+                    {% for data in software_allotted_items %}
+                    <tr>
+                        <td class="name" width=12% style="padding: 2px 5px;">{{ data.history_date }}</td>
+                        <td class="name" width=12% style="padding: 2px 5px;">{{ data.item }}</td>
+                        <td class="name" width=12% style="padding: 2px 5px;">{{ data.item_name }}</td>
+                        <td class="name" width=15%>{{ data.status }}</td>
+                        <td class="name" width=15%>{{ data.history_user }}</td>
+                        {% if data.history_type == "+" %}
+                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Created</td>  
+                        {% elif data.history_type == "~" %}
+                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Updated</td> 
+                        {% else %}
+                            <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width="10%">Deleted</td>   
+                        {% endif %}        
+                        <td class="name" style="display: none;">{{ data.validity_start_date }}</td>
+                        <td class="name" style="display: none;">{{ data.validity_end_date }}</td>    
+                        <td class="name" style="display: none;">{{ data.details }}</td>
+                        <td class="name" style="display: none;">{{ data.additional }}</td>
+                        <td class="name" width=10% style="display: none;">{{ data.id }}</td>
+                        <td class="name" width=10% style="display: none;">{{ data.history_id }}</td>
+                        <td width="5%" class="details-control" style="border-left: 2px solid #007bff; padding: 2px 5px; text-align:center; cursor: pointer; font-size: 15px;"></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </section>
+
+    </div>
+
+</div>
+

@@ -1,15 +1,60 @@
+
+
+function format ( d ) {
+	debugger
+    return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Type: </span>'+d[8]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Details: </span>'+d[9]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Past Allottee Id: </span>'+d[10]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Past Allottee Name: </span>'+d[11]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Validity Start Date: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Validity End Date: </span>'+d[13]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[14]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Remarks: </span>'+d[15]+'</div></div><br>'+
+	'</div></div>';
+}
+
+function format_and_diff(d,res){
+	debugger
+	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Type: </span>'+d[8]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Details: </span>'+d[9]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Past Allottee Id: </span>'+d[10]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Past Allottee Name: </span>'+d[11]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Validity Start Date: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Validity End Date: </span>'+d[13]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[14]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Remarks: </span>'+d[15]+'</div></div><br>'+
+	'</div></div>'+
+	'</div>'+
+	'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
+	'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
+	for (let key in res){
+		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
+		b += d
+	}
+	b += '</tbody></table></div>'
+    return b;
+}
+
+
 var minDate, maxDate, dataTableRes;
 
 //...datatable plugin for pagination and search tab in tables...//
 $(document).ready(function () {
 
-	$(".js-multiple-system-select").select2({
-		dropdownParent: $('#staticBackdrop, #editModal')
-	});
+	// $(".js-multiple-system-select").select2({
+	// 	dropdownParent: $('#staticBackdrop, #editModal')
+	// });
 	
+	// $(".edit_status option[value='2']").remove();
 
 	dataTableRes = $('.inventoryTable').DataTable({
 		dom: 'Bfrtip',
+		destroy: true,
+		retrieve: true,
 		buttons: [{
 			extend: 'csv',
 			text: 'Export',
@@ -70,7 +115,8 @@ $(document).ready(function () {
 function editfunction(obj, obj2) {
 	debugger;
 	document.getElementById('editInventoryForm').style.display = 'block'
-	var x = Array.from(document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td'));
+	// var x = Array.from(document.getElementById(obj.id).parentElement.parentElement.getElementsByTagName('td'));
+	var x =  Array.from(document.getElementById(obj.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td'));
 	var y = Array.from(document.getElementById('editInventoryForm').getElementsByTagName('input'));
 	var z = document.getElementById('editInventoryForm').getElementsByTagName('textarea');
 	var mySelect = document.getElementById('editInventoryForm').getElementsByTagName('select');
@@ -79,7 +125,7 @@ function editfunction(obj, obj2) {
 	y[3].value = item_txt[0]
 	y[4].value = item_txt[1]
 
-	z[1].value = x[10].textContent;
+	z[0].value = x[11].textContent;
 
 	var temp = x[3].textContent.trim();
 	for (var i, j = 0; i = mySelect[1].options[j]; j++) {
@@ -89,9 +135,10 @@ function editfunction(obj, obj2) {
 		}
 	}
 
-	var system_lst = JSON.parse(x[9].textContent.trim())
+	// var system_lst = JSON.parse(x[9].textContent.trim())
 	// $("#edit_system_names").select2('val', system_lst).trigger('change');
-	$("#edit_system_names").val(system_lst).trigger('change');
+	
+	// $("#edit_system_names").val(system_lst).trigger('change');
 
 	// $.each(system_lst, function(i,e){
 	// 	$("#edit_system_names option[value=" + e + "]").prop("selected", true);
@@ -112,15 +159,15 @@ function editfunction(obj, obj2) {
 		debugger
 		$("#item_base_name").prop({'readonly': false});
 		$("#edit_validity_input").css("display", "block");
-		$("#edit_system_names_input").css("display", "block");
+		// $("#edit_system_names_input").css("display", "block");
 		$("#validity_start_date, #validity_end_date").prop({'required': true });
 		$("#item_base_name").prop({'required': false });
 		$("#item_number").prop({'required': false });
 	}
 	else{
 		$("#edit_validity_input").css("display", "none");
-		$("#edit_system_names_input").css("display", "none");
-		$("#edit_system_names_input").val('');
+		// $("#edit_system_names_input").css("display", "none");
+		// $("#edit_system_names_input").val('');
 		$("#validity_start_date, #validity_end_date").val('');
 		$("#validity_start_date, #validity_end_date").prop({'required': false });
 		$("#item_base_name").prop({'required': true });
@@ -165,7 +212,7 @@ function editfunction(obj, obj2) {
 		}
 	});
 
-	var removeValFromX = [0, 2, 3, 4, 5, 9, 10, 11]
+	var removeValFromX = [0, 2, 3, 4, 5, 6, 7, 11]
 	x = x.filter(function(value, index) {
 		return removeValFromX.indexOf(index) == -1;
    	})
@@ -188,6 +235,115 @@ function editfunction(obj, obj2) {
 //...called when delete button is clicked...//
 function deletefunction(obj) {
 	document.getElementById('deleteForm').action = obj.id;
+}
+
+
+//...called when history button is clicked...//
+function historyfunction(obj, obj2){
+	debugger
+	var url = $("#historyModal").attr("data-history-url");
+	var rowId = obj2;
+
+	$.ajax({                       // initialize an AJAX request
+		url: url,
+		async: false,
+		data: {
+			'id': rowId
+		},
+		success: function (data) {
+			$("#tbody-content").html(data);
+		}
+	});
+	dataTableRes1 = $('.historyTable1').DataTable({
+		dom: 'Bfrtip',
+		destroy: true,
+		retrieve: true,
+		buttons: [{
+			extend: 'csv',
+			text: 'Export',
+			title: 'Inventory History',
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12]
+			},
+		}
+		],
+		order: [],
+		columnDefs: [
+			{ orderable: false, targets: 4 },
+			{ orderable: false, targets: 7 },
+			{ orderable: false, targets: 8 },
+			{ orderable: false, targets: 9 },
+			{ orderable: false, targets: 16 }
+		],
+		'pageLength': 12,
+		"bLengthChange": false,
+		"autoWidth": false		
+	});	
+	
+	debugger
+	var r = dataTableRes1.data()
+
+	//  Array to track the ids of the details displayed rows
+	var detailRows = [];
+
+	$('#historyTableId tbody').on( 'click', 'tr td.details-control', function () {
+		debugger
+		var res
+		var tr = $(this).closest('tr');
+
+		var row = dataTableRes1.row( tr );
+
+		var id = tr[0].children[16].innerText;
+		var history_id = tr[0].children[17].innerText;
+		var url = $("#historyTableId").attr("data-previous-url");
+		$.ajax({
+			url: url,
+			async: false,
+			type: 'GET',
+			data: {"id": id, "history_id": history_id},
+			dataType: 'json',
+			success: function(data){
+				debugger
+				if (data['data']){
+					res = data['data'];
+				}
+				else{
+					res = null
+				}
+			}
+		})
+
+
+		var idx = $.inArray( tr.attr('id'), detailRows );
+		if ( row.child.isShown() ) {
+			tr.removeClass( 'details' );
+			row.child.hide();
+			// Remove from the 'open' array
+			detailRows.splice( idx, 1 );
+		}
+		else {
+			tr.addClass( 'details' );
+			if (res){
+				row.child( format_and_diff( row.data(), res ) ).show();
+			}
+			else{
+				row.child( format( row.data()) ).show();
+			}
+			// Add to the 'open' array
+			if ( idx === -1 ) {
+				detailRows.push( tr.attr('id') );
+			}
+		}
+	});
+
+	// On each draw, loop over the `detailRows` array and show any child rows
+	dataTableRes1.on( 'draw', function () {
+		 $.each( detailRows, function ( i, id ) {
+			 $('#'+id+' td.details-control').trigger( 'click' );
+		 } );
+	 } );
+
+    var r = dataTableRes1.data()
 }
 
 
@@ -314,7 +470,7 @@ editForm.addEventListener("submit", handleEditInventory)
 
 
 //...function called when delete form is submitted...//
-function handleDeleteProduct(event) {
+function handleDeleteInventory(event) {
 	event.preventDefault()
 	const myForm = event.target
 	const myFormData = new FormData(myForm)
@@ -333,15 +489,51 @@ function handleDeleteProduct(event) {
 		if (xhr.status === 201) {
 			window.location.reload();
 		}
-		else {
-			alert('There is some problem in deleting the product.')
+		else if (xhr.status === 400) {
+			debugger
+			var Inval = xhr.response
+			if (Inval['non_field_errors']) {
+				alert(Inval['non_field_errors']);
+			}
+			else{
+				$parentTag = $("#deleteModalbody").parent()
+				if ($parentTag[0].classList.contains("error")) {
+					$parentTag.removeClass("error");
+					$('.err').remove();
+				}
+			  
+				if (!$parentTag[0].classList.contains("error")) {
+					$parentTag.addClass('error').prepend('<span class="err" style="color: red; font-size=12px;">'+ Inval['error_data'] +'</span>');
+					
+				}
+			}
+			// $('.chk', myForm).each(function () {
+			// 	debugger
+			// 	var ipVal = $(this).attr('name');
+
+			// 	var $parentTag = $(this).parent();
+			// 	if (Inval[ipVal]) {
+			// 		if (!$parentTag[0].classList.contains("error")) {
+			// 			$parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 13px">' + Inval[ipVal] + '</span>')
+			// 		}
+			// 	}
+			// 	else {
+			// 		if ($(this).nextAll().length == 2) {
+			// 			$parentTag.removeClass("error");
+			// 			$(this).nextAll()[1].remove();
+			// 		} else {
+			// 			$parentTag.removeClass("error");
+			// 			$(this).next().remove();
+			// 		}
+			// 	}
+			// });	
 		}
 	}
 	xhr.send(myFormData)
 }
 
 const deleteForm = document.getElementById('deleteForm')
-deleteForm.addEventListener("submit", handleDeleteProduct)
+deleteForm.addEventListener("submit", handleDeleteInventory)
 
 
 // $("#addBag").on('click', function(){
@@ -361,7 +553,7 @@ deleteForm.addEventListener("submit", handleDeleteProduct)
 
 
 //...loading page again on closing the add new product form...//
-$('#staticBackdrop').on('hidden.bs.modal', function () {
+$('#staticBackdrop, #deleteModal, #historyModal').on('hidden.bs.modal', function () {
 	debugger
 	window.location.reload();
 })
@@ -517,3 +709,14 @@ function openTab(evt, tabName) {
 
 // // Get the element with id="defaultOpen" and click on it
 $("#defaultOpen").click();
+
+
+// Used for three dots click event in action column
+$(".dropout").on('click', function(){
+	debugger
+	if (!this.classList.contains('more')) {
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== this && d.classList.remove('activeActn')
+	)}
+	this.classList.toggle('activeActn')
+});

@@ -217,7 +217,7 @@ section{
   display: block;
 }
 
- td.details-control:after {
+td.details-control:after {
   /* background: url('../static/img/plus-positive-add.png') no-repeat center center; */
   content: '\002B';
   cursor: pointer;

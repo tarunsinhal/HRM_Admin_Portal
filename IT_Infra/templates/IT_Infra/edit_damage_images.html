@@ -1,0 +1,33 @@
+{% load static %}
+
+{% if image_list %}
+<label class="fieldlabels">Images for damage: </label>
+{% for img in image_list %}
+<div>
+    <!-- <input name="file[]" accept="image/*" type="file" value="{{ image }}" onchange="loadFile(event)" style="margin-bottom: 5px; display: none;"> -->
+    <input name="images" value="{{ img.images_for_damage.path }}" style="display: none;">
+    <p><a href="{{ MEDIA_URL }}{{ img.images_for_damage.url }}" target="_blank"><img src="{{ MEDIA_URL }}{{ img.images_for_damage.url }}" alt="{{ img.images_for_damage }}" class="output" width="200" style="margin-bottom: 5px; border: 2px solid black;" /></p></a>
+    <button onclick="return this.parentNode.remove()" style="border: 1px; float: right; margin-bottom: 5px">Remove</a>    
+</div>
+
+{% endfor %}
+
+<!-- {% for form in image_formset %}
+
+<div>
+    <input name="file[]" accept="image/*" type="file" onchange="loadFile(event)" style="margin-bottom: 5px;">
+    <p><a href="{{ MEDIA_URL }}{{ form.images_for_damage.url }}" target="_blank"><img src="{{ MEDIA_URL }}{{ form.images_for_damage.url }}" alt="{{ img.images_for_damage }}" class="output" width="200" style="margin-bottom: 5px; border: 2px solid black;" /></p></a>
+    <button onclick="getPreview()" id="previewImage" style="display: none;">Preview</a>
+</div>
+
+{% endfor %} -->
+
+{% else %}
+<label class="fieldlabels">Images for damage: </label>
+<div>
+    <input name="file[]" accept="image/*" type="file" onchange="loadFile(event)" style="margin-bottom: 5px;">
+    <p><img class="output" width="200" /></p>
+    <button onclick="getPreview()" id="previewImage" style="display: none;">Preview</a>
+</div>
+
+{% endif %}

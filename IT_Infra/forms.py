@@ -1,3 +1,4 @@
+from pickle import TRUE
 from django import forms
 import django
 from django.forms import fields, forms, ModelForm, BooleanField, CharField, HiddenInput, ImageField
@@ -20,7 +21,7 @@ class it_inventory_add_form(ModelForm):
     new_item = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter product"}))
     class Meta:
         model = it_inventory
-        fields = ('type', 'item', 'new_item', 'details', 'name', 'validity_start_date', 'validity_end_date',  'system_names', 'purchase_type', 'remarks')
+        fields = ('type', 'item', 'new_item', 'details', 'name', 'validity_start_date', 'validity_end_date', 'purchase_type', 'remarks')
 
         widgets = {
             'type': Select(attrs={'type':'text', 'class':"chk required form-select"}),
@@ -40,7 +41,7 @@ class it_inventory_add_form(ModelForm):
 
 class it_inventory_edit_form(it_inventory_add_form, ModelForm):
     class Meta(it_inventory_add_form.Meta):
-        fields = ('item', 'details', 'name', 'validity_start_date', 'validity_end_date',  'system_names', 'status', 'purchase_type', 'remarks')
+        fields = ('item', 'details', 'name', 'validity_start_date', 'validity_end_date', 'status', 'purchase_type', 'remarks')
         widgets = {
             'type': Select(attrs={'type':'text', 'class':"chk required form-select"}),
             'item': Select(attrs={'type':'text', 'class':"chk required form-select"}),
@@ -50,7 +51,7 @@ class it_inventory_edit_form(it_inventory_add_form, ModelForm):
             'validity_end_date': DateInput(attrs={'type':'date', 'class':"chk form-control"}),
             'remarks': Textarea(attrs={'type':'textarea', 'class':"chk form-control"}),
             'purchase_type': TextInput(attrs={'type': 'text', 'class':"chk form-control"}),
-            'status': Select(attrs={'type':'text', 'class':"chk required form-select"})
+            'status': Select(attrs={'type':'text', 'class':"chk required form-select edit_status"})
         }
 
     def __init__(self, *args, **kwargs):
@@ -61,7 +62,7 @@ class it_inventory_edit_form(it_inventory_add_form, ModelForm):
 class it_allotment_add_form(ModelForm):
     class Meta:
         model = it_allotment
-        fields = "__all__"
+        exclude = ('employee_id', )
 
         # labels = {
         #     "laptop_purchase_type": "Purchase Type",
@@ -69,40 +70,24 @@ class it_allotment_add_form(ModelForm):
         #     "bag_purchase_type": "Purchase Type"
         # }
         widgets = {
-            'employee_id': Select(attrs={'type': 'text', 'required': True, 'class': "required form-select fieldlabels"}),
-            'employee_name': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'laptop': CheckboxInput(attrs={'type': 'checkbox', 'class': "required checkbox"}),
-            # 'mouse': Select(attrs={'type': 'checkbox', 'class': "required checkbox"}),
-            # 'bag': TextInput(attrs={'type': 'checkbox', 'class': "required"}),
-            # 'mcAfee': TextInput(attrs={'type': 'checkbox', 'class': "required"}),
-            # 'laptop_number': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'laptop_details': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'laptop_purchase_type': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'laptop_RAM': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'mouse_number': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'mouse_details': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'mouse_purchase_type': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'bag_number': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'bag_details': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'bag_purchase_type': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'mcAfee_validity': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'purchase_type': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
+            # 'employee_id': Select(attrs={'type': 'text', 'required': True, 'readOnly': True, 'class': "required form-control"}),
+            'employee_name': Select(attrs={'type': 'text', 'class': "required form-select fieldlabels"}),
             'office_365_id': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
             'official_email': TextInput(attrs={'type': 'email', 'class': "required form-control", 'aria-describedby': "basic-addon2"}),
             'microsoft_email': TextInput(attrs={'type': 'email', 'class': "required form-control"}),
             'microsoft_email_password': PasswordInput(attrs={'class': "required form-control", 'data-toggle': 'password'}),
             'skype_email': TextInput(attrs={'type': 'email', 'class': "required form-control"}),
             'skype_email_password': PasswordInput(attrs={'class': "required form-control"}),
-            # 'past_allottee': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
             'damage': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            # 'images_for_damage': ClearableFileInput(attrs={'class': "required", 'multiple': True}),
             'remarks': Textarea(attrs={'type': 'textarea', 'class': "form-control"})
         }
 
 
 class it_allotment_edit_form(it_allotment_add_form):
-    class Meta(it_allotment_add_form.Meta):
-         widgets = {
+    class Meta:
+        model = it_allotment
+        fields = "__all__"
+        widgets = {
             'employee_id': TextInput(attrs={'type': 'text', 'required': True, 'readOnly': True, 'class': "required form-control fieldlabels"}),
             'employee_name': TextInput(attrs={'type': 'text', 'readOnly': True, 'class': "required form-control"}),
             'office_365_id': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
@@ -127,10 +112,6 @@ class hardware_allotted_add_form(ModelForm):
             'details': TextInput(attrs={'type': 'text', 'readOnly': True, 'class': "form-control"}),
             'additional': TextInput(attrs={'type': 'text', 'class': "form-control"})
         }
-
-    # def __init__(self, *args, **kwargs):
-    #     super(hardware_allotted_add_form, self).__init__(*args, **kwargs)
-    #     self.fields['item_name'].widget = TextInput()
 
 
 class software_allotted_add_form(ModelForm):
@@ -158,6 +139,3 @@ class ImageForm(forms.Form):
 
 class it_allotment_full_add_form(it_allotment_add_form):
     images = forms.FileField(widget=ClearableFileInput(attrs={'multiple': True}))
-
-    # class Meta(it_allotment_add_form.Meta):
-    #     fields = it_allotment_add_form.Meta.fields + ['images',]

@@ -1,13 +1,113 @@
 
+function format ( d ) {
+	debugger
+    return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Office 365 Id: </span>'+d[5]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Official Email: </span>'+d[6]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Microsoft Email: </span>'+d[7]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Microsoft Email Password: </span>'+d[8]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Skype Email: </span>'+d[9]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Skype Email Password: </span>'+d[10]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Remarks: </span>'+d[11]+'</div></div><br>'+
+	'</div></div>';
+}
+
+function format_and_diff(d,res){
+	debugger
+	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Office 365 Id: </span>'+d[5]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Official Email: </span>'+d[6]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Microsoft Email: </span>'+d[7]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Microsoft Email Password: </span>'+d[8]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Skype Email: </span>'+d[9]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Skype Email Password: </span>'+d[10]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Remarks: </span>'+d[11]+'</div></div><br>'+
+	'</div></div>'+
+	'</div>'+
+	'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
+	'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
+	for (let key in res){
+		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
+		b += d
+	}
+	b += '</tbody></table></div>'
+    return b;
+}
+
+function format_hardware ( d ) {
+	debugger
+    return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Details: </span>'+d[6]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additional: </span>'+d[7]+'</div></div><br>'+
+	'</div></div>';
+}
+
+function format_and_diff_hardware(d,res){
+	debugger
+	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Details: </span>'+d[6]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additional: </span>'+d[7]+'</div></div><br>'+
+	'</div></div>'+
+	'</div>'+
+	'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
+	'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
+	for (let key in res){
+		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
+		b += d
+	}
+	b += '</tbody></table></div>'
+    return b;
+}
+
+function format_software ( d ) {
+	debugger
+    return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Validity Start Date: </span>'+d[6]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Validity End Date: </span>'+d[7]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Details: </span>'+d[8]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additonal: </span>'+d[9]+'</div></div><br>'+
+	'</div></div>';
+}
+
+function format_and_diff_software(d,res){
+	debugger
+	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
+	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Validity Start Date: </span>'+d[6]+'</div><br>'+
+	'<div class="col" style="text-align: left"><span class="font-weight-bold">Validity End Date: </span>'+d[7]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Details: </span>'+d[8]+'</div></div><br>'+
+	'<div class="row"><div class="col" style="text-align: left"><span class="font-weight-bold">Additonal: </span>'+d[9]+'</div></div><br>'+
+	'</div></div>'+
+	'</div>'+
+	'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
+	'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
+	for (let key in res){
+		d = '<tr><td class="font-weight-bold">' + key + '</td><td>' + res[key]['previous'] + '</td><td>' + res[key]['current'] + '</td></tr>'
+		b += d
+	}
+	b += '</tbody></table></div>'
+    return b;
+}
+
 $(document).ready(function () {
     debugger
+
+    $('#id_employee_name').select2({
+        dropdownParent: $('#staticBackdrop')
+    });
+
     $.ajax({
         type: 'GET',
         async: false,
-        url: $("#addAllotmentForm").attr('employee-code-url'),
+        url: $("#addAllotmentForm").attr('employee-name-url'),
         success: function(data){
             debugger
-            $("#id_employee_id").html(data)
+            $("#id_employee_name").html(data)
         },
         error: function(error, data){
             debugger
@@ -19,11 +119,13 @@ $(document).ready(function () {
 
     dataTableRes = $('.allotmentTable').DataTable({
 		dom: 'Bfrtip',
+        destroy: true,
+		retrieve: true,
 		buttons: [{
 			extend: 'csv',
 			text: 'Export',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4,]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
 			},
 		}
 		],
@@ -159,13 +261,308 @@ $(document).ready(function () {
 
 
 //...loading page again on closing the add new product form...//
-$('#staticBackdrop, #editModal').on('hidden.bs.modal', function () {
+$('#staticBackdrop, #editModal, #historyModal').on('hidden.bs.modal', function () {
     debugger
     window.location.reload();
 })
 
 
-$("#id_employee_id").on('change', function () {
+//...called when history button is clicked...//
+function historyfunction(obj, obj2){
+	debugger
+	var url = $("#historyModal").attr("data-history-url");
+	var rowId = obj2;
+
+	$.ajax({                       // initialize an AJAX request
+		url: url,
+		async: false,
+		data: {
+			'id': rowId
+		},
+		success: function (data) {
+            debugger
+			$("#tbody-content").html(data);
+		}
+	});
+	dataTableRes1 = $('.historyTable1').DataTable({
+		dom: 'Bfrtip',
+		buttons: [{
+			extend: 'csv',
+			text: 'Export',
+			title: 'Allotment History',
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,12]
+			},
+		}
+		],
+		order: [],
+		columnDefs: [
+			{ orderable: false, targets: 4 },
+			{ orderable: false, targets: 7 },
+			{ orderable: false, targets: 8 },
+			{ orderable: false, targets: 9 },
+			{ orderable: false, targets: 11 }
+		],
+		'pageLength': 12,
+		"bLengthChange": false,
+		"autoWidth": false		
+	});	
+	
+	debugger
+	var r = dataTableRes1.data()
+
+	//  Array to track the ids of the details displayed rows
+	var detailRows = [];
+
+	$('#historyTableId tbody').on( 'click', 'tr td.details-control', function () {
+		debugger
+		var res
+		var tr = $(this).closest('tr');
+
+		var row = dataTableRes1.row( tr );
+
+		var id = tr[0].children[12].innerText;
+		var history_id = tr[0].children[13].innerText;
+		var url = $("#historyTableId").attr("data-previous-url");
+		$.ajax({
+			url: url,
+			async: false,
+			type: 'GET',
+			data: {"id": id, "history_id": history_id},
+			dataType: 'json',
+			success: function(data){
+				debugger
+				if (data['data']){
+					res = data['data'];
+				}
+				else{
+					res = null
+				}
+			}
+		})
+
+
+		var idx = $.inArray( tr.attr('id'), detailRows );
+		if ( row.child.isShown() ) {
+			tr.removeClass( 'details' );
+			row.child.hide();
+			// Remove from the 'open' array
+			detailRows.splice( idx, 1 );
+		}
+		else {
+			tr.addClass( 'details' );
+			if (res){
+				row.child( format_and_diff( row.data(), res ) ).show();
+			}
+			else{
+				row.child( format( row.data()) ).show();
+			}
+			// Add to the 'open' array
+			if ( idx === -1 ) {
+				detailRows.push( tr.attr('id') );
+			}
+		}
+	});
+
+	// On each draw, loop over the `detailRows` array and show any child rows
+	dataTableRes1.on( 'draw', function () {
+		 $.each( detailRows, function ( i, id ) {
+			 $('#'+id+' td.details-control').trigger( 'click' );
+		 } );
+	 } );
+
+    var r = dataTableRes1.data()
+}
+
+
+//...function for showing the version history of allotted items for each row...//
+function allottedItemshistoryfunction(obj, obj2){
+    debugger
+    // $("#defaultOpen").click();
+
+	var url = $("#allottedItemsHistoryModal").attr("data-history-url");
+	var rowId = obj2;
+
+    $.ajax({                       // initialize an AJAX request
+		url: url,
+		async: false,
+		data: {
+			'id': rowId
+		},
+		success: function (data) {
+            debugger
+			$("#allotted-item-modalBody").html(data);
+		}
+	});
+	dataTableRes1 = $('.hardwareHistoryTable').DataTable({
+		dom: 'Bfrtip',
+		buttons: [{
+			extend: 'csv',
+			text: 'Export',
+			title: 'Hardware Allotted Item History',
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+			},
+		}
+		],
+		order: [],
+		columnDefs: [
+			{ orderable: false, targets: 4 },
+			{ orderable: false, targets: 7 },
+			{ orderable: false, targets: 8 },
+		],
+		'pageLength': 12,
+		"bLengthChange": false,
+		"autoWidth": false		
+	});	
+	
+
+    dataTableRes2 = $('.softwareHistoryTable').DataTable({
+		dom: 'Bfrtip',
+		buttons: [{
+			extend: 'csv',
+			text: 'Export',
+			title: 'Software Allotted Item History',
+			exportOptions: {
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+			},
+		}
+		],
+		order: [],
+		columnDefs: [
+			{ orderable: false, targets: 4 },
+			{ orderable: false, targets: 7 },
+			{ orderable: false, targets: 8 },
+			{ orderable: false, targets: 9 },
+			{ orderable: false, targets: 11 }
+		],
+		'pageLength': 12,
+		"bLengthChange": false,
+		"autoWidth": false		
+	});	
+	
+	debugger
+	var r1 = dataTableRes1.data()
+    var r2 = dataTableRes2.data()
+
+	//  Array to track the ids of the details displayed rows
+	var detailRows = [];
+
+	$('#hardwareHistoryTableId tbody').on( 'click', 'tr td.details-control', function () {
+		debugger
+		var res
+		var tr = $(this).closest('tr');
+
+		var row = dataTableRes1.row( tr );
+
+		var id = tr[0].children[8].innerText;
+		var history_id = tr[0].children[9].innerText;
+		var url = $("#hardwareHistoryTableId").attr("data-previous-url");
+		$.ajax({
+			url: url,
+			async: false,
+			type: 'GET',
+			data: {"id": id, "history_id": history_id},
+			dataType: 'json',
+			success: function(data){
+				debugger
+				if (data['data']){
+					res = data['data'];
+				}
+				else{
+					res = null
+				}
+			}
+		})
+
+		var idx = $.inArray( tr.attr('id'), detailRows );
+		if ( row.child.isShown() ) {
+			tr.removeClass( 'details' );
+			row.child.hide();
+			// Remove from the 'open' array
+			detailRows.splice( idx, 1 );
+		}
+		else {
+			tr.addClass( 'details' );
+			if (res){
+				row.child( format_and_diff_hardware( row.data(), res ) ).show();
+			}
+			else{
+				row.child( format_hardware( row.data()) ).show();
+			}
+			// Add to the 'open' array
+			if ( idx === -1 ) {
+				detailRows.push( tr.attr('id') );
+			}
+		}
+	});
+
+
+	$('#softwareHistoryTableId tbody').on( 'click', 'tr td.details-control', function () {
+		debugger
+		var res
+		var tr = $(this).closest('tr');
+
+		var row = dataTableRes2.row( tr );
+
+		var id = tr[0].children[10].innerText;
+		var history_id = tr[0].children[11].innerText;
+		var url = $("#softwareHistoryTableId").attr("data-previous-url");
+		$.ajax({
+			url: url,
+			async: false,
+			type: 'GET',
+			data: {"id": id, "history_id": history_id},
+			dataType: 'json',
+			success: function(data){
+				debugger
+				if (data['data']){
+					res = data['data'];
+				}
+				else{
+					res = null
+				}
+			}
+		})
+
+
+		var idx = $.inArray( tr.attr('id'), detailRows );
+		if ( row.child.isShown() ) {
+			tr.removeClass( 'details' );
+			row.child.hide();
+			// Remove from the 'open' array
+			detailRows.splice( idx, 1 );
+		}
+		else {
+			tr.addClass( 'details' );
+			if (res){
+				row.child( format_and_diff_software( row.data(), res ) ).show();
+			}
+			else{
+				row.child( format_software( row.data()) ).show();
+			}
+			// Add to the 'open' array
+			if ( idx === -1 ) {
+				detailRows.push( tr.attr('id') );
+			}
+		}
+	});
+
+
+
+	// On each draw, loop over the `detailRows` array and show any child rows
+	dataTableRes1.on( 'draw', function () {
+		 $.each( detailRows, function ( i, id ) {
+			 $('#'+id+' td.details-control').trigger( 'click' );
+		 } );
+	 } );
+
+    var r = dataTableRes1.data()
+}
+
+
+
+$("#id_employee_name").on('change', function () {
     debugger
     var id = $(this).val()
 
@@ -177,7 +574,6 @@ $("#id_employee_id").on('change', function () {
         success: function (data) {
             debugger
             $("#id_employee_name").val(data['name']);
-
         },
         error: function (data) {
             debugger
@@ -294,6 +690,18 @@ function handleItemCheckboxclick(evt) {
 }
 
 
+var loadFile = function(event) {
+    debugger
+	// var image = document.getElementById('output');
+    
+    var image_anchor = event.target.nextElementSibling.children[0];
+    var image = event.target.nextElementSibling.children[0].children[0]
+    // event.target.nextElementSibling.style.display = "block";
+    image_anchor.href = URL.createObjectURL(event.target.files[0]);
+	image.src = URL.createObjectURL(event.target.files[0]);
+};
+
+
 function addImageInput(evt) {
     debugger
 
@@ -307,6 +715,8 @@ function addImageInput(evt) {
     var newInput = document.createElement('input')
     newInput.type = 'file'
     newInput.name = 'file[]'
+    newInput.accept = 'image/*'
+    newInput.onchange = loadFile
     newInput.style.cssText = 'margin-bottom: 2px;'
 
     var newButton = document.createElement('button')
@@ -317,41 +727,44 @@ function addImageInput(evt) {
     }
     newButton.style.cssText = 'border: none; float: right; margin-bottom: 5px'
 
-    newDiv.append(newInput, newButton);
+    var newPreview = document.createElement('p')
+    newPreview.innerHTML = '<a target="_blank"><img class="output" width="200" /></a>'
+
+    newDiv.append(newInput, newPreview, newButton);
     image.append(newDiv)
 }
 
 
-function previewImages() {
+// function previewImages() {
 
-    var preview = document.querySelector('#preview');
+//     var preview = document.querySelector('#preview');
 
-    if (this.files) {
-        [].forEach.call(this.files, readAndPreview);
-    }
+//     if (this.files) {
+//         [].forEach.call(this.files, readAndPreview);
+//     }
 
-    function readAndPreview(file) {
+//     function readAndPreview(file) {
 
-        // Make sure `file.name` matches our extensions criteria
-        if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
-            return alert(file.name + " is not an image");
-        } // else...
+//         // Make sure `file.name` matches our extensions criteria
+//         if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
+//             return alert(file.name + " is not an image");
+//         } // else...
 
-        var reader = new FileReader();
+//         var reader = new FileReader();
 
-        reader.addEventListener("load", function () {
-            var image = new Image();
-            image.height = 100;
-            image.title = file.name;
-            image.src = this.result;
-            preview.appendChild(image);
-        });
+//         reader.addEventListener("load", function () {
+//             var image = new Image();
+//             image.height = 100;
+//             image.title = file.name;
+//             image.src = this.result;
+//             preview.appendChild(image);
+//         });
 
-        reader.readAsDataURL(file);
+//         reader.readAsDataURL(file);
 
-    }
+//     }
 
-}
+// }
 
 // document.querySelector('#id_images_for_damage').addEventListener("change", previewImages);
 
@@ -413,10 +826,8 @@ function handleaddnewAllotment(event) {
     }
     xhr.send(myFormData)
 }
-
 const addNewallotmentForm = document.getElementById('addAllotmentForm')
 addNewallotmentForm.addEventListener("submit", handleaddnewAllotment)
-
 
 
 //...function called when addAllotment form is submitted...//
@@ -480,8 +891,6 @@ function handleEditAllotment(event) {
     }
     xhr.send(myFormData)
 }
-
-
 const editAllotmentForm = document.getElementById('editAllotmentForm')
 editAllotmentForm.addEventListener("submit", handleEditAllotment)
 
@@ -518,11 +927,8 @@ function handleDeleteAllotment(event) {
 	}
 	xhr.send(myFormData)
 }
-
 const deleteForm = document.getElementById('deleteAllotmentForm')
 deleteForm.addEventListener("submit", handleDeleteAllotment)
-
-
 
 
 function togglePassword(slf) {
@@ -555,12 +961,11 @@ function allotmentFunction(evt, obj1){
 
 function editfunction(evt, obj1){
     debugger
-    var x = document.getElementById(evt.id).parentElement.parentElement.getElementsByTagName('td')
-    
+
+    var x = document.getElementById(evt.id).parentElement.parentElement.parentElement.parentElement.parentElement.getElementsByTagName('td')
     var y = document.getElementById('editAllotmentForm').getElementsByTagName('input')
     var edit_ac_inputs = document.getElementById('edit_accounts').getElementsByTagName('input')
     var edit_ac_data = Array.from([...x].filter(element => element.classList.contains('edit_accounts')));
-    // var edit_ac_data = $('#edit_accounts').findAll('td [class="edit_accounts"]')
 
     for (i=0; i<(edit_ac_data.length); i++){
         edit_ac_inputs[i].value = edit_ac_data[i].textContent
@@ -585,10 +990,11 @@ function editfunction(evt, obj1){
         async: false,
         success: function(data){
             debugger
-            $("#edit_allotment_body").html(data)
+            $("#edit_images").html(data)
         }
     })
 
+    $(".edit_status option[value='3']").remove();
     document.getElementById('editAllotmentForm').action = evt.id;
 }
 
@@ -600,7 +1006,6 @@ function handleEditItemCheckboxclick(evt){
     var td = tr[0].children[0]
 
     if (tr[0].children[0].checked == true){
-        tr[1].children[0].disabled = false
         tr[1].children[0].disabled = false
         var url = $("#addAllotmentForm").attr("data-item_name-url")
         var item_id = evt.value
@@ -662,3 +1067,40 @@ function editItemNamesChange(evt) {
         tr.children[2].children[0].value = '';
     }
 }
+
+
+//...function for switching between different tabs...//
+function openAllotmentDetailsTab(evt, tabName) {
+	debugger
+	var i, tabcontent, tablinks;
+	tabcontent = document.getElementsByClassName("tab-panel");
+	for (i = 0; i < tabcontent.length; i++) {
+		tabcontent[i].style.display = "none";
+	}
+	tablinks = document.getElementsByClassName("tablinks");
+	for (i = 0; i < tablinks.length; i++) {
+		tablinks[i].className = tablinks[i].className.replace(" active", "");
+	}
+	
+	document.getElementById(tabName).style.display = 'block';
+	evt.currentTarget.className += " active";
+	
+	// if(dataTableRes){
+	// 	dataTableRes.draw();		
+	// }		
+}
+
+// // Get the element with id="defaultOpen" and click on it
+$("#defaultOpen").click();
+
+
+
+// Used for three dots click event in action column
+$(".dropout").on('click', function(){
+	debugger
+	if (!this.classList.contains('more')) {
+	document.querySelectorAll('.dropout.activeActn').forEach(
+	  (d) => d !== this && d.classList.remove('activeActn')
+	)}
+	this.classList.toggle('activeActn')
+});
