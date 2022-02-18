@@ -1,7 +1,5 @@
-{% extends 'home/base.html' %} 
-{% load static %}
-{% block title %} All Suggestion {% endblock title %} 
-{% block style %}
+{% extends 'home/base.html' %} {% load static %} {% block title %} All
+Suggestion {% endblock title %} {% block style %}
 <link
   rel="stylesheet"
   href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
@@ -12,8 +10,7 @@
 />
 <link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet" />
 <link href="{% static 'css/notifications.css' %}" rel="stylesheet" />
-{% endblock style %} 
-{% block content %}
+{% endblock style %} {% block content %}
 
 <div class="container-lg">
   <div>
@@ -39,15 +36,65 @@
   </div>
   {% for suggestion in all_suggestions %}
 
-  <div class="modal fade" id="meta-{{forloop.counter}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div
+    class="modal fade"
+    id="meta-{{forloop.counter}}"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">{{suggestion.name}}</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <h5 class="modal-title" id="exampleModalLabel">
+            {{suggestion.name}}
+          </h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">{{suggestion.suggestion}}</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Model for version history table -->
+
+  <div
+    class="modal fade"
+    id="meta3-{{suggestion.id}}"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Suggestion Summary</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
         </div>
         <div class="modal-body">
-          {{suggestion.suggestion}}
+          <table class="table table-bordered">
+            <thead style="background-color: #f0f0f0" class="text-center">
+              <tr>
+                <th style="font-weight: bold" scope="col">User</th>
+                <th style="font-weight: bold" scope="col">Comment</th>
+                <th style="font-weight: bold" scope="col">Change Date</th>
+                <th style="font-weight: bold" scope="col">Category</th>
+                <th style="font-weight: bold" scope="col">Status</th>
+                <th style="font-weight: bold" scope="col">Type</th>
+              </tr>
+            </thead>
+            <tbody id="tablerows-{{suggestion.id}}"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -58,46 +105,189 @@
     <i class="fa fa-arrow-left" aria-hidden="true"></i>
     <input
       type="button"
-      class="btn btn-secondary"
-      style="padding: 5px"
+      class="btn text-white"
+      style="padding: 5px; background-color: #5f4266"
       value="Back"
       onclick="history.back()"
     />
   </form>
+  {% for suggestion in all_suggestions %}
 
+  <div
+    class="modal fade"
+    id="meta2-{{suggestion.id}}"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel2"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel2">Edit Summary</h5>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <form>
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="meta2-name-{{suggestion.id}}" class="form-label"
+                >Name</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="meta2-name-{{suggestion.id}}"
+                placeholder="Name"
+                value=""
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="meta2-suggestion-{{suggestion.id}}" class="form-label"
+                >Suggestion</label
+              >
+              <textarea
+                class="form-control"
+                id="meta2-suggestion-{{suggestion.id}}"
+                rows="3"
+                disabled
+              ></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="meta2-time-{{suggestion.id}}" class="form-label"
+                >Time</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="meta2-time-{{suggestion.id}}"
+                placeholder="time"
+                value=""
+                disabled
+              />
+            </div>
+            <div class="mb-3">
+              <label for="meta2-category-{{suggestion.id}}" class="form-label"
+                >Category</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="meta2-category-{{suggestion.id}}"
+                placeholder="category"
+                value=""
+                disabled
+              />
+            </div>
+            <label class="form-label">Status</label>
+
+            <select
+              class="form-select"
+              aria-label="Select Progress"
+              id="select{{suggestion.id}}"
+            ></select>
+
+            <div class="mb-3">
+              <label for="meta2-comment-{{suggestion.id}}" class="form-label"
+                >Comment</label
+              >
+              <textarea
+                class="form-control"
+                id="meta2-comment-{{suggestion.id}}"
+                rows="3"
+              ></textarea>
+            </div>
+
+            <button
+              type="button"
+              class="btn"
+              onclick="formupdate(this.id)"
+              id="s-{{suggestion.id}}"
+              style="background-color: #5f4266; color: white"
+            >
+              Update
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% endfor %}
   <div class="table-responsive">
     <div class="table-wrapper1">
       <div class="table-title">
         {% if not all_suggestions %}
-        <div><p>You have not received any suggestions yet...</p></div>        
+        <div><p>You have not received any suggestions yet...</p></div>
         {% else %}
         <table class="table table-bordered">
           <thead>
-            <tr style="background-color: #007bff;color: white;" class="text-center">
-              <th scope="col">No.</th>
-              <th scope="col">Date</th>
-              <th scope="col">Time</th>
-              <th scope="col">Name</th>
-              <th scope="col">Suggestion</th>
+            <tr style="background-color: #f0f0f0" class="text-center">
+              <th style="font-weight: bold" scope="col">No.</th>
+              <th style="font-weight: bold" scope="col">Date</th>
+              <th style="font-weight: bold" scope="col">Time</th>
+              <th style="font-weight: bold" scope="col">Name</th>
+              <th style="font-weight: bold" scope="col">Category</th>
+              <th style="font-weight: bold" scope="col">Suggestion</th>
+              <th style="font-weight: bold" scope="col">Status</th>
+              <th style="font-weight: bold" scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
             {% for suggestion in all_suggestions %}
             <tr class="text-center">
-              <td  scope="row">{{ forloop.counter }}.</td>
-              <td >{{ suggestion.created_at|date:'d-m-Y' }}</td>
-              <td >{{ suggestion.created_at|time:"g:i A" }}</td>
+              <td scope="row">{{ forloop.counter }}.</td>
+              <td>{{ suggestion.created_at|date:'d-m-Y' }}</td>
+              <td>{{ suggestion.created_at|time:"g:i A" }}</td>
               <td>{{ suggestion.name|default:"Anonymous"|capfirst }}</td>
-              <td  >{{ suggestion.suggestion|slice:'0:20' }} <a  data-bs-toggle="modal" data-bs-target="#meta-{{forloop.counter}}" style="color: blue; size: 10px;">...more
-              </a></td>
+              <td>
+                {{ suggestion.suggestion_category|default:"General"|capfirst }}
+              </td>
+              <td>
+                {{suggestion.suggestion|slice:"0:20"}}
+                <a
+                  data-bs-toggle="modal"
+                  data-bs-target="#meta-{{forloop.counter}}"
+                  style="color: blue; size: 10px"
+                  >...more
+                </a>
+              </td>
+              <td>{{suggestion.suggestion_status}}</td>
+              <td>
+                <a
+                  data-toggle="modal"
+                  data-target="#exampleModal"
+                  onclick="formedit(this.id)"
+                  id="f{{suggestion.id}}"
+                >
+                  <i class="fa fa-pencil" style="margin-left: 4px"></i>
+                </a>
+                <a
+                  data-toggle="modal"
+                  data-target="#exampleModal"
+                  onclick="versionhistory(this.id)"
+                  id="f{{suggestion.id}}"
+                >
+                  <i class="fa fa-history" style="margin-left: 4px"></i>
+                </a>
+              </td>
             </tr>
-            {% endfor %}            
+            {% endfor %}
           </tbody>
         </table>
-        {% endif %}             
+        {% endif %}
       </div>
     </div>
   </div>
 </div>
 
-{% endblock content %}
+{% endblock content %} {% block addextra %}
+
+<script src="{% static 'js/main2.js' %}"></script>
+
+{% endblock addextra %}
