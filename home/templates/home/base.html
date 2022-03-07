@@ -21,7 +21,7 @@
     lighter = #bbd685 -->
 
   <!-- Bootstrap core CSS -->
-  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'home/css/bootstrap.min.css' %}" rel="stylesheet">
 
   {% block style %}
   {% endblock style %}
@@ -45,8 +45,8 @@
 
 
   <!-- Custom styles for this template -->
-  <link href="{% static 'css/sidebars.css' %}" rel="stylesheet">
-  <link href="{% static 'css/common.css' %}" rel="stylesheet">
+  <link href="{% static 'home/css/sidebars.css' %}" rel="stylesheet">
+  <link href="{% static 'home/css/common.css' %}" rel="stylesheet">
 </head>
 
 <body>
@@ -137,7 +137,7 @@
       <a href="https://certaintyinfotech.com/"
         class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
         <!-- <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg> -->
-        <img src="{% static 'media/logo.png' %}" alt="..." width="30%" height="auto" class="bi me-2">
+        <img src="{% static 'home/media/logo.png' %}" alt="..." width="30%" height="auto" class="bi me-2">
         <span class="fs-4">Admin Portal</span>
       </a>
       <hr>
@@ -170,9 +170,9 @@
 
   </main>
 
-  <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'home/js/bootstrap.bundle.min.js' %}"></script>
 
-  <script src="{% static 'js/sidebars.js' %}"></script>
+  <script src="{% static 'home/js/sidebars.js' %}"></script>
 
  {% block addextra %}
  {% endblock addextra %}

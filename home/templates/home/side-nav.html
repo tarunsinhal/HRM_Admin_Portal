@@ -3,7 +3,7 @@
   rel="stylesheet"
   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
 />
-<link href="{% static 'css/common.css' %}" rel="stylesheet" />
+<link href="{% static 'home/css/common.css' %}" rel="stylesheet" />
 <div class="sidenav nav-sidebar">
   <a class="nav home" href="{% url 'home:home_view' %}"
     ><i class="fa fa-home"></i> Home</a
@@ -49,7 +49,6 @@
     <a class="nav shreya" href="#">Shreya</a>
     <a class="nav company" href="#">Company</a>
   </div> -->
-  {% if request.user.is_superuser or request.user.is_staff %}
   <a class="nav bills_and_reimbursement" href="{% url 'home:home_view' %}"
     ><i class="fa fa-inr"></i> Bills and Reimbursement</a
   >
@@ -57,7 +56,6 @@
   <a class="nav suggestions" href="{% url 'suggestions:suggestion' %}"
     ><i class="fa fa-pencil-square-o"></i> Suggestions</a
   >
-  {% endif %}
   <a class="nav notifications" href="{% url 'home:notifications' %}">
     <div class="row">
       <div class="col-10"><i class="fa fa-bell"></i> Notifications</div>
@@ -71,4 +69,4 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="{% static 'js/common.js' %}"></script>
+<script src="{% static 'home/js/common.js' %}"></script>

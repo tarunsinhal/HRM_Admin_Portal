@@ -29,7 +29,7 @@ import json
 import csv
 from datetime import datetime
 from django.utils import timezone
-
+from django.contrib.auth.decorators import permission_required
 
 @login_required(login_url='/auth/login')
 def operations_view(request):

@@ -1,19 +1,99 @@
-{% extends 'home/base.html' %}
-{% load crispy_forms_tags %}
+{% extends 'home/base.html' %} 
+{% load static %} 
+{% block title %} Update Profile{% endblock title %}
+{% block style %}
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/icon?family=Material+Icons"
+/>
+<link href="{% static 'home/css/notifications.css' %}" rel="stylesheet" />
+
+
+
+{% endblock style %} 
+
+
 {% block content %}
 
-<!--{{user.username}}-->
-<!--             {{user.email}}-->
 
-      <form method="POST" enctype="multipart/form-data">
-          {% csrf_token %}
-          <br><br>
-          <fieldset class="form-group">
-              {{ u_form|crispy }}
-<!--              {{ p_form|crispy }}-->
-          </fieldset>
-              <button class="btn btn-outline-info" type="submit">Update</button>
-      </form>
+
+
+
+<div class="container-lg">
+    <div class="row">
+        <div class="col-12">
+            <div class="row ">
+                <div class="col-1" style="text-align: center">
+                  <img
+                    src="{% static 'home/media/updateuser.png' %}"
+                    width="100%"
+                    height="100%"
+                    alt="Update User"
+                    col
+                  />
+                </div>
+                <div
+                  class="col-11"
+                  id="notification-title"
+                  style="justify-content: center; vertical-align: center"
+                >
+                  <h3><b>Update Status</b></h3>
+                  <p>Current Status</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="row d-flex flex-row-reverse">
+
+              <div class="col-2">
+                <a href={% url 'authentication:password_reset' %} class='bg-dark my-2 text-white p-2 text-decoration-none'>Reset Password</a>
+                
+              </div>
+              <div class="col-8"></div>
+            </div>
+
+
+            <div class="row d-flex align-items-center">
+                <div class="col-2">
+                    
+                </div>
+                <div class="col-8">
+                  
+                  <form method="POST">
+                    {% csrf_token %}
+                    {% for field in form %}
+                      {% if field.type == 'hidden' %}
+                        {{ field }}
+                      {% else %}
+                        <div class="form-group">
+                          {{ field.label_tag }}
+                          {{ field }}
+                        </div>
+                      {% endif %}
+                    
+                    
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary my-2">Update</button>
+                    </form>
+
+                </div>
+                <div class="col-2">
+
+                </div>
+            </div>
+              
+            
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+
 
 
 {% endblock content %}

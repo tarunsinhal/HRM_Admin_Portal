@@ -23,6 +23,7 @@ import os
 
 @login_required(login_url='/auth/login')
 def it_infra_view(request):
+    print(request.resolver_match.url_name)
     return render(request, 'IT_Infra/it_infra.html')
 
 
@@ -38,7 +39,6 @@ def it_inventory_view(request):
     
     importForm = ImportForm()
 
-    #return render(request, 'IT_Infra/it_inventory.html', {"addInventoryForm": add_form, "editInventoryForm": edit_form, 'inventory_data': serializer.data, 'system_names': system_names, 'importForm': importForm})
     return render(request, 'IT_Infra/it_inventory.html', {"addInventoryForm": add_form, "editInventoryForm": edit_form, 'inventory_data': serializer.data, 'importForm': importForm})
 
 
@@ -62,7 +62,7 @@ def add_inventory(request):
 
 @api_view(['POST'])
 def edit_inventory(request, pk):
-    product = it_inventory.objects.get(id=pk)
+    product = it_inventory.objects.get(id=pk)   
 
     request.POST._mutable = True
     #request.POST['system_names'] = json.dumps(request.POST.getlist('system_names'))

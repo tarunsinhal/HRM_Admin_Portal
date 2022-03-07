@@ -124,3 +124,7 @@ class damage_images(models.Model):
     allotment = models.ForeignKey(it_allotment, on_delete=models.CASCADE)
     images_for_damage = models.ImageField(upload_to=get_image_filename, null=True, blank=True)
 
+
+
+
+    

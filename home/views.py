@@ -1,25 +1,37 @@
+from matplotlib.font_manager import json_load
 from operations.models import t_shirt_inventory, recurringItems, engagementJoining
 from django.http.response import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import cache_control, never_cache
-from datetime import datetime, timedelta, date
+from django.views.decorators.cache import cache_control
+from datetime import  timedelta, date
 from .models import notifications
-from .serializers import UpdateUserSerializer, UserSerializer
 from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
 from django.contrib.auth.models import User
 from .forms import UpdateUserForm
 from django.db.models import Q
-from django.urls import resolve
-from django.contrib.auth.models import Permission
+from authentication.forms import RegistrationForm
+from django.contrib import messages
+from django.contrib.auth.models import Group
+from django.core import serializers
+import json
 
 
 @login_required(login_url='/auth/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home_view(request):
-    return render(request, 'home/dashboard.html')
+    app_name = request.resolver_match.app_name
+    if request.method == 'POST':
+        fm = RegistrationForm(request.POST)
+        if fm.is_valid():
+            fm.save()
+            messages.success(request, 'User added successfully')
+            return render(request, 'home/dashboard.html')
+        else:
+            messages.error(request,'User not added')
+            return render(request, 'home/dashboard.html')
+    form = RegistrationForm()
+    return render(request, 'home/dashboard.html', {'form': form})
 
 
 # To fetch the notifications from differnt modules depending on certain conditions
@@ -121,68 +133,52 @@ def all_notifications(request):
 
 @login_required(login_url='/auth/login')
 def profile(request):
-    updateUserForm = UpdateUserForm()
-    serializer = UserSerializer
-    if request.method == "GET":
-        all_users = User.objects.all()
-        serializer = UserSerializer(all_users, many=True)
-    return render(request, 'home/manage_users.html', {
-        'all_users': serializer.data, 'updateUserForm': updateUserForm})
+    all_users = User.objects.all()
+    updateform = UpdateUserForm()
+    return render(request, 'home/manage_users.html', {'all_users': all_users,'updateform':updateform})
 
 
-@api_view(['PUT'])
+
 def profile_update(request, pk):
-    try:
-        user = User.objects.get(pk=pk)
-    except User.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-
-    if request.method == 'PUT':
-        serializer = UpdateUserSerializer(user, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        # u_form = UpdateUserForm(request.POST)
-        # p_form = ProfileUpdateForm(request.POST,
-        #                            request.FILES,
-        #                            instance=request.user.profile)
-        # if u_form.is_valid():
-        #     u_form.save()
-        # p_form.save()
-        # messages.success(request, f'Your account has been updated!')
-        # return redirect('users:profile')
-
-    # else:
-    #     u_form = UpdateUserForm()
-    # p_form = ProfileUpdateForm(instance=request.user.profile)
-
-    # context = {
-    #     'u_form': u_form,
-    # 'p_form': p_form
-    # }
-
-    # return render(request, 'users/profile_update.html', context)
+    user = User.objects.get(pk=pk)
+    if request.method == "POST":
+        form = UpdateUserForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('/home/profile/update/'+str(pk))
+    else:
+        form = UpdateUserForm(instance=user)
+    return render(request, 'home/profile_update.html', {'form': form})
+    
 
 
-@api_view(['POST'])
+@api_view(['GET'])
 def delete_user(request, pk):
     user = User.objects.get(id=pk)
     user.delete()
-    return Response({}, status=201)
-
-def add_permission(request):
-    return render(request, 'home/add_permissions.html')
+    return redirect('home:profile')
 
 
-# def send_email(request):
-#     email_form = SendEmail()
-#     if request.method == "POST":
-#         email_form = SendEmail(request.POST)
-#         recipient = [str(email_form['email'].value())]
-#         subject = str(email_form['subject'].value())
-#         message = str(email_form['message'].value())
-#         send_mail(subject,message,EMAIL_HOST_USER,[recipient],fail_silently=False)
-#         return render(request, 'home/success_email.html', {'recipient': recipient})
-#     return render(request, 'home/email_form.html', {'form':email_form})
+def permissions(request,pk):
+    if request.method=="POST":
+        user = User.objects.get(id=pk)
+        data = (json.loads(request.body.decode('utf-8')))
+        user.groups.clear() 
+        for group in data:
+            group = Group.objects.get(name=group)
+            user.groups.add(group)
+        return redirect('home:profile')
+    else:
+        all_groups = Group.objects.all()
+        assigned_groups = User.objects.get(id=pk).groups.all()
+        return JsonResponse({'all_groups': serializers.serialize('json', all_groups),
+                                'assigned_groups': serializers.serialize('json', assigned_groups)})
+    
+
+
+
+def access_denied(request):
+    return render(request, 'home/access_denied.html')
+
+def error_404_view(request,exception):
+    return render(request, 'home/404.html')
