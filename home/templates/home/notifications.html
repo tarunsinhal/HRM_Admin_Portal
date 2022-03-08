@@ -26,7 +26,7 @@
                     <div class="col-sm-11" id="notification-title"
                         style="justify-content: center; vertical-align: center;">
                         <h2><b>Notifications</b></h2>
-                        <p>Notification you've ever received in last 7 days. Showing newest first.</p>
+                        <p>Notification you've ever received in last 7 days.</p>
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@
     </div>
 
 
-    <button class="btn btn-secondary" style="padding: 5px; float: right;" onclick=location.href="{% url 'home:all_notifications' %}">All Notifications</button>
+    <button class="btn btn-secondary" style="padding: 5px; float: right; background-color: #5f4266 !important;" onclick=location.href="{% url 'home:all_notifications' %}">All Notifications</button>
     <div class="table-responsive">
         <div class="table-wrapper1">
             <div class="table-title">
@@ -49,7 +49,7 @@
                  {% for notification_date in notifications_list %}
 
                 <div class="row">
-                   <div style="color: #007bff">
+                   <div style="color: #5f4266">
                     <h3>{{ notification_date.grouper }}</h3>
                 </div>
 
@@ -63,16 +63,19 @@
                     <div class="col-1">
                        </div>
                        {% if rows.notification_type == 1 %}
-                       <div class="col-9">
+                       <div class="col-11">
                         <strong class="font-weight-bold">{{ rows.product }}</strong> next order date is tomorrow.
+                        <span style="float: right;">Go to page <a href="{% url 'operations:inventory_recurring' %}">Click Here !</a></span>
                        </div>
                        {% elif rows.notification_type == 2 %}
-                       <div class="col-9">
+                       <div class="col-11">
                         2 or less pieces remained in Tshirt Inventory of size <strong class="font-weight-bold">{{ rows.product }}</strong>
+                        <span style="float: right;">Go to page <a href="{% url 'operations:tshirt_inventory' %}">Click Here !</a></span>
                        </div>
                        {% elif rows.notification_type == 3 %}
-                       <div class="col-9">
+                       <div class="col-11">
                         <strong class="font-weight-bold">{{ rows.product }}</strong> is yet not completed !
+                        <span style="float: right;">Go to page <a href="{% url 'operations:Boarding' %}">Click Here !</a></span>
                        </div>
                        {% endif %}
                    </div>
@@ -82,7 +85,7 @@
                    {% endfor %}
                    
                 </div>
-                <hr style="color: blue;">
+                <hr style="color: #5f4266;">
                 {% endfor %}
             </div>
         </div>

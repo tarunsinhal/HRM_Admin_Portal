@@ -19,13 +19,20 @@ $(document).ready(function () {
   });
 
   $.ajax({                       // initialize an AJAX request
-
     type: 'GET',
     url: '/home/ajax/get_notifications_count',
     dataType: 'json',
     success: function (data) {
-      $("#notification").append("<strong>" + data.notification_count + "</strong>");
+      $("#notification").append("<strong class='badge'>" + data.notification_count + "</strong>");
+      if (data.notification_count > 0){
+        $.ajax({
+          type: 'GET',
+          url: '/home/ajax/desktop_notification',
+        })
+      }
     }
   });
 })
+
+
 

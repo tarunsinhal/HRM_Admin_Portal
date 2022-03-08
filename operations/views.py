@@ -828,7 +828,7 @@ class ImportJoiningView(View):
 
     def get(self,request, id):
         form = ImportForm()
-        self.context['form'] =form
+        self.context['form'] = form
         return JsonResponse({}, status=201)
 
     def post(self, request):
@@ -840,10 +840,12 @@ class ImportJoiningView(View):
             resource = JoiningResource()
 
             data = data_set.load(file.read().decode('utf-8'), format=extension)
+            # result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
             
             try:
-                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
-                return JsonResponse({}, status=201)
+                if data['Joining Date']:
+                    result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+                    return JsonResponse({}, status=201)
             except ValidationError as e:
                 length = len(e.message_dict)
                 return JsonResponse({"error": e.message_dict, "length" : length},status=400)
@@ -873,8 +875,9 @@ class ImportExitView(View):
             data = data_set.load(file.read().decode('utf-8'), format=extension)
 
             try:
-                result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
-                return JsonResponse({}, status=201)
+                if data['Last Working Date']:
+                    result = resource.import_data(data_set, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+                    return JsonResponse({}, status=201)
             except ValidationError as e:
                 length = len(e.message_dict)
                 return JsonResponse({"error": e.message_dict, "length" : length},status=400)

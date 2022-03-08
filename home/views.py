@@ -1,4 +1,4 @@
-from matplotlib.font_manager import json_load
+import webbrowser
 from operations.models import t_shirt_inventory, recurringItems, engagementJoining
 from django.http.response import JsonResponse
 from django.shortcuts import render,redirect
@@ -15,6 +15,25 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.core import serializers
 import json
+from django.urls import resolve
+from django.contrib.auth.models import Permission
+import webbrowser
+from win10toast_click import ToastNotifier
+
+def open_notification():
+    webbrowser.open('http://localhost:8000/home/notifications/')
+
+@login_required(login_url='/auth/login')
+def desktop_notification(request):
+    toaster = ToastNotifier()
+    n = list(notifications.objects.filter(is_visited=False))
+    if len(n) > 0:
+        toaster.show_toast('Notification for Admin portal!',
+            'Click notification and view the notification related to what.',
+            icon_path = 'media/logo.svg',
+            duration=5,
+            threaded=True,
+            callback_on_click=open_notification)
 
 
 @login_required(login_url='/auth/login')
@@ -61,29 +80,31 @@ def get_noitications(request):
             if (i['id'], 2) not in item_ids:
                 notification_json.append(notifications(product='T-shirt'+'-'+ i['size'], item_id=i['id'], notification_date=date.today(),
                 is_visited=False, notification_type=2))
-    except:
-        pass
+    # except:
+    #     pass
 
-    try:
+    # try:
         time_threshold_2 = date.today() - timedelta(days=7)
         # filering the records based on conditions from the tshirt inventory model
         egmtjoin = engagementJoining.objects.filter(joining_date=time_threshold_2.strftime('%Y-%m-%d')).values('id', 'employee_name', 'details__detail_name')
-       
+        
         for i in range(len(egmtjoin)):
-            empData = engagementJoining.objects.filter(Q(offer_letter='')|Q(joining_letter='')|Q(joining_documents='')|Q(joining_hamper='')|Q(id_card='')|Q(induction='')|Q(loi='')|Q(add_to_skype_group='')|Q(add_to_whatsapp_group='')|Q(system_configuration='')|Q(add_upwork_account_to_team='')|Q(add_upwork_account=''), id=egmtjoin[i]['id']).values('offer_letter', 'joining_letter', 'joining_documents', 'joining_hamper', 'id_card', 'induction', 'loi', 'add_to_skype_group', 'add_to_whatsapp_group', 'system_configuration', 'add_upwork_account_to_team', 'add_upwork_account')
-            if empData:
+            empDataJoin = engagementJoining.objects.filter(Q(offer_letter='')|Q(joining_letter='')|Q(joining_documents='')|Q(joining_hamper='')|Q(id_card='')|Q(induction='')|Q(loi='')|Q(add_to_skype_group='')|Q(add_to_whatsapp_group='')|Q(system_configuration='')|Q(add_upwork_account_to_team='')|Q(add_upwork_account=''), id=egmtjoin[i]['id']).values('offer_letter', 'joining_letter', 'joining_documents', 'joining_hamper', 'id_card', 'induction', 'loi', 'add_to_skype_group', 'add_to_whatsapp_group', 'system_configuration', 'add_upwork_account_to_team', 'add_upwork_account')
+            if empDataJoin:
                 if (egmtjoin[i]['id'], 3) not in item_ids:
                     notification_json.append(notifications(product=(egmtjoin[i]['details__detail_name'] +' of '+ egmtjoin[i]['employee_name']), item_id=egmtjoin[i]['id'], notification_date=(date.today()),
                     is_visited=False, notification_type=3))
 
         egmtexit = engagementJoining.objects.filter(last_working_date=time_threshold_2.strftime('%Y-%m-%d')).values('id', 'employee_name', 'details__detail_name')
-       
+        
         for i in range(len(egmtexit)):
-            empData = engagementJoining.objects.filter(Q(relieving_letter='')|Q(experience_letter='')|Q(id_card='')|Q(remove_from_skype_group='')|Q(remove_from_whatsapp_group='')|Q(fnf='')|Q(system_format='')|Q(remove_upwork_account_from_team='')|Q(close_upwork_account=''), id=egmtexit[i]['id']).values('relieving_letter', 'experience_letter', 'id_card', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'fnf', 'system_format', 'remove_upwork_account_from_team', 'close_upwork_account')
-            if empData:
+            empDataExit = engagementJoining.objects.filter(Q(relieving_letter='')|Q(experience_letter='')|Q(id_card='')|Q(remove_from_skype_group='')|Q(remove_from_whatsapp_group='')|Q(fnf='')|Q(system_format='')|Q(remove_upwork_account_from_team='')|Q(close_upwork_account=''), id=egmtexit[i]['id']).values('relieving_letter', 'experience_letter', 'id_card', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'fnf', 'system_format', 'remove_upwork_account_from_team', 'close_upwork_account')
+            if empDataExit:
                 if (egmtexit[i]['id'], 3) not in item_ids:
                     notification_json.append(notifications(product=(egmtexit[i]['details__detail_name'] +' of '+ egmtexit[i]['employee_name']), item_id=egmtexit[i]['id'], notification_date=(date.today()),
                     is_visited=False, notification_type=3))
+
+                    
     except:
         pass
     

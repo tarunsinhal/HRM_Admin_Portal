@@ -294,3 +294,18 @@ table.table td .add {
   border: 1px solid #ccc;
   border-top: none;
 }
+
+.badge {
+  display: inline-block;
+  /* padding: 0.35em 0.65em; */
+  font-size: .75em;
+  font-weight: 750;
+  line-height: 1;
+  color: #ffff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: 0.55rem;
+  margin-top: -22px;
+  background-color: #eb1c1c;
+}

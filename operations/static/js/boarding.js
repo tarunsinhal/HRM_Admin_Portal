@@ -838,7 +838,7 @@ $(".dropout").on('click', function(){
 });
 
 $(document).ready(function(){
-	$('.info').popover({title: "<h6><strong>Information</strong></h6>", content: "<ul><li>Supported file format are CSV, XLSX and XLS.</li></ul>", html: true, placement: "right"});
+	$('.info').popover({title: "<h6><strong>Information</strong></h6>", content: "<ul><li>Supported file format are CSV, XLSX and XLS.</li><li>Date should be in YYYY-MM-DD format.</ul>", html: true, placement: "right"});
 });
 
 // $('input[data-toggle="tab"]').on('shown.bs.tab', function(e){
