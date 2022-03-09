@@ -1,3 +1,4 @@
+from email import message
 from django.contrib.auth import authenticate
 from django.http import HttpResponseRedirect
 from .forms import LoginForm , RegistrationForm
@@ -24,13 +25,15 @@ from django.utils.http import urlsafe_base64_encode
 def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
+        print(form)
         if form.is_valid():
             form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!, Now you can Login')
-            return HttpResponseRedirect('/home/')
+            return redirect("/home/profile/")
+        else:
+            messages.error(request, 'Invalid Data')
     else:
         form = RegistrationForm()
+        print(form)
     return render(request, 'authentication/register.html', {'form': form})
 
 

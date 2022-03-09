@@ -89,7 +89,10 @@
       </a>
     </div>
     <div class="col-2">
-      <a href="/" data-bs-toggle="modal" data-bs-target="#exampleModal">
+      {% comment %} <a href="/" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <button class="btn m-1"><i class="fa fa-user-plus fa-lg"></i><span class='p-1'>Create Users</span></button>
+      </a> {% endcomment %}
+      <a href="{% url 'authentication:register' %}">
         <button class="btn m-1"><i class="fa fa-user-plus fa-lg"></i><span class='p-1'>Create Users</span></button>
       </a>
     </div> 
