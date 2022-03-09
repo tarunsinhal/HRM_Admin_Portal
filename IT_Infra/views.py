@@ -5,8 +5,8 @@ from rest_framework import serializers
 from rest_framework.response import Response
 from .serializers import it_inventory_serializer, it_allotment_serializer, it_inventory_edit_serializer, hardware_allotted_add_serializer, software_allotted_add_serializer
 from rest_framework.serializers import Serializer
-from .forms import ImageForm, it_inventory_add_form, it_inventory_edit_form, it_allotment_add_form, it_allotment_full_add_form, hardware_allotted_add_form, software_allotted_add_form, ImportForm, it_allotment_edit_form
-from .models import employee_id_sql, it_allotment, it_inventory, it_inventory_item, hardware_allotted_items, it_inventory_status, software_allotted_items, damage_images
+from .forms import ImageForm, it_inventory_add_form, it_inventory_edit_form, it_allotment_add_form, it_allotment_full_add_form, hardware_allotted_add_form, software_allotted_add_form, hardwareImportForm, softwareImportForm, it_allotment_edit_form
+from .models import employee_id_sql, it_allotment, it_inventory, it_inventory_item, hardware_allotted_items, it_inventory_status, software_allotted_items, damage_images, Employee
 from django.http import JsonResponse
 from django.db import connection
 from django.contrib.auth.decorators import login_required
@@ -15,9 +15,10 @@ import json
 from django.forms import modelformset_factory, inlineformset_factory
 from tablib import Dataset
 import pandas as pd
-from .resources import itInventoryResource
+from .resources import itHardwareInventoryResource, itSoftwareInventoryResource
 from django.core.files.storage import FileSystemStorage
 from django.forms.widgets import Select, TextInput
+from django.core.exceptions import RequestAborted, ValidationError
 import os
 
 
@@ -37,9 +38,11 @@ def it_inventory_view(request):
         qs = it_inventory.objects.all()
         serializer = it_inventory_serializer(qs, many=True)
     
-    importForm = ImportForm()
+    softwareImport = softwareImportForm()
+    hardwareImport = hardwareImportForm()
 
-    return render(request, 'IT_Infra/it_inventory.html', {"addInventoryForm": add_form, "editInventoryForm": edit_form, 'inventory_data': serializer.data, 'importForm': importForm})
+    #return render(request, 'IT_Infra/it_inventory.html', {"addInventoryForm": add_form, "editInventoryForm": edit_form, 'inventory_data': serializer.data, 'system_names': system_names, 'importForm': importForm})
+    return render(request, 'IT_Infra/it_inventory.html', {"addInventoryForm": add_form, "editInventoryForm": edit_form, 'inventory_data': serializer.data, 'hardwareImportForm': hardwareImport, 'softwareImportForm': softwareImport})
 
 
 def load_item_data(request):
@@ -85,35 +88,25 @@ def delete_inventory(request, pk):
         return Response({'error_data': 'This item can not be deleted as it might be allotted to someone!!!'}, status=400)
 
 
+@api_view(['POST'])
+def discard_inventory_item(request, pk):
+    item = it_inventory.objects.get(id=pk)
+    item.status = it_inventory_status.objects.get(status='Discarded')
+    item.save()
+    return Response({}, status=201)
+
+
 # @login_required(login_url='/auth/login')
 # def inventory_history(request):
 #     history = it_inventory.history.all().order_by('-history_date')
 #     return render(request, 'IT_Infra/inventory_history.html', {'it_inventory_history': history})
 
 
-def load_previous_inventory_history(request):
-    recent_id = request.GET.get('id')
-    history_id = request.GET.get('history_id')
-    res = list(it_inventory.history.filter(id=recent_id).order_by('-history_id').values())
-    a = 0
-    current_data = {}
-    for i in res:
-        if int(i['history_id']) == int(history_id):
-            current_data = i
-            a = res.index(i)
-            break
-    try:
-        data = {}
-        previous_data = res[a+1]
-        for i in current_data:
-            if i not in ('history_date', 'history_id', 'history_type'):
-                if current_data[i] != previous_data[i]:
-                    data[i] = {'current': current_data[i], 'previous': previous_data[i]}
-        if data:
-            return JsonResponse({'data': data})
-        return JsonResponse({'data': None})
-    except Exception as e:
-        return JsonResponse({'data': None})
+# view for version history module of recurring section
+@login_required(login_url='/auth/login')
+def deleted_inventory_history(request):
+    deleted_history = it_inventory.history.filter(history_type="-").all()
+    return render(request, 'IT_Infra/deleted_inventory_history.html', {'deleted_history': deleted_history})
 
 
 # view for each row version history module of it inventory section
@@ -150,8 +143,8 @@ def load_previous_inventory_history(request):
         return JsonResponse({'data': None})
 
 
-# import-export function for adhoc inventory
-class ImportadhocView(View):
+# import-export function for Hardware inventory
+class ImportHardwareInventoryView(View):
     context = {}
 
     def get(self,request, id):
@@ -165,24 +158,51 @@ class ImportadhocView(View):
         if form.is_valid():
             file = request.FILES['import_file']
             extension = file.name.split(".")[-1].lower()
-            resource = itInventoryResource()
+            resource = itHardwareInventoryResource()
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
 
-            if extension == 'csv':
-                data = data_set.load(file.read().decode('utf-8'), format=extension)
-            else:
-                return JsonResponse({},status=400)
-            result = resource.import_data(data_set, dry_run=True, collect_failed_rows=True, raise_errors=False,)
-            if result.has_validation_errors() or result.has_errors():
-                self.context['result'] = result
-                return JsonResponse({},status=400)
-            else:
-                result = resource.import_data(data_set, dry_run=False, raise_errors=False)
-                self.context['result'] = None
+            try:
+                result = resource.import_data(data, dry_run=False, collect_failed_rows=True, raise_errors=True,)
                 return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
         else:
             self.context['form'] = ImportForm()
-            return JsonResponse({},status=400)
+            return JsonResponse({"error":"Invalid file format."},status=400)
+
+
+# import-export function for Software inventory
+class ImportSoftwareInventoryView(View):
+    context = {}
+
+    def get(self,request, id):
+        form = ImportForm()
+        self.context['form'] =form
         return JsonResponse({}, status=201)
+
+    def post(self, request):
+        form = ImportForm(request.POST , request.FILES)
+        data_set = Dataset()
+        if form.is_valid():
+            file = request.FILES['import_file']
+            extension = file.name.split(".")[-1].lower()
+            resource = itSoftwareInventoryResource()
+            data = data_set.load(file.read().decode('utf-8'), format=extension)
+
+            try:
+                result = resource.import_data(data, dry_run=False, collect_failed_rows=True, raise_errors=True,)
+                return JsonResponse({}, status=201)
+            except ValidationError as e:
+                length = len(e.message_dict)
+                return JsonResponse({"error": e.message_dict, "length" : length},status=400)
+            except Exception as e22:
+                return JsonResponse({"error": "Check imported file & try again."},status=400)
+        else:
+            self.context['form'] = ImportForm()
+            return JsonResponse({"error":"Invalid file format."},status=400)
 
 
 cursor = connection.cursor()
@@ -198,14 +218,25 @@ def load_data(request):
 
 
 # function to fetch the distinct employee code from hrm DB and then further filtering if that employee id is already added.
+# def load_employee_names(request):
+#     cursor = connection.cursor()
+#     cursor.execute("SELECT * FROM (SELECT rid, full_name, employee_code FROM hrm.employee) AS ed WHERE ed.employee_code NOT IN (SELECt DISTINCT(employee_id) FROM admin_portal.it_infra_it_allotment)")
+#     row = cursor.fetchall()
+#     final_row = []
+#     for i in row:
+#         name = i[1] + '-' + '(' + i[2] + ')' 
+#         val = i[0]
+#         final_row.append((val, name))
+#     return render(request, 'IT_Infra/employee_code.html', {'data': final_row})
+
+
 def load_employee_names(request):
-    cursor = connection.cursor()
-    cursor.execute("SELECT * FROM (SELECT rid, full_name, employee_code FROM hrm.employee) AS ed WHERE ed.employee_code NOT IN (SELECt DISTINCT(employee_id) FROM admin_portal.it_infra_it_allotment)")
-    row = cursor.fetchall()
+    emp_code = [i['employee_id'] for i in list(it_allotment.objects.all().values('employee_id'))]
+    hrm_data = list(Employee.objects.using('hrm_db').exclude(employee_code__in=emp_code).values('rid', 'full_name', 'employee_code'))
     final_row = []
-    for i in row:
-        name = i[1] + '-' + '(' + i[2] + ')' 
-        val = i[0]
+    for i in hrm_data:
+        name = i['full_name'] + '-' + '(' + i['employee_code'] + ')' 
+        val = i['rid']
         final_row.append((val, name))
     return render(request, 'IT_Infra/employee_code.html', {'data': final_row})
 

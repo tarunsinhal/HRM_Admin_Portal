@@ -41,6 +41,11 @@ class ProductSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super(ProductSerializer, self).to_representation(instance)
         rep['product'] = instance.product.product_name
+        # try:
+        #     rep['type'] = instance.type.type_name
+        # except Exception as e:
+        #     print(e)
+        # print(rep)
         return rep
 
     # def validate(self, data):

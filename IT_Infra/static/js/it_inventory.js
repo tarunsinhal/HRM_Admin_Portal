@@ -59,55 +59,27 @@ $(document).ready(function () {
 			extend: 'csv',
 			text: 'Export',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4,]
+				columns: [0, 1, 2, 3, 4,5 ,6,7,8,9,10,11]
 			},
 		}
 		],
 		columnDefs: [
-			{ orderable: false, targets: 2 },
 			{ orderable: false, targets: 3 },
+			{ orderable: false, targets: 4 },
+			{ orderable: false, targets: 6 },
+			{ orderable: false, targets: 8 },
+			{ orderable: false, targets: 9 },
+			{ orderable: false, targets: 10 },
+			{ orderable: false, targets: 11 },
+			{ orderable: false, targets: 12 },
 		],
 		'pageLength': 8,
 		"bLengthChange": false,
-		"autoWidth": false,
-		// initComplete: function () {		
-		// 	$.fn.dataTable.ext.search.push(
-		// 		function (settings, data, dataIndex) {	
-		// 			debugger;	
-		// 			let activeTabId = $('.tablinks.active').attr('data-tab-id');
-		// 			let pur_min =$('#pur_min_'+activeTabId).val();
-		// 			let pur_max = $('#pur_max_'+activeTabId).val();
-		// 			let next_min =$('#next_min_'+activeTabId).val();
-		// 			let next_max = $('#next_max_'+activeTabId).val();
-					
-		// 			let value = $('input[type=radio][name=radiobtn_'+activeTabId+']:checked').val();
-
-		// 			pur_min = (pur_min != "")?new Date(pur_min):null;
-		// 			pur_max = (pur_max != "")?new Date(pur_max):null;
-		// 			next_min = (next_min != "")?new Date(next_min):null;
-		// 			next_max = (next_max != "")?new Date(next_max):null;
-
-		// 			let purchaseDate = new Date(data[8]);
-		// 			let nextDate = new Date(data[9]);
-		// 			let freq = data[0];
-		// 			let recordType  = data[11]
-
-		// 			if(activeTabId == recordType){
-		// 				if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null ) && ((value == freq) || (value == "All"))) 
-		// 					return true;
-		// 				if (((pur_min == null && purchaseDate <= pur_max) && (next_min == null && nextDate <= next_max )) && ((value == freq) || (value == "All")))
-		// 					return true;
-		// 				if (((pur_max == null && ( pur_min != null && purchaseDate >= pur_min)) || (next_max == null && (next_min != null && nextDate >= next_min ))) && ((value == freq) || (value == "All")))
-		// 					return true;
-		// 				if (((purchaseDate <= pur_max && purchaseDate >= pur_min) ||  (nextDate <= next_max && nextDate >= next_min)) && ((value == freq) || (value == "All")))
-		// 					return true;
-		// 			}else{
-		// 				return true;
-		// 			}	
-		// 		}		
-		// 	)	
-		// }																													
+		"autoWidth": false,																				
 	});	
+
+	
+
 });
 
 
@@ -235,6 +207,12 @@ function editfunction(obj, obj2) {
 //...called when delete button is clicked...//
 function deletefunction(obj) {
 	document.getElementById('deleteForm').action = obj.id;
+}
+
+
+//...called when discard button is clicked...//
+function discardfunction(obj) {
+	document.getElementById('discardForm').action = obj.id;
 }
 
 
@@ -507,26 +485,6 @@ function handleDeleteInventory(event) {
 					
 				}
 			}
-			// $('.chk', myForm).each(function () {
-			// 	debugger
-			// 	var ipVal = $(this).attr('name');
-
-			// 	var $parentTag = $(this).parent();
-			// 	if (Inval[ipVal]) {
-			// 		if (!$parentTag[0].classList.contains("error")) {
-			// 			$parentTag.addClass('error').append('<span class="error" style="color: red; font-size: 13px">' + Inval[ipVal] + '</span>')
-			// 		}
-			// 	}
-			// 	else {
-			// 		if ($(this).nextAll().length == 2) {
-			// 			$parentTag.removeClass("error");
-			// 			$(this).nextAll()[1].remove();
-			// 		} else {
-			// 			$parentTag.removeClass("error");
-			// 			$(this).next().remove();
-			// 		}
-			// 	}
-			// });	
 		}
 	}
 	xhr.send(myFormData)
@@ -536,20 +494,153 @@ const deleteForm = document.getElementById('deleteForm')
 deleteForm.addEventListener("submit", handleDeleteInventory)
 
 
-// $("#addBag").on('click', function(){
-// 	$("#id_item").val("Bag");
-// 	$("#id_item").prop({"readonly": true})
-// })
+//...function called when delete form is submitted...//
+function handleDiscardInventoryItem(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
 
-// $("#addMouse").on('click', function(){
-// 	$("#id_item").val("Mouse");
-// 	$("#id_item").prop({"readonly": true})
-// })
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
 
-// $("#addLaptop").on('click', function(){
-// 	$("#id_item").val("Laptop");
-// 	$("#id_item").prop({"readonly": true})
-// })
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else if (xhr.status === 400) {
+			debugger
+			var Inval = xhr.response
+			if (Inval['non_field_errors']) {
+				alert(Inval['non_field_errors']);
+			}
+			else{
+				$parentTag = $("#deleteModalbody").parent()
+				if ($parentTag[0].classList.contains("error")) {
+					$parentTag.removeClass("error");
+					$('.err').remove();
+				}
+			  
+				if (!$parentTag[0].classList.contains("error")) {
+					$parentTag.addClass('error').prepend('<span class="err" style="color: red; font-size=12px;">'+ Inval['error_data'] +'</span>');
+					
+				}
+			}
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const discardForm = document.getElementById('discardForm')
+discardForm.addEventListener("submit", handleDiscardInventoryItem)
+
+
+//...function called when import form is submitted...//
+function handleImportHardwareInventory(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else {
+			debugger;
+			const data = xhr.response['error']
+			data_len = xhr.response['length'] 
+
+			var $parentTag = $('#id_import_file').parent();
+
+			if ($parentTag[0].classList.contains("error")) {
+				$parentTag.removeClass("error");
+				$('.err').remove();
+			}
+          
+			if (!$parentTag[0].classList.contains("error")) {
+				if (typeof(data) == "object") {
+					for (i=0; i < data_len; i++) {
+						$parentTag.addClass('error').prepend('<span class="err" style="color: red; font-size=12px;">'+ Object.keys(data)[i] +" : "+ Object.values(data)[i] +'</span><br>');
+					}
+				}
+				else {
+					$parentTag.addClass('error').prepend('<span class="err" style="color: red; font-size=12px;">'+ data +'</span>');
+				}		
+			}					
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const importHardwareInventoryForm = document.getElementById('importHardwareInventoryForm')
+importHardwareInventoryForm.addEventListener("submit", handleImportHardwareInventory)
+
+
+//...function called when Software import form is submitted...//
+function handleImportSoftwareInventory(event) {
+	event.preventDefault()
+	const myForm = event.target
+	const myFormData = new FormData(myForm)
+	const url = myForm.getAttribute("action")
+	const method = myForm.getAttribute("method")
+	const xhr = new XMLHttpRequest()
+	xhr.open(method, url)
+
+	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
+	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
+
+	const responseType = "json"
+	xhr.responseType = responseType
+
+	xhr.onload = function () {
+		if (xhr.status === 201) {
+			window.location.reload();
+		}
+		else {
+			debugger;
+			const data = xhr.response['error']
+			data_len = xhr.response['length'] 
+
+			var $parentTag = $('#id_import_file').parent();
+
+			if ($parentTag[0].classList.contains("error")) {
+				$parentTag.removeClass("error");
+				$('.err').remove();
+			}
+          
+			if (!$parentTag[0].classList.contains("error")) {
+				if (typeof(data) == "object") {
+					for (i=0; i < data_len; i++) {
+						$parentTag.addClass('error').prepend('<span class="err" style="color: red; font-size=12px;">'+ Object.keys(data)[i] +" : "+ Object.values(data)[i] +'</span><br>');
+					}
+				}
+				else {
+					$parentTag.addClass('error').prepend('<span class="err" style="color: red; font-size=12px;">'+ data +'</span>');
+				}		
+			}					
+		}
+	}
+	xhr.send(myFormData)
+}
+
+const importSoftwareInventoryForm = document.getElementById('importSoftwareInventoryForm')
+importSoftwareInventoryForm.addEventListener("submit", handleImportSoftwareInventory)
 
 
 //...loading page again on closing the add new product form...//

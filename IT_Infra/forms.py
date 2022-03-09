@@ -13,7 +13,11 @@ item_choices = [('Laptop', 'Laptop'), ('Mouse', 'Mouse'), ('Bag', 'Bag')]
 
 
 # import form
-class ImportForm(forms.Form):
+class hardwareImportForm(forms.Form):
+    import_file = forms.FileField(allow_empty_file=False,validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls', 'xlsx'])], label="")
+
+
+class softwareImportForm(forms.Form):
     import_file = forms.FileField(allow_empty_file=False,validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls', 'xlsx'])], label="")
 
 
@@ -51,7 +55,7 @@ class it_inventory_edit_form(it_inventory_add_form, ModelForm):
             'validity_end_date': DateInput(attrs={'type':'date', 'class':"chk form-control"}),
             'remarks': Textarea(attrs={'type':'textarea', 'class':"chk form-control"}),
             'purchase_type': TextInput(attrs={'type': 'text', 'class':"chk form-control"}),
-            'status': Select(attrs={'type':'text', 'class':"chk required form-select edit_status"})
+            'status': Select(attrs={'type':'text', 'style':'pointer-events:None', 'class':"chk required form-select edit_status"})
         }
 
     def __init__(self, *args, **kwargs):

@@ -72,7 +72,7 @@ class it_inventory(models.Model):
 
     def __str__(self):
         return str(self.name)
-    
+
 
 class it_allotment(models.Model):
     employee_id = models.CharField(max_length=50)
@@ -125,6 +125,31 @@ class damage_images(models.Model):
     images_for_damage = models.ImageField(upload_to=get_image_filename, null=True, blank=True)
 
 
+class Employee(models.Model):
+    rid = models.IntegerField(primary_key=True)
+    employee_code = models.CharField(max_length=50)
+    personal_email = models.EmailField(max_length=100, null=True, blank=True)
+    full_name = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='employee_images', null=True, blank=True)
+    dob_doc = models.DateField(null=True, blank=True)
+    dob_actual = models.DateField(null=True, blank=True)
+    blood_group = models.CharField(max_length=50, null=True, blank=True)
+    mobile = models.CharField(max_length=50, null=True, blank=True)
+    alternate_mobile = models.CharField(max_length=50, null=True, blank=True)
+    permanent_address = models.CharField(max_length=500, null=True, blank=True)
+    current_address = models.CharField(max_length=500, null=True, blank=True)
+    aadhar_number = models.CharField(max_length=50, null=True, blank=True)
+    pan_number = models.CharField(max_length=50, null=True, blank=True)
+    resignation_date = models.DateField(null=True, blank=True)
+    is_active = models.BooleanField(default=True)
+    is_deleted = models.BooleanField(default=False)
+    created_on = models.DateTimeField(auto_now_add=True)
+    modified_on = models.DateTimeField(auto_now=True)
+    created_by = models.IntegerField()
+    modified_by = models.IntegerField()
+    gender = models.CharField(max_length=50)
+    is_married = models.CharField(max_length=50)
+    marrige_date = models.DateTimeField()
 
-
-    
+    class Meta:
+        db_table = "employee"

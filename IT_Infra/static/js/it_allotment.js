@@ -125,7 +125,7 @@ $(document).ready(function () {
 			extend: 'csv',
 			text: 'Export',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7]
 			},
 		}
 		],

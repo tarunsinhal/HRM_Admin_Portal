@@ -103,8 +103,7 @@ def get_noitications(request):
                 if (egmtexit[i]['id'], 3) not in item_ids:
                     notification_json.append(notifications(product=(egmtexit[i]['details__detail_name'] +' of '+ egmtexit[i]['employee_name']), item_id=egmtexit[i]['id'], notification_date=(date.today()),
                     is_visited=False, notification_type=3))
-
-                    
+  
     except:
         pass
     
@@ -159,7 +158,6 @@ def profile(request):
     return render(request, 'home/manage_users.html', {'all_users': all_users,'updateform':updateform})
 
 
-
 def profile_update(request, pk):
     user = User.objects.get(pk=pk)
     if request.method == "POST":
@@ -171,7 +169,6 @@ def profile_update(request, pk):
         form = UpdateUserForm(instance=user)
     return render(request, 'home/profile_update.html', {'form': form})
     
-
 
 @api_view(['GET'])
 def delete_user(request, pk):
@@ -195,8 +192,6 @@ def permissions(request,pk):
         return JsonResponse({'all_groups': serializers.serialize('json', all_groups),
                                 'assigned_groups': serializers.serialize('json', assigned_groups)})
     
-
-
 
 def access_denied(request):
     return render(request, 'home/access_denied.html')

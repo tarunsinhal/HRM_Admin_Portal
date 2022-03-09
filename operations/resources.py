@@ -1,6 +1,5 @@
 from collections import defaultdict
 from multiprocessing.sharedctypes import Value
-
 from django.core.exceptions import ValidationError
 from import_export import widgets,fields,resources
 from .models import Item_types, Product_type, recurringItems, t_shirt_inventory, Adhoc_types, AdhocItems, vendorContactList, repairServices, officeEvents, Detail_types, engagementJoining, officeEvents 

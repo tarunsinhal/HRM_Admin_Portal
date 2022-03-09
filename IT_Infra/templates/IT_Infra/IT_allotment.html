@@ -665,7 +665,7 @@
 
     <a type="button" href="#">
         <button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;" class="btn">
-        <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">Version History</span>
+        <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">History</span>
         </button>
     </a>
 
@@ -738,6 +738,7 @@
                                                 <hr style="color: #FFF; padding: 0px; margin: 0px;">
                                                 <li><a id='delete/{{ rows.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal"><span>Delete</span></a>
                                                 </li>
+                                                
                                                 <hr style="color: #FFF; padding: 0px; margin: 0px;">
                                                 <li><a id='history/{{ rows.id }}' onclick=historyfunction(this,{{ rows.id }}) data-bs-toggle="modal" data-bs-target="#historyModal"><span>History</span></a>
                                                 </li>
