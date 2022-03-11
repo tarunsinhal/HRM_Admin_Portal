@@ -1,5 +1,8 @@
-{% extends 'home/base.html' %} {% load static %} {% block title %} All
-Suggestion {% endblock title %} {% block style %}
+{% extends 'home/base.html' %} 
+{% load static %} 
+{% block title %}
+ All Suggestion {% endblock title %}
+  {% block style %}
 <link
   rel="stylesheet"
   href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans"
@@ -10,7 +13,12 @@ Suggestion {% endblock title %} {% block style %}
 />
 <link href="{% static  'suggestions/css/compiled-4.19.2.min.css' %}" rel="stylesheet" />
 <link href="{% static 'suggestions/css/notifications.css' %}" rel="stylesheet" />
-{% endblock style %} {% block content %}
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+{% endblock style %} 
+
+
+{% block content %}
 
 <div class="container-lg">
   <div>
@@ -225,7 +233,7 @@ Suggestion {% endblock title %} {% block style %}
         {% if not all_suggestions %}
         <div><p>You have not received any suggestions yet...</p></div>
         {% else %}
-        <table class="table table-bordered">
+        <table class="table table-bordered" id="tableDemo2">
           <thead>
             <tr style="background-color: #f0f0f0" class="text-center">
               <th style="font-weight: bold" scope="col">No.</th>
@@ -288,6 +296,8 @@ Suggestion {% endblock title %} {% block style %}
 
 {% endblock content %} {% block addextra %}
 
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 <script src="{% static 'suggestions/js/main2.js' %}"></script>
 
 {% endblock addextra %}

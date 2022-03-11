@@ -13,6 +13,25 @@
 />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+<style>
+  .custombtn{
+    background-color: #5f4266;
+    color: white;
+    padding: 10px;
+  }
+  .custombtn:hover{
+    background-color: #5f4266;
+    color: white;
+    padding: 10px;
+  }
+  .lab{
+    font-weight: bold;
+  }
+  .form-control{
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+</style>
 
 
 {% endblock style %} 
@@ -43,18 +62,17 @@
 
         <div class="modal-body">
           {% for field in form %} 
-          {{field.errors}} {{field.label}} {{field}}
+              {% if field.name == 'password1' or field.name == 'password2' %}
+              {% else %}
+                <span class='lab'>
+                  {{ field.label_tag }}
+                </span>
+                {{field}}
+              {% endif %}
            {% endfor %}
         </div>
         <div class="modal-footer">
-          <button
-            type="button"
-            class="btn btn-secondary"
-            data-bs-dismiss="modal"
-          >
-            Cancel
-          </button>
-          <button type="submit" class="btn btn-primary">Create</button>
+          <button type="submit" class="btn custombtn">Create</button>
         </div>
       </form>
     </div>
@@ -89,10 +107,7 @@
       </a>
     </div>
     <div class="col-2">
-      {% comment %} <a href="/" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        <button class="btn m-1"><i class="fa fa-user-plus fa-lg"></i><span class='p-1'>Create Users</span></button>
-      </a> {% endcomment %}
-      <a href="{% url 'authentication:register' %}">
+       <a href="/" data-bs-toggle="modal" data-bs-target="#exampleModal">
         <button class="btn m-1"><i class="fa fa-user-plus fa-lg"></i><span class='p-1'>Create Users</span></button>
       </a>
     </div> 

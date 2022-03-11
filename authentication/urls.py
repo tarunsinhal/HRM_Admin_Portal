@@ -5,7 +5,6 @@ from django.urls import reverse_lazy
 
 app_name = 'authentication'
 urlpatterns = [
-    path('register/', views.register, name='register'),
     path('login/', views.user_login, name='user_login'),
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),
     path('password-reset/',views.password_reset_request,name='password_reset'),

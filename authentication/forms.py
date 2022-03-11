@@ -6,16 +6,21 @@ from django.contrib.auth.forms import PasswordResetForm
 
 
 class RegistrationForm(UserCreationForm):
+    password1 = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}),label_suffix='',required=False)
+    password2 = forms.CharField(label='Password Confirmation',label_suffix="", widget=forms.PasswordInput(attrs={'class': 'form-control'}),required=False)
+    email = forms.EmailField(label='Email', widget=forms.EmailInput(attrs={'class': 'form-control'}),label_suffix='')
+    username = forms.CharField(label='Username', widget=forms.TextInput(attrs={'class': 'form-control'}),label_suffix='')
     class Meta:
         model = User
         fields = ('username', 'email', 'password1', 'password2')
-        widgets = {
-            'username': forms.TextInput(),
-            'email': forms.EmailInput(),
-            'password1': forms.PasswordInput(),
-            'password2': forms.PasswordInput(),
-        }
         
+        def save(self, commit=True):
+            user = super(RegistrationForm, self).save(commit=False)
+            default_password = User.objects.make_random_password()
+            user.set_password(default_password)
+            if commit:
+                user.save()
+            return user
 
 
 # login form for user login

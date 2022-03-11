@@ -22,19 +22,6 @@ from django.utils.http import urlsafe_base64_encode
 # Create your views here.
 
 
-def register(request):
-    if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        print(form)
-        if form.is_valid():
-            form.save()
-            return redirect("/home/profile/")
-        else:
-            messages.error(request, 'Invalid Data')
-    else:
-        form = RegistrationForm()
-        print(form)
-    return render(request, 'authentication/register.html', {'form': form})
 
 
 # function for authenicating the user login and then redirecting it to the homepage
@@ -98,7 +85,7 @@ def password_reset_request(request):
                     }
                     email = render_to_string(email_template_name, c)
                     try:
-                        send_mail(subject, email, settings.EMAIL_HOST_USER, [user.email])
+                        send_mail(subject, email, settings.EMAIL_HOST_USER, [user.email],fail_silently=True)
                     except BadHeaderError:
                         return HttpResponse('Invalid header found.')
                     return redirect("/auth/password-reset/done/")

@@ -111,3 +111,32 @@ function versionhistory(id) {
     })
     .catch((error) => console.log(error));
 }
+
+// write a jquery function
+(function ($) {
+  "use strict";
+
+
+
+
+    
+    $(document).ready( function () {
+      $('#tableDemo').DataTable({
+        "order": [[ 0, "asc" ]]
+
+      });
+  } );
+
+  
+  $(document).ready( function () {
+    $('#tableDemo2').DataTable({
+      "order": [[ 0, "asc" ]]
+
+    });
+} );
+  
+  
+
+  
+
+})(jQuery);

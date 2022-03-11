@@ -14,6 +14,7 @@
 <link href="{% static  'suggestions/css/compiled-4.19.2.min.css' %}" rel="stylesheet" />
 <link href="{% static 'suggestions/css/notifications.css' %}" rel="stylesheet" />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
 
 
 
@@ -163,21 +164,21 @@
         {% if not all_suggestions %}
         <div><p>You have not received any suggestions yet...</p></div>        
         {% else %}
-        <table class="table table-bordered">
+        <table class="table table-bordered" id='tableDemo'>
           <thead style="background-color: #f0f0f0;" class="text-center">
-              <th style="font-weight: bold;">No.</th>
-              <th style="font-weight: bold;">Date</th>
-              <th style="font-weight: bold;">Time</th>
-              <th style="font-weight: bold;">Name</th>
-              <th style="font-weight: bold;">Category</th>
-              <th style="font-weight: bold;">Suggestion</th>
-              <th style="font-weight: bold;">Status</th>
-              <th style="font-weight: bold;">Action</th>
+              <th style="font-weight: bold;padding:12px;">No.</th>
+              <th style="font-weight: bold;padding:12px;">Date</th>
+              <th style="font-weight: bold;padding:12px;">Time</th>
+              <th style="font-weight: bold;padding:12px;">Name</th>
+              <th style="font-weight: bold;padding:12px;">Category</th>
+              <th style="font-weight: bold;padding:12px;">Suggestion</th>
+              <th style="font-weight: bold;padding:12px;">Status</th>
+              <th style="font-weight: bold;padding:12px;">Action</th>
           </thead>
           <tbody>
             {% for suggestion in all_suggestions %}
             <tr class="text-center">
-              <td >{{ forloop.counter }}.</td>
+              <td style={"padding":"2px 5px"}>{{ forloop.counter }}.</td>
               <td >{{ suggestion.created_at|date:'d-m-Y' }}</td>
               <td >{{ suggestion.created_at|time:"g:i A" }}</td>
               <td >{{ suggestion.name|default:"Anonymous"|capfirst }}</td>
@@ -205,7 +206,8 @@
 {% endblock content %}
 
 {% block addextra %}
-
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
     <script src="{% static 'suggestions/js/main2.js' %}"></script>
 
 {% endblock addextra %}

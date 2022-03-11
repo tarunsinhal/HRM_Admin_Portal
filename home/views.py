@@ -15,10 +15,15 @@ from django.contrib import messages
 from django.contrib.auth.models import Group
 from django.core import serializers
 import json
-from django.urls import resolve
-from django.contrib.auth.models import Permission
 import webbrowser
 from win10toast_click import ToastNotifier
+from django.utils.http import urlsafe_base64_encode
+from django.contrib.auth.tokens import default_token_generator
+from django.template.loader import render_to_string
+from django.utils.encoding import force_bytes
+from django.core.mail import BadHeaderError, send_mail
+from django.conf import settings
+
 
 def open_notification():
     webbrowser.open('http://localhost:8000/home/notifications/')
@@ -39,16 +44,32 @@ def desktop_notification(request):
 @login_required(login_url='/auth/login')
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def home_view(request):
-    app_name = request.resolver_match.app_name
     if request.method == 'POST':
         fm = RegistrationForm(request.POST)
+        # email of the user 
         if fm.is_valid():
-            fm.save()
-            messages.success(request, 'User added successfully')
-            return render(request, 'home/dashboard.html')
+            user = fm.save()
+            subject = "Password Reset Request"
+            
+            email_template_name = 'authentication/password_reset_subject.txt'
+            c = {
+                "email": user.email,
+                'domain': request.headers['host'],
+                'site_name': 'admin_portal',
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "user": user,
+                'token': default_token_generator.make_token(user),
+                'protocol': 'http',
+            }
+            email = render_to_string(email_template_name, c)
+            try:
+                send_mail(subject, email, settings.EMAIL_HOST_USER, [user.email],fail_silently=True)
+                messages.success(request, 'User added successfully and Mail sent for changing password')
+            except :
+                messages.error(request, 'Email not sent!')
+
         else:
             messages.error(request,'User not added')
-            return render(request, 'home/dashboard.html')
     form = RegistrationForm()
     return render(request, 'home/dashboard.html', {'form': form})
 
