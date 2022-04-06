@@ -1,3 +1,6 @@
+"""
+This file contains the models for the suggestions app.
+"""
 from django.db import models
 from simple_history.models import HistoricalRecords
 
@@ -5,20 +8,29 @@ from simple_history.models import HistoricalRecords
 
 
 class SuggestionCategory(models.Model):
+    """
+    This class is used to create a model for the suggestion category.
+    """
     category = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.category
+        return str(self.category)
 
 
 class SuggestionStatus(models.Model):
+    """
+    This class is used to create a model for the suggestion status.
+    """
     status = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.status
+        return str(self.status)
 
 
 class SuggestionModel(models.Model):
+    """
+    This class is used to create a model for the suggestion.
+    """
     name = models.CharField(max_length=120, blank=True, null=True)
     suggestion = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

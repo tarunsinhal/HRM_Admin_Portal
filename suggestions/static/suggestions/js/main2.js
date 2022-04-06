@@ -6,7 +6,6 @@ function formedit(id) {
       const data1 = JSON.parse(data.suggestion)[0]["fields"];
       const data2 = JSON.parse(data.change_suggestion);
       const data3 = JSON.parse(data.choices);
-      console.log(data1, data2, data3);
       document.getElementById("select" + id).innerHTML = "";
 
       for (let i = 0; i < data3.length; i++) {
@@ -41,10 +40,8 @@ function formedit(id) {
 
 function formupdate(id) {
   id = id.slice(2);
-  console.log(id);
   let selectOption = document.querySelector("#select" + id).value;
   let commentData = document.getElementById("meta2-comment-" + id).value;
-
   let csrftoken = document.querySelector('[name="csrfmiddlewaretoken"]').value;
 
   fetch("/suggestions/edit/" + id + "/", {
@@ -83,10 +80,7 @@ function versionhistory(id) {
       for (let i = 0; i < users.length; i++) {
         user_dict[users[i]["pk"]] = users[i]["fields"]["username"];
       }
-      console.log(user_dict);
-
       data = JSON.parse(data.history);
-      console.log(data);
       let tablebody = document.getElementById("tablerows-" + id);
       tablebody.innerHTML = "";
       for (let i = 0; i < data.length; i++) {
@@ -117,26 +111,45 @@ function versionhistory(id) {
   "use strict";
 
 
-
-
-    
-    $(document).ready( function () {
-      $('#tableDemo').DataTable({
-        "order": [[ 0, "asc" ]]
-
-      });
-  } );
-
   
   $(document).ready( function () {
-    $('#tableDemo2').DataTable({
+    $('#table-IT').DataTable({
+      "order": [[ 0, "asc" ]]
+
+    });
+} );
+  
+  $(document).ready( function () {
+    $('#table-Other').DataTable({
+      "order": [[ 0, "asc" ]]
+
+    });
+} );
+  
+  $(document).ready( function () {
+    $('#table-Administration').DataTable({
+      "order": [[ 0, "asc" ]]
+
+    });
+} );
+  
+  $(document).ready( function () {
+    $('#table-Management').DataTable({
       "order": [[ 0, "asc" ]]
 
     });
 } );
   
   
+// change the border when user clicks on the nav link and remove the border from the other nav links
+  $(".nav-link").click(function () {
+    $(".nav-link").removeClass("active");
+    $(".nav-link").removeClass("add-border");
+    $(this).addClass("add-border");
+  });
 
   
 
 })(jQuery);
+
+

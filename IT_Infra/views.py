@@ -20,6 +20,7 @@ from django.core.files.storage import FileSystemStorage
 from django.forms.widgets import Select, TextInput
 from django.core.exceptions import RequestAborted, ValidationError
 import os
+from operations.forms import ImportForm
 
 
 @login_required(login_url='/auth/login')

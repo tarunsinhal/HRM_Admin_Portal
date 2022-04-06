@@ -1,10 +1,11 @@
-from email import message
+"""
+This file contains the views for the authentication app.
+"""
 from django.contrib.auth import authenticate
+from django.forms import ValidationError
 from django.http import HttpResponseRedirect
-from .forms import LoginForm , RegistrationForm
 from django.contrib.auth import login
 from django.contrib.auth.forms import PasswordResetForm
-from django.core.exceptions import ValidationError
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.decorators.cache import cache_control
@@ -14,11 +15,10 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.template.loader import render_to_string
 from django.conf import settings
-from django.contrib.auth.forms import PasswordResetForm
 from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from django.utils.http import urlsafe_base64_encode
+from .forms import LoginForm
 # Create your views here.
 
 
@@ -27,6 +27,9 @@ from django.utils.http import urlsafe_base64_encode
 # function for authenicating the user login and then redirecting it to the homepage
 @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_login(request):
+    """
+    This function is used to authenticate the user login.
+    """
     form = LoginForm()
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -34,36 +37,22 @@ def user_login(request):
             try:
                 user = User.objects.get(email=form.cleaned_data['email'])
                 user = authenticate(request, username=user, password=form.cleaned_data['password'])
-                if user.is_authenticated:
+                if user is not None and  user.is_authenticated: # pylint: disable=no-else-return
                     login(request, user)
                     return HttpResponseRedirect('/home')
                 else:
                     messages.error(request, 'Invalid email or password!')
                     return render(request, 'authentication/login.html', {'form': form})
-            except:
+            except ValidationError:
                 messages.error(request, 'Invalid email or password!')
                 return render(request, 'authentication/login.html', {'form': form})
-            
     return render(request, 'authentication/login.html', {'form': form})
 
 
-class EmailValidationForm(PasswordResetForm):
-    # send error message if email does not exist in the database
-    def clean_email(self):
-        error_messages = {
-        'not_registered': 'Email ID is not Registered',
-        }
-    
-        email = self.cleaned_data['email']
-        print(email)
-        if not User.objects.filter(email__iexact=email, is_active=True).exists():
-            messages.error(self.request, error_messages['not_registered'])
-            raise ValidationError(error_messages['not_registered'], code='not_registered')
-        return email
-
-
-
 def password_reset_request(request):
+    """
+    This function is used to reset the password.
+    """
     if request.method == 'POST':
         domain = request.headers['Host']
         password_reset_form = PasswordResetForm(request.POST)
@@ -74,7 +63,7 @@ def password_reset_request(request):
                 for user in associated_user:
                     subject = "Password Reset Request"
                     email_template_name = 'authentication/password_reset_subject.txt'
-                    c = {
+                    email_conf = {
                         "email": user.email,
                         'domain': domain,
                         'site_name': 'admin_portal',
@@ -83,9 +72,10 @@ def password_reset_request(request):
                         'token': default_token_generator.make_token(user),
                         'protocol': 'http',
                     }
-                    email = render_to_string(email_template_name, c)
+                    email = render_to_string(email_template_name, email_conf)
                     try:
-                        send_mail(subject, email, settings.EMAIL_HOST_USER, [user.email],fail_silently=True)
+                        send_mail(subject, email, settings.EMAIL_HOST_USER,
+                                 [user.email],fail_silently=True)
                     except BadHeaderError:
                         return HttpResponse('Invalid header found.')
                     return redirect("/auth/password-reset/done/")

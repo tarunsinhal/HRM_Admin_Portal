@@ -1,3 +1,7 @@
+"""
+This file contains the forms for the suggestions app.
+"""
+
 # create  a form for suggestion
 
 from django import forms
@@ -5,7 +9,13 @@ from suggestions.models import SuggestionModel
 
 
 class SuggestionForm(forms.ModelForm):
-    class Meta:
+    """
+    This class is used to create a form for the suggestion.
+    """
+    class Meta: # pylint: disable=too-few-public-methods
+        """
+        This class is used to create a meta class for the form.
+        """
         model = SuggestionModel
         fields = ["name", "suggestion", "suggestion_category", "suggestion_status"]
         widgets = {

@@ -1,6 +1,8 @@
+"""
+This file contains the admin configuration for the suggestions app.
+"""
 from django.contrib import admin
 from suggestions.models import SuggestionModel, SuggestionCategory, SuggestionStatus
-from simple_history.admin import SimpleHistoryAdmin
 
 
 # Register your models here.
@@ -8,6 +10,9 @@ from simple_history.admin import SimpleHistoryAdmin
 
 @admin.register(SuggestionModel)
 class SuggestionAdmin(admin.ModelAdmin):
+    """
+    This class is used to register the SuggestionModel in the admin panel.
+    """
     list_display = (
         "id",
         "name",
@@ -22,6 +27,9 @@ class SuggestionAdmin(admin.ModelAdmin):
 
 @admin.register(SuggestionCategory)
 class SuggestionCategoryAdmin(admin.ModelAdmin):
+    """
+    This class is used to register the SuggestionCategory in the admin panel.
+    """
     list_display = (
         "id",
         "category",
@@ -30,6 +38,9 @@ class SuggestionCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(SuggestionStatus)
 class SuggestionStatusAdmin(admin.ModelAdmin):
+    """
+    This class is used to register the SuggestionStatus in the admin panel.
+    """
     list_display = (
         "id",
         "status",

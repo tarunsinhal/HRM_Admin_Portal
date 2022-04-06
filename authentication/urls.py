@@ -1,9 +1,12 @@
+"""
+This file contains the urls for the authentication app.
+"""
 from django.urls import path
-from . import views
 from django.contrib.auth import views as auth_views
 from django.urls import reverse_lazy
+from . import views
 
-app_name = 'authentication'
+app_name = 'authentication' # pylint: disable=invalid-name
 urlpatterns = [
     path('login/', views.user_login, name='user_login'),
     path('logout/', auth_views.LogoutView.as_view(), name="logout"),

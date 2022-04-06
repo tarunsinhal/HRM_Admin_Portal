@@ -20,19 +20,6 @@
   color: black;
 }
 
-td span {
-  cursor: pointer;
-  color:grey
-}
-
-td span:nth-child(2){
-  color: grey;
-}
-
-td a:nth-child(3){
-  color: grey;
-}
-
 .switch {
   position: relative;
   display: inline-block;
@@ -221,32 +208,63 @@ input:checked + .slider:before {
             {% if not all_users %}
             <div><p>You have no users yet...</p></div>        
             {% else %}
-            <table class="table table-bordered">
-              <thead style="background-color: #f0f0f0;" class="text-center">
-                  <th style="font-weight: bold;">No.</th>
-                  <th style="font-weight: bold;">Name</th>
-                  <th style="font-weight: bold;">Email</th>
-                    <th style="font-weight: bold;">Action</th>
-              </thead>
-              <tbody>
-                {% for user in all_users %}
-                <tr class="text-center">
-                  <td >{{ forloop.counter }}.</td>
-                    <td >{{ user.username | title }}</td>
-                    <td >{{ user.email }}</td>
-                    <td>
-                      <span  title="View User" data-toggle="tooltip"  data-bs-toggle="modal" data-bs-target="#user-{{user.id}}"  ><i class="material-icons" >&#xE8F4;</i></span>
-                      <span   title="Delete User" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#delete-user-{{id}}" ><i class="material-icons">&#xE872;</i></span>
-                      <a href="{% url 'home:user_update' user.id %}" ><i class="material-icons" >&#xE254;</i></a>
-                      <span onclick="fetchPermissions(this.id)" id={{user.id}} ><i class="material-icons" >&#xef3d;</i></span>
-                    </td>
-                  
-                </tr>
-                {% endfor %}            
-              </tbody>
-            </table>
+            <div class="row">
+              <div class="col-12">
+                <h4 class="pl-5 fw-bold">Admin Users:</h4>
+              </div>
+            </div>
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+              
+            {% for user in all_users %}
+            {% if user.is_superuser %}
+                <div class="col">
+                <div class="card shadow p-2 bg-white rounded">
+                  <div class="card-body p-0">
+                    <img src="{% static 'home/img/user.svg' %}" class="card-img-top" alt="User">
+                    <h4 class="card-title">{{ user.username|title }}</h4>
+                    <p class="text-center">
+                      <span  title="View User" data-toggle="tooltip"  data-bs-toggle="modal" data-bs-target="#user-{{user.id}}"  ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE8F4;</i></span>
+                      <span   title="Delete User" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#delete-user-{{id}}" ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE872;</i></span>
+                      <a href="{% url 'home:user_update' user.id %}" ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE254;</i></a>
+                      <span onclick="fetchPermissions(this.id)" id="{{user.id}}" > <i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;"  >&#xef3d;</i></span>
+                    </p>
+                  </div>
+                </div>
+                </div>
+            {% endif %}
+            {% endfor %}
+            </div>
+            <br>
+            <div class="row">
+              <div class="col-12">
+                <h4 class="pl-5 fw-bold">Users:</h4>
+              </div>
+            </div>
+            <div class="row row-cols-1 row-cols-md-4 g-4">
+
+            {% for user in all_users %}
+            {% if not user.is_superuser %}
+            <div class="col">
+
+              <div class="card shadow p-2 bg-white rounded">
+                <div class="card-body p-0">
+                  <img src="{% static 'home/img/user.svg' %}" class="card-img-top" alt="User">
+                  <h4 class="card-title">{{ user.username|title }}</h4>
+                  <p class="text-center">
+                    <span  title="View User" data-toggle="tooltip"  data-bs-toggle="modal" data-bs-target="#user-{{user.id}}"  ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE8F4;</i></span>
+                    <span   title="Delete User" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#delete-user-{{id}}" ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE872;</i></span>
+                    <a href="{% url 'home:user_update' user.id %}" ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE254;</i></a>
+                    <span onclick="fetchPermissions(this.id)" id="{{user.id}}" > <i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;"  >&#xef3d;</i></span>
+                  </p>
+                </div>
+              </div>
+              </div>
+              {% endif %}
+              {% endfor %}              
+            </div>
             {% endif %}             
           </div>
+        </div>
         </div>
       </div>
   </div>

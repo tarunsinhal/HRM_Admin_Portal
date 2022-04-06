@@ -1,8 +1,12 @@
+"""
+This file contains the urls for the suggestion app.
+"""
+
 # create urls.py
 from django.urls import path
 from . import views
 
-app_name = "suggestions"
+app_name = "suggestions" #  pylint: disable=invalid-name
 urlpatterns = [
     path("", views.suggestion, name="suggestion"),
     path("all/", views.suggestion_list, name="suggestionall"),
