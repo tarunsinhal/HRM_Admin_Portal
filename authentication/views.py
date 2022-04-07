@@ -34,18 +34,16 @@ def user_login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
-            try:
-                user = User.objects.get(email=form.cleaned_data['email'])
-                user = authenticate(request, username=user, password=form.cleaned_data['password'])
-                if user is not None and  user.is_authenticated: # pylint: disable=no-else-return
-                    login(request, user)
-                    return HttpResponseRedirect('/home')
-                else:
-                    messages.error(request, 'Invalid email or password!')
-                    return render(request, 'authentication/login.html', {'form': form})
-            except ValidationError:
+            user = User.objects.filter(email=form.cleaned_data['email']).first()
+            print(user)
+            user = authenticate(request, username=user, password=form.cleaned_data['password'])
+            if user is not None and  user.is_authenticated: # pylint: disable=no-else-return
+                login(request, user)
+                return HttpResponseRedirect('/home')
+            else:
                 messages.error(request, 'Invalid email or password!')
                 return render(request, 'authentication/login.html', {'form': form})
+            
     return render(request, 'authentication/login.html', {'form': form})
 
 
