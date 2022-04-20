@@ -3,11 +3,11 @@ var dataTableRes1, dataTableRes2, dataTableRes3, dataTableRes4;
 function format1 ( d ) {
     return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold" style="text-align: center"><u>Additional Parameters</u></p></div>'+
-	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Joining Date: </span>'+d[9]+'</div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold" onclick="viewfunction(this)" data-bs-toggle="modal" data-bs-target="#viewModal" >Joining Date: </span>'+d[9]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">LOI: </span>'+d[10]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Offer Letter: </span>'+d[11]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Joining Hamper: </span>'+d[12]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Add to Skype Group: </span>'+d[13]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Add to Cliq Channels: </span>'+d[13]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Add to Whatsapp Group: </span>'+d[14]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Microsoft Account Created: </span>'+d[15]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">System Configuration: </span>'+d[16]+'</div><br>'+
@@ -31,7 +31,7 @@ function format_and_diff1(d,res){
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">LOI: </span>'+d[10]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Offer Letter: </span>'+d[11]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Joining Hamper: </span>'+d[12]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Add to Skype Group: </span>'+d[13]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Add to Cliq Channels: </span>'+d[13]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Add to Whatsapp Group: </span>'+d[14]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Microsoft Account Created: </span>'+d[15]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">System Configuration: </span>'+d[16]+'</div><br>'+
@@ -59,7 +59,7 @@ function format2 ( d ) {
     return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold" style="text-align: center"><u>Additional Parameters</u></p></div>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Last Working Date: </span>'+d[11]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remove from Skype Group: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remove from Cliq Channels: </span>'+d[12]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remove from Whatsapp Group: </span>'+d[13]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Microsoft Account Deleted: </span>'+d[14]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">System Format: </span>'+d[15]+'</div><br>'+
@@ -78,7 +78,7 @@ function format_and_diff2(d,res){
 	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold" style="text-align: center"><u>Additional Parameters</u></p></div>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Last Working Date: </span>'+d[11]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remove from Skype Group: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remove from Cliq Channels: </span>'+d[12]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remove from Whatsapp Group: </span>'+d[13]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Microsoft Account Deleted: </span>'+d[14]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">System Format: </span>'+d[15]+'</div><br>'+

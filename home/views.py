@@ -33,8 +33,8 @@ def desktop_notification(request):
     toaster = ToastNotifier()
     n = list(notifications.objects.filter(is_visited=False))
     if len(n) > 0:
-        toaster.show_toast('Notification for Admin portal!',
-            'Click notification and view the notification related to what.',
+        toaster.show_toast('Notification for Adminto',
+            'Click and view that notification page of Adminto.',
             icon_path = 'media/logo.svg',
             duration=5,
             threaded=True,

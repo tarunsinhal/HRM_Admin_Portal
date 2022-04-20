@@ -113,6 +113,7 @@ class TshirtResource(resources.ModelResource):
     total_quantity = fields.Field(saves_null_values=False, column_name='total_quantity', attribute='total_quantity', widget=CharRequiredWidget())
     allotted = fields.Field(saves_null_values=False, column_name='allotted', attribute='allotted', widget=CharRequiredWidget())
     remaining = fields.Field(saves_null_values=False, column_name='remaining', attribute='remaining', widget=CharRequiredWidget())
+    amount = fields.Field(saves_null_values=False, column_name='amount', attribute='amount', widget=CharRequiredWidget())
     paid_by = fields.Field(saves_null_values=False, column_name='paid_by', attribute='paid_by', widget=CharRequiredWidget())
     user_name = fields.Field(saves_null_values=False, column_name='user_name', attribute='user_name', widget=CharRequiredWidget())
 

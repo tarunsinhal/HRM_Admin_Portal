@@ -8,8 +8,9 @@ function format ( d ) {
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Total quantity: </span>'+d[8]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Allotted: </span>'+d[9]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remaining: </span>'+d[10]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div></div><br>'+
-	'<div class="row"><div class="col-12" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[12]+'</div></div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Amount: </span>'+d[11]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[13]+'</div></div><br>'+
 	'</div></div>';
 }
 
@@ -23,8 +24,9 @@ function format_and_diff(d,res){
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Total quantity: </span>'+d[8]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Allotted: </span>'+d[9]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remaining: </span>'+d[10]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div></div><br>'+
-	'<div class="row"><div class="col-12" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[12]+'</div></div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Amount: </span>'+d[11]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[13]+'</div></div><br>'+
 	'</div>'+
 	'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
 	'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
@@ -47,7 +49,7 @@ $(document).ready(function () {
 			extend: 'csv',
 			text: 'Export',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 			},
 		}
 		],
@@ -58,8 +60,7 @@ $(document).ready(function () {
 			{ orderable: false, targets: 3 },
 			{ orderable: false, targets: 4 },
 			{ orderable: false, targets: 5 },
-			{ orderable: false, targets: 6 },
-			{ orderable: false, targets: 13 }
+			{ orderable: false, targets: 16 }
 		],
 		
 		'pageLength': 12,
@@ -80,8 +81,8 @@ $(document).ready(function () {
 
 		var row = dataTableRes.row( tr );
  
-		var id = tr[0].children[13].innerText;
-		var history_id = tr[0].children[14].innerText;
+		var id = tr[0].children[14].innerText;
+		var history_id = tr[0].children[15].innerText;
 		var url = $("#productTable1").attr("data-previous-url");
 		$.ajax({
 			url: url,
@@ -158,7 +159,7 @@ function historyfunction(obj, obj2){
 			text: 'Export',
 			title: 'Tshirt Inventory History',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 			},
 		}
 		],
@@ -169,8 +170,7 @@ function historyfunction(obj, obj2){
 			{ orderable: false, targets: 3 },
 			{ orderable: false, targets: 4 },
 			{ orderable: false, targets: 5 },
-			{ orderable: false, targets: 6 },
-			{ orderable: false, targets: 13 }
+			{ orderable: false, targets: 16 }
 		],
 		'pageLength': 12,
 		"bLengthChange": false,
@@ -190,8 +190,8 @@ function historyfunction(obj, obj2){
 
 		var row = dataTableRes2.row( tr );
 
-		var id = tr[0].children[13].innerText;
-		var history_id = tr[0].children[14].innerText;
+		var id = tr[0].children[14].innerText;
+		var history_id = tr[0].children[15].innerText;
 		var url = $("#historyTableId").attr("data-previous-url");
 		$.ajax({
 			url: url,

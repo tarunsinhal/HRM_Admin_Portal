@@ -194,7 +194,7 @@ class addTshirtForm(ModelForm):
     add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
     class Meta:
         model = t_shirt_inventory
-        fields = ('id', 'order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted', 'paid_by', 'add_name', 'additional')
+        fields = ('id', 'order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted', 'amount', 'paid_by', 'add_name', 'additional')
         widgets = {
             'order_date': DateInput(attrs={'type':'date', 'required':True,  'class':"required form-control"}),
             'receiving_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
@@ -203,6 +203,7 @@ class addTshirtForm(ModelForm):
             'ordered_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
             'received_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
             'allotted': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
+            'amount': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
             'paid_by': Select(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-select"}),
             'additional': Textarea(attrs={'type':'text', 'class':"required form-control"}),
             'error_message': Textarea(attrs={'type':'text', 'class':"required form-control", "rows": 1, "cols": 1}),
@@ -213,13 +214,13 @@ class addTshirtForm(ModelForm):
 
 class editTshirtForm(addTshirtForm, ModelForm):
     class Meta(addTshirtForm.Meta):
-        fields = ('size', 'order_date', 'receiving_date', 'previous_stock', 'ordered_quantity', 'received_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'add_name', 'additional')
+        fields = ('size', 'order_date', 'receiving_date', 'previous_stock', 'ordered_quantity', 'received_quantity', 'total_quantity', 'allotted', 'remaining', 'amount', 'paid_by', 'add_name', 'additional')
 
     
 class AddJoiningForm(ModelForm):
     class Meta:
         model = engagementJoining
-        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date')
+        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_cliq_channels', 'add_to_whatsapp_group', 'remove_from_cliq_channels', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'cliq_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date')
         widgets = {
             'employee_name': TextInput(attrs={'type':'text', 'class':"required form-control"}),
             'details': Select(attrs={'type': 'select', 'class': "form-select"}), 
@@ -238,15 +239,15 @@ class AddJoiningForm(ModelForm):
             'bag': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'id_card': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'induction': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'add_to_skype_group': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'add_to_cliq_channels': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'add_to_whatsapp_group': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'remove_from_skype_group': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'remove_from_cliq_channels': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'remove_from_whatsapp_group': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'onedrive_access': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'microsoft_account_created': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'microsoft_account_deleted': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'gmail_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'skype_id': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'cliq_id': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'system_configuration': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'system_format': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'email_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
@@ -259,7 +260,7 @@ class AddJoiningForm(ModelForm):
 
 class EditJoiningForm(AddJoiningForm, ModelForm):
     class Meta(AddJoiningForm.Meta):
-        fields = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date'  ]
+        fields = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_cliq_channels', 'add_to_whatsapp_group', 'remove_from_cliq_channels', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'cliq_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date'  ]
 
 
 # import form
@@ -269,13 +270,11 @@ class ImportForm(forms.Form):
 
 class AddEventForm(ModelForm):
     new_event = CharField(max_length=50, widget=TextInput(attrs={'type': 'text', 'class': "form-control", "placeholder": "Enter event"}))
-    date = forms.DateField(
-        widget=forms.DateInput(format='%d-%m-%Y', attrs={'type':'date', 'class': "required form-select datepicker"}),
-        input_formats=('%d-%m-%Y', )
-    )
+    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
+    date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y', attrs={'type':'date', 'class': "required form-select datepicker"}), input_formats=('%d-%m-%Y', ))
     class Meta:
         model = officeEvents
-        fields = ('date', 'event_name', 'new_event', 'activity_planned', 'item', 'food', 'remarks')
+        fields = ('date', 'event_name', 'new_event', 'activity_planned', 'item', 'food', 'paid_by', 'add_name', 'remarks')
         
         widgets = {
             # 'date': DateInput(format='%m-%d-%Y', attrs={'type':'date', 'class': "required form-select"}),
@@ -283,6 +282,7 @@ class AddEventForm(ModelForm):
             'activity_planned': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'item': Textarea(attrs={'type':'textarea', 'class':"required form-control", 'placeholder':'Enter Item'}),
             'food': Textarea(attrs={'type':'textarea', 'class':"required form-control", 'placeholder':'Enter Food Item'}),
+            'paid_by': Select(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-select"}), 
             'remarks': Textarea(attrs={'type':'textarea', 'class':"form-control"})
         }
     

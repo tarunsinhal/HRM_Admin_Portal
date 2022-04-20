@@ -5,9 +5,7 @@
 />
 <link href="{% static 'home/css/common.css' %}" rel="stylesheet" />
 <div class="sidenav nav-sidebar">
-  <a class="nav home" href="{% url 'home:home_view' %}"
-    ><i class="fa fa-home"></i> Home</a
-  >
+  <a class="nav home" href="{% url 'home:home_view' %}"><i class="fa fa-home"></i> Home</a>
 
   <button class="dropdown-btn">
     <i class="fa fa-server"></i> Operations
@@ -35,37 +33,26 @@
   </div>
 
   <a class="nav it_infrastructure" href="{% url 'IT_Infra:it_infra' %}"
-    ><i class="fa fa-home"></i> IT Infrastructure</a
-  >
+    ><i class="fa fa-home"></i> IT Infrastructure</a>
 
   <a class="nav report" href="{% url 'home:home_view' %}"
-    ><i class="fa fa-flag"></i> Report</a
-  >
-  <!-- <button class="dropdown-btn"><i class="fa fa-sticky-note"></i> Bills & Reimbursement 
-    <i class="fa fa-caret-down"></i>
-  </button>
-  <div class="dropdown-container bills_reimbursement">
-    <a class="nav pankaj" href="#">Pankaj</a>
-    <a class="nav shreya" href="#">Shreya</a>
-    <a class="nav company" href="#">Company</a>
-  </div> -->
-  <a class="nav bills_and_reimbursement" href="{% url 'home:home_view' %}"
-    ><i class="fa fa-inr"></i> Bills and Reimbursement</a
-  >
+    ><i class="fa fa-flag"></i> Report</a>
 
-  <a class="nav suggestions" href="{% url 'suggestions:suggestion' %}"
-    ><i class="fa fa-pencil-square-o"></i> Suggestions</a
-  >
+  <a class="nav bills_and_reimbursement" href="{% url 'bills_and_reimbursement:bills_and_reimbursement_view' %}">
+    <i class="fa fa-inr"></i> Bills and Reimbursement </a>
+
+  <a class="nav suggestions" href="{% url 'suggestions:suggestion' %}">
+    <i class="fa fa-pencil-square-o"></i> Suggestions </a>
+
   <a class="nav notifications" href="{% url 'home:notifications' %}">
     <div class="row">
-      <div class="col-10"><i class="fa fa-bell"></i> Notifications</div>
-      <div class="col-2 notification-circle" id="notification"></div>
-    </div>
-  </a>
+      <div class="col-9"><i class="fa fa-bell"></i> Notifications </div>
+      <div class="col-3 notification-circle" id="notification"></div>
+    </div> 
+</a>
 
-  <a class="nav logout" href="{% url 'authentication:logout' %}"
-    ><i class="fa fa-sign-out"></i> Logout</a
-  >
+  <a class="nav logout" href="{% url 'authentication:logout' %}">
+    <i class="fa fa-sign-out"></i> Logout </a>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>

@@ -8,8 +8,9 @@ function format ( d ) {
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Total quantity: </span>'+d[8]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Allotted: </span>'+d[9]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remaining: </span>'+d[10]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div></div><br>'+
-	'<div class="row"><div class="col-12" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[12]+'</div></div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Amount: </span>'+d[11]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[13]+'</div></div><br>'+
 	'</div></div>';
 }
 
@@ -23,8 +24,9 @@ function format_and_diff(d,res){
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Total quantity: </span>'+d[8]+'</div></div><br>'+
 	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Allotted: </span>'+d[9]+'</div><br>'+
 	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Remaining: </span>'+d[10]+'</div><br>'+
-	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[11]+'</div></div><br>'+
-	'<div class="row"><div class="col-12" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[12]+'</div></div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Amount: </span>'+d[11]+'</div></div><br>'+
+	'<div class="row"><div class="col-4" style="text-align: left"><span class="font-weight-bold">Paid By: </span>'+d[12]+'</div><br>'+
+	'<div class="col-4" style="text-align: left"><span class="font-weight-bold">Additional Info: </span>'+d[13]+'</div></div><br>'+
 	'</div>'+
 	'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
 	'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
@@ -48,7 +50,7 @@ $(document).ready(function () {
 			text: 'Export',
 			title: 'Tshirt Inventory',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
 			},
 		}
 		],
@@ -62,10 +64,11 @@ $(document).ready(function () {
 			{ orderable: false, targets: 7 },
 			{ orderable: false, targets: 8 },
 			{ orderable: false, targets: 9 },
-			{ orderable: false, targets: 11}
+			{ orderable: false, targets: 10},
+			{ orderable: false, targets: 12}
 		],
 		
-		'rowsGroup': [0, 1, 9],
+		'rowsGroup': [0, 1, 10],
 		'pageLength': 12,
 		"bLengthChange": false,
 		"autoWidth": false,
@@ -86,7 +89,7 @@ $(document).ready(function () {
 					
 					let purchaseDate = new Date(data[0]);
 					let nextDate = new Date(data[1]);
-					let recordType  = data[10]
+					let recordType  = data[11]
 
 					if(activeTabId == recordType){
 						if ((pur_min == null && pur_max == null ) && (next_min == null && next_max == null )) 
@@ -214,6 +217,7 @@ function editfunction(obj) {
 			if (data['data']['receiving_date']){
 				document.getElementById('tshirt_receiving_date').children[1].children[0].value = data['data']['receiving_date'];
 			}
+			document.getElementById('amount').children[1].children[0].value = data['data']['amount']
 			document.getElementById('paid_by').children[1].children[0].value = data['data']['paid_by']
 			document.getElementById('additional').children[1].children[0].value = data['data']['additional']
 			for (i=0; i<table1.length-1; i++){
@@ -300,7 +304,7 @@ function historyfunction(obj, obj2){
 			text: 'Export',
 			title: 'Tshirt Inventory History',
 			exportOptions: {
-				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+				columns: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
 			},
 		}
 		],
@@ -311,8 +315,7 @@ function historyfunction(obj, obj2){
 			{ orderable: false, targets: 3 },
 			{ orderable: false, targets: 4 },
 			{ orderable: false, targets: 5 },
-			{ orderable: false, targets: 6 },
-			{ orderable: false, targets: 13 }
+			{ orderable: false, targets: 16 }
 		],
 		'pageLength': 12,
 		"bLengthChange": false,
@@ -332,8 +335,8 @@ function historyfunction(obj, obj2){
 
 		var row = dataTableRes2.row( tr );
 
-		var id = tr[0].children[13].innerText;
-		var history_id = tr[0].children[14].innerText;
+		var id = tr[0].children[14].innerText;
+		var history_id = tr[0].children[15].innerText;
 		var url = $("#historyTableId").attr("data-previous-url");
 		$.ajax({
 			url: url,
@@ -431,37 +434,6 @@ function handleaddnewTshirt(event) {
 const addNewTshirtForm = document.getElementById('addTshirtForm')
 addNewTshirtForm.addEventListener("submit", handleaddnewTshirt)
 
-// //...function called when edit form is submitted...//
-// function handleTshirtEdit(event) {
-// 	event.preventDefault()
-// 	const myForm = event.target
-// 	const myFormData = new FormData(myForm)
-// 	const url = myForm.getAttribute("action")
-// 	const method = myForm.getAttribute("method")
-// 	const xhr = new XMLHttpRequest()
-// 	xhr.open(method, url)
-
-// 	xhr.setRequestHeader("HTTP_X_REQUESTED_WITH", "XMLHttpRequest")
-// 	xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest")
-
-// 	const responseType = "json"
-// 	xhr.responseType = responseType
-
-// 	xhr.onload = function () {
-// 		if (xhr.status === 201) {
-// 			const newProduct = xhr.response
-// 			window.location.reload();
-// 		}
-// 		else {
-// 			alert('Next order should be greater than purchase date.')
-// 		}
-// 	}
-// 	xhr.send(myFormData)
-// }
-
-// const editTshirtForm = document.getElementById('editTshirtForm')
-// editTshirtForm.addEventListener("submit", handleTshirtEdit)
-
 
 //...function called when delete form is submitted...//
 function handleDeleteProduct(event) {
@@ -548,20 +520,6 @@ importTshirtForm.addEventListener("submit", handleImportTshirt)
 function showDropdown() {
 	document.getElementById("myDropdown").classList.toggle("show");
 }
-
-// Close the dropdown if the user clicks outside of it
-// window.onclick = function(event) {
-// 	if (!event.target.matches('.dropbtn')) {
-// 		var dropdowns = document.getElementsByClassName("dropdown-content");
-// 		var i;
-// 		for (i = 0; i < dropdowns.length; i++) {
-// 			var openDropdown = dropdowns[i];
-// 			if (openDropdown.classList.contains('show')) {
-// 				openDropdown.classList.remove('show');
-// 			}
-// 		}
-// 	}
-// }
 
 
 var sizes = document.getElementsByClassName("tshirt-size")

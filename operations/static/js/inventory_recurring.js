@@ -162,6 +162,19 @@ $(document).ready(function () {
 			)	
 		}		
 	});
+
+	var url = $("#addForm").attr("data-users-url");
+
+	$.ajax({                       // initialize an AJAX request
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+		debugger;
+			$("#id_paid_by").html(response);
+        }
+    });
+
 });
 
 $('.inventory_datepicker_1,.inventory_datepicker_2,.inventory_datepicker_3,.inventory_datepicker_4,.inventory_datepicker_5').on('change', function (e) {
@@ -186,20 +199,6 @@ $('.inventory_freqpicker_1,.inventory_freqpicker_2,.inventory_freqpicker_3,.inve
 	dataTableRes.draw();
 });
 
-// load Paid_by dropdown
-$(document).ready(function () {
-	var url = $("#addForm").attr("data-users-url");
-
-	$.ajax({                       // initialize an AJAX request
-	    type: "GET",
-		url: url,
-		dataType: "html",
-		success: function (response) {
-		debugger;
-			$("#id_paid_by").html(response);
-        }
-    });
-});
 
 //...function for switching between radio buttons...//
 // $('.radiolinks').on('click', function (e) {
@@ -348,7 +347,7 @@ function editfunction(obj, obj2) {
 			debugger;
 			$("#paid_by").html(response);
 
-			var paid_by = x[7].textContent.split(/(\s+)/)[0]
+			var paid_by = x[7].textContent;
 			for (var i, j = 0; i = mySelect[3].options[j]; j++) {
 				if (paid_by == i.value) {
 					mySelect[3].selectedIndex = j;
@@ -622,7 +621,6 @@ function repeatfunction(obj, obj2) {
 
 	
 }
-
 
 $('#id_product').change(function () {
 	var value = $(this).val();

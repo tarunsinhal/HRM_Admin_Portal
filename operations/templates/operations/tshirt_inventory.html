@@ -247,6 +247,14 @@
                                                     <hr class="font-weight-bold">
                                                     <br>
 
+                                                    <div class="row" style="margin-left: 5px;" id="amount">
+                                                        <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; color: #1A9239;;">                                                           
+                                                            {{ addTshirtFormSet.0.amount.label }}</div>
+                                                        <div class="col-3" style="margin-bottom: 15px; padding: 0px;">
+                                                            {{ addTshirtFormSet.0.amount }}
+                                                        </div>
+                                                    </div>
+
                                                     <div class="row" style="margin-left: 5px;" id="paid_by">
                                                         <div class="col-3 form-label font-weight-bold" style="padding: 0px; margin-bottom: 2px; color: #1A9239;;">                                                           
                                                             {{ addTshirtFormSet.0.paid_by.label }}</div>
@@ -367,6 +375,7 @@
                                                 <th width=14% style="display: none;">Total Quantity</th>
                                                 <th width=14% style="display: none;">Allotted</th>
                                                 <th width=10% style="display: none;">Remaining</th>
+                                                <th width=14% style="display: none;">Amount</th>
                                                 <th width=14% style="display: none;">Paid By</th>
                                                 <th width=14% style="display: none;">Additional</th>                                    
                                                 <th id="rowId" style="display: none;">Id</th>
@@ -436,6 +445,7 @@
                                     <th width=14% style="padding: 12px; text-align:center;">Total Quantity</th>
                                     <th width=14% style="padding: 12px; text-align:center; display: none;">Allotted</th>
                                     <th width=10% style="padding: 12px; text-align:center;">Remaining</th>
+                                    <th width=18% style="display: none;">Amount</td>
                                     <th width=18% style="display: none;">Paid By</td>
                                     <th width=18% style="padding: 12px; text-align:center;">Additional</td>
                                     <td class="name" style="display: none;"> </td>
@@ -445,60 +455,49 @@
 
                             <tbody class="tbl-content table table-bordered">
                                 {% for group in groupedData %}
-                                         {% for data in group.list %}
-                                        <tr>
-                                                <td style="vertical-align : middle;text-align:center; border-left: 2px solid #007bff; padding: 2px 5px;" class="name font-weight-bold" width=15%>
-                                                {{ data.order_date }}</td>
-                                                <td style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
-                                                    {{ data.receiving_date }}</td>
-                                                <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
-                                                <td class="name" width=12% style="display: none;">{{ data.previous_stock }}</td>
-                                                <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
-                                                <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.total_quantity }}</td>
-                                                <td class="name" width=10% style="padding: 2px 5px; text-align:center; display: none;">{{ data.allotted }}</td>
-                                                <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.remaining }}</td>
-                                                <td class="name" style="display: none;">{{ data.paid_by }}</td>
-                                                <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name" width="15%">{{ data.additional }}</td>   
-                                                <td class="name" style="display: none;"> 1 </td> 
-                                                {% ifchanged data.order_date %}
-                                                <td rowspan="{{ group.list|length }}" style="padding: 2px 5px;">
-                                                    <div class="dropout" style="z-index: 1;">
-                                                        <button class="more">
-                                                            <span></span>
-                                                            <span></span>
-                                                            <span></span>
-                                                        </button>
-                                                        <ul>
-                                                            <li><a id='tshirt_inventory/edit/{{ data.id }}' onclick=editfunction(this) data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                                                <span>Edit</span></a> 
-                                                            </li>
-                                                            <hr style="color: #FFF; padding: 0px; margin: 0px;">
-                                                            <li><a id='tshirt_inventory/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal">
-                                                                <span>Delete</span></a>
-                                                            </li>
-                                                            <hr style="color: #FFF; padding: 0px; margin: 0px;">
-                                                            <li><a id='tshirt_inventory/history/{{ data.id }}' onclick=historyfunction(this,"{{ data.order_date }}") data-bs-toggle="modal" data-bs-target="#historyModal"><span>History</span></a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                                {% else %}
-                                                <td style="display: none"></td>
-                                                {% endifchanged %}
-                                                <!-- {% ifchanged data.order_date %}
-                                                <td rowspan="{{ group.list|length }}" width=10% style="padding: 2px 5px;">
-                                                    <a id='tshirt_inventory/edit/{{ data.id }}' onclick=editfunction(this)
-                                                        data-bs-toggle="modal" data-bs-target="#staticBackdrop" title="Edit"
-                                                        style="color: #FFC107; padding: 0px;"><i class="material-icons">&#xE254;</i></a>
-                                                    <a id='tshirt_inventory/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal"
-                                                        data-bs-target="#deleteModal" title="Delete" style="color: #E34724"><i
-                                                            class="material-icons">&#xE872;</i></a>
-                                                </td>
-                                                {% else %}
-                                                <td style="display: none"></td>
-                                                {% endifchanged %} -->
-                                        </tr>
-                                        {% endfor %}
+                                    {% for data in group.list %}
+                                    <tr>
+                                        <td style="vertical-align : middle;text-align:center; border-left: 2px solid #007bff; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+                                        {{ data.order_date }}</td>
+                                        <td style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold" width=15%>
+                                            {{ data.receiving_date }}</td>
+                                        <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.size }}</td>
+                                        <td class="name" width=12% style="display: none;">{{ data.previous_stock }}</td>
+                                        <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.ordered_quantity }}</td>
+                                        <td class="name" width=10% style="padding: 2px 5px; text-align:center;">{{ data.total_quantity }}</td>
+                                        <td class="name" width=10% style="padding: 2px 5px; text-align:center; display: none;">{{ data.allotted }}</td>
+                                        <td class="name" width=12% style="padding: 2px 5px; text-align:center;">{{ data.remaining }}</td>
+                                        <td class="name" style="display: none;">{{ data.amount }}</td>
+                                        <td class="name" style="display: none;">{{ data.paid_by }}</td>
+                                        <td  style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name" width="15%">{{ data.additional }}</td>   
+                                        <td class="name" style="display: none;"> 1 </td> 
+                                        {% ifchanged data.order_date %}
+                                        <td rowspan="{{ group.list|length }}" style="padding: 2px 5px;">
+                                            <div class="dropout" style="z-index: 1;">
+                                                <button class="more">
+                                                    <span></span>
+                                                    <span></span>
+                                                    <span></span>
+                                                </button>
+                                                <ul>
+                                                    <li><a id='tshirt_inventory/edit/{{ data.id }}' onclick=editfunction(this) data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+                                                        <span>Edit</span></a> 
+                                                    </li>
+                                                    <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                    <li><a id='tshirt_inventory/delete/{{ data.id }}' onclick=deletefunction(this) data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                                        <span>Delete</span></a>
+                                                    </li>
+                                                    <hr style="color: #FFF; padding: 0px; margin: 0px;">
+                                                    <li><a id='tshirt_inventory/history/{{ data.id }}' onclick=historyfunction(this,"{{ data.order_date }}") data-bs-toggle="modal" data-bs-target="#historyModal"><span>History</span></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        {% else %}
+                                        <td style="display: none"></td>
+                                        {% endifchanged %}
+                                    </tr>
+                                    {% endfor %}
 
                                 {% endfor %}
                                
@@ -523,7 +522,7 @@
 <!-- <script src="../assets/dist/js/bootstrap.bundle.min.js">0</script> -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <!-- <script src="{% static 'js/food_inventory.js' %}"></script> -->
-<script src="{% static 'js/onboarding.js' %}"></script>
+<script src="{% static 'js/tshirt_inventory.js' %}"></script>
 
 
 

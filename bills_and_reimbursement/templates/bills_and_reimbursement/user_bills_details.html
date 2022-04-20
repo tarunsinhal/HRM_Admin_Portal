@@ -1,0 +1,311 @@
+{% extends 'home/base.html' %}
+{% load static %}
+{% load custom_tags %}
+
+{% block title %} Bills {% endblock title %}
+
+{% block style %}
+
+
+<!-- <link rel="canonical" href="https://getbootstrap.com/docs/5.0/examples/sidebars/"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto|Varela+Round|Open+Sans">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"> -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+
+<link href="{% static 'css/bills.css' %}" rel="stylesheet">
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<!-- dropzone css -->
+<link rel="stylesheet" href="https://rawgit.com/enyo/dropzone/master/dist/dropzone.css">
+
+{% endblock style %}
+
+
+{% block content %}
+
+<div class="container-lg" style="overflow-y: scroll;">
+    <div class="table-title">
+        <div class="row">
+          <div class="col-sm-1">
+              <img src="{% static 'img/transfer-account-svgrepo-com.svg' %}" height="90%" width="90%" alt="...">
+          </div>
+          <div class="col-sm-7" id="foodtitle">
+              <h2><b>Bills & Reimbursement</b></h2>
+              <p>Manage bills & reimbursement data, find tables and avaliable information.</p>
+          </div>
+        </div>
+    </div>
+   
+    <form enctype='multipart/form-data' method="POST" id="editStatusForm">
+        {% csrf_token %}
+        <div class="modal fade" id="editStatusModal" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="editStatusModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editStatusModalLabel">Update Item</h5>
+                        <button type="button" class="btn-close Close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <div class="row g-3">
+                            <div class="container">
+                                <div class="row" style="text-align: left; font-size: 15px;">
+                                    <div class="col-4 font-weight-bold" style="margin: 5px; text-align: left; text-transform: capitalize;">{{ billsReimburseForm.reimburse_status.label }}</div>
+                                    <div class="col-6" style="margin: 5px">
+                                        {{ billsReimburseForm.reimburse_status }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Update" class="btnStyle" id="status-btn">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form enctype='multipart/form-data' method="POST" id="editImagesForm" image-url="{% url 'bills_and_reimbursement:ajax_images_data' %}">
+        {% csrf_token %}
+        <div class="modal fade" id="editImagesModal" data-bs-backdrop="static" data-bs-keyboard="false"
+            tabindex="-1" aria-labelledby="editImagesModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editImagesModalLabel">Update Item</h5>
+                        <button type="button" class="btn-close Close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- <div class="row g-3">
+                            <div class="container"> -->
+                                <div class="row" id="edit_images">
+                                </div>
+                                <a onclick="addImageInput(this)" style="color: blue;">
+                                    <i class="fa fa-plus edit_images"></i> Add more images</a>
+                            <!-- </div>
+                        </div> -->
+
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" value="Update" class="btnStyle" id="image-btn">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true" data-user-url="{% url 'bills_and_reimbursement:ajax_load_data' %}">
+        <div class="modal-dialog">
+            <div class="modal-content"
+                style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel">Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" saria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="billsTable table-bordered">
+                        <thead class="table tbl-header table-hover" style="text-align: justify;">
+                            <tr>
+                                <th width=10% style="padding: 12px;">Date</th>
+                                <th width=12% style="padding: 12px;">Item</th>
+                                <th width=10% style="padding: 12px;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbl-content table" id="moduleData">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal1" tabindex="-1" aria-labelledby="detailsModalLabel1" aria-hidden="true" data-user-url="{% url 'bills_and_reimbursement:ajax_load_data' %}">
+        <div class="modal-dialog">
+            <div class="modal-content"
+                style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel1">Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="billsTable table-bordered">
+                        <thead class="table tbl-header table-hover" style="text-align: justify;">
+                            <tr>
+                                <th width=10% style="padding: 12px;">Date</th>
+                                <th width=10% style="padding: 12px;">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbl-content table" id="moduleData1">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="detailsModal2" tabindex="-1" aria-labelledby="detailsModalLabel2" aria-hidden="true" data-user-url="{% url 'bills_and_reimbursement:ajax_load_data' %}">
+        <div class="modal-dialog">
+            <div class="modal-content"
+                style="width: 400px; margin-top: auto;justify-content: center;  margin-left: auto; ">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailsModalLabel2">Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="billsTable table-bordered">
+                        <thead class="table tbl-header table-hover" style="text-align: justify;">
+                            <tr>
+                                <th width=10% style="padding: 12px;">Date</th>
+                                <th width=12% style="padding: 12px;">Items</th>
+                            </tr>
+                        </thead>
+                        <tbody class="tbl-content table" id="moduleData2">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form>
+        <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        <input type="button" class="btn" style="padding: 6px; background-color: #5f4266; color: white; font-size: 12px;" value="Back" onclick="history.back()">
+    </form>
+
+    <div class="table-responsive">
+        <div class="table-wrapper1">
+            <div class="table-title">
+
+                <div class="tabset">
+                    <div class="tab-panels">
+                        <div style="margin: 10px 0px 0px 300px;">
+                            {% if startDate == None and endDate == None %}
+                            <form id="addStatusForm" action="{% url 'bills_and_reimbursement:user_bills_details_view' user%}">
+                                <span class="font-weight-bold" style="font-size: larger;">From:</span>
+                                <input type="month" class="date" id="startDate" name="startDate" data-attr-type="start"/> 
+                                <span class="font-weight-bold" style="font-size: larger;">To:</span>
+                                <input type="month" class="date" id="endDate" name="endDate" data-attr-type="end"/>
+                                <input type="submit" value="Search" id="submitBtn" style="background-color: #5f4266; color: white; font-size: 15px;"/>
+                            </form>
+                            {% else %}
+                            <form id="addStatusForm" action="{% url 'bills_and_reimbursement:user_bills_details_view' user%}">
+                                <span class="font-weight-bold" style="font-size: larger;">From:</span>
+                                <input value="{{ fromDate }}" type="month" class="date" id="startDate" name="startDate" data-attr-type="start" /> 
+                                <span class="font-weight-bold" style="font-size: larger;">To:</span>
+                                <input value="{{ toDate }}" type="month" class="date" id="endDate" name="endDate" data-attr-type="end" />
+                                <input type="submit" value="Search" style="background-color: #5f4266; color: white; font-size: 15px;"/>
+                            </form>
+                            {% endif %}
+                        </div>
+                        <hr/>
+                        <table class="billsReimburseTable table-bordered">
+                            <thead class="table tbl-header table-hover" style="text-align: justify;">
+                                <tr>
+                                    <th class="font-weight-bold" style="padding: 12px; text-align: center; font-size: 20px; background-color: #5f4266; color: white;" colspan="6" id="user">{{ user }}</th>
+                                </tr>
+                                <tr>
+                                    <th width=5% style="padding: 12px;">S.No.</th>
+                                    <th width=10% style="padding: 12px;">Month/Year</th>
+                                    <th width=10% style="padding: 12px;">Total Amount</th>
+                                    <th width=10% style="padding: 12px;">Reimbursement Status</th>
+                                    <th width=10% style="padding: 12px;">Bills Images</th>
+                                    <th width=25% style="padding: 12px;">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody class="tbl-content table" id="tbody">
+                                {% if resList == '' %}
+                                {% else %}
+                                    {% regroup resList|dictsort:"date" by date as date_list %}
+                                        {% for date in date_list %}
+                                        <tr>
+                                            <td class="name font-weight-bold" width=5% style="border-left: 2px solid #F0F0F0; padding: 2px 5px;">{{ forloop.counter }}</td>
+                                            <td class="last-date font-weight-bold" width=10% style="padding: 2px 5px;">{{ date.grouper }}</td>
+                                            <td class="name" width=10% style="padding: 2px 5px;" >
+                                                {{ date.list|amount_total }}
+                                            </td>
+                                            <td class="name" width=10% style="padding: 2px 5px;">
+                                                {% if date.grouper in statusdict %}
+                                                    {% for key, value in statusdict.items %}
+                                                        {% if key == date.grouper %}
+                                                            <span>{{ value }}</span>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                {% else %}
+                                                <span>Unpaid</span>  
+                                                {% endif %}
+                                                <a id="addStatus/{{ user }}/{{ date.grouper }}/{{ startDate }}/{{ endDate }}" onclick=editstatusfunction(this) data-bs-toggle="modal" data-bs-target="#editStatusModal">
+                                                    <i class="fa fa-pencil"></i>
+                                                </a>
+                                            </td>
+                                            <td class="name" width=10% style="padding: 2px 5px;">
+                                                <a id="addImages/{{ user }}/{{ date.grouper }}/{{ startDate }}/{{ endDate }}" onclick=editimagesfunction(this) data-bs-toggle="modal" data-bs-target="#editImagesModal" style="color: blue;">Upload images</a>
+                                            </td>
+                                            <td class="name" width=25% style=" padding: 2px 5px;">
+                                                <div style="float: left;">
+                                                    <button style="border: none; cursor: pointer; background: transparent;" class="detailsBtn" onclick=detailsBtn(this)>
+                                                        <i class="fa fa-caret-down fa-lg" style="margin: 3px 0px 0px 3px; padding: 0px;"></i>
+                                                    </button>
+                                                    <div id="details" style="display: none;">
+                                                        <button id="adhoc" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">Adhoc</button>
+                                                        <button id="t-shirt" data-bs-toggle="modal" data-bs-target="#detailsModal1" onclick=detailfunction1(this) style="margin-bottom: 4px;">T-Shirt</button>
+                                                        <button id="recurring" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">Recurring</button>
+                                                        <button id="office-events" data-bs-toggle="modal" data-bs-target="#detailsModal2" onclick=detailfunction2(this) style="margin-bottom: 4px;">Office Events</button>
+                                                        <button id="mro-repair/service" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">MRO Repair/Service</button>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+
+{% block addextra %}
+
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="{% static 'js/bills.js' %}"></script>
+
+<!-- dropzone js -->
+<script src="https://rawgit.com/enyo/dropzone/master/dist/dropzone.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
+
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+
+{% endblock addextra %}

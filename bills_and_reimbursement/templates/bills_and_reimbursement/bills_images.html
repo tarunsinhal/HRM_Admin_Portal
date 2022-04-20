@@ -1,0 +1,22 @@
+{% load static %}
+
+{% if image_list %}
+<label class="fieldlabels">Bills Images: </label>
+{% for img in image_list %}
+<div>
+    <h>{{ MEDIA_URL }}</h>
+    <input name="images" value="{{ img.0 }}" style="display: none;">
+    <p><a href="/media/{{ img.0 }}" target="_blank"><img src="/media/{{ img.0 }}" alt="{{ img.0 }}" class="output" width="200" style="margin-bottom: 5px; border: 2px solid black;" /></p></a>
+    <button onclick="return this.parentNode.remove()" style="border: 1px; float: right; margin-bottom: 5px">Remove</a>    
+</div>
+
+{% endfor %}
+
+{% else %}
+<label class="fieldlabels">Bills Images: </label>
+<div>
+    <input name="file[]" accept="image/*" type="file" onchange="loadFile(event)" style="margin-bottom: 5px;">
+    <p><a target="_blank"><img class="output" width="100" /></a></p>
+</div>
+
+{% endif %}

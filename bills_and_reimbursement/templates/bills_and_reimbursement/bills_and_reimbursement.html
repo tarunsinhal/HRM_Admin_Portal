@@ -1,0 +1,44 @@
+{% extends 'home/base.html' %}
+{% load static %}
+
+{% block title %} Bills and Reimbursement {% endblock title %}
+
+
+{% block style %}
+<link href="{% static 'css/bills.css' %}" rel="stylesheet">
+{% endblock style %}
+
+
+{% block content %}
+
+<div class="container-lg" style="overflow-y: scroll;">
+  <div class="table-title">
+      <div class="row">
+        <div class="col-sm-1">
+            <img src="{% static 'img/transfer-account-svgrepo-com.svg' %}" height="90%" width="90%" alt="...">
+        </div>
+        <div class="col-sm-7" id="foodtitle">
+            <h2><b>Bills & Reimbursement</b></h2>
+            <p>Manage bills & reimbursement data, find tables and avaliable information.</p>
+        </div>
+      </div>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
+
+    {% for user in Users %}
+    <div class="col">
+      <div class="card shadow p-2 bg-white rounded">
+        <div class="card-body">
+          <img src="{% static 'img/user.svg' %}" class="card-img-top" alt="...">
+          <h4 class="card-title"><a href="{% url 'bills_and_reimbursement:user_bills_details_view' user%}" class="card-title" id="{{ user }}">{{ user }}</a></h4>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    
+
+  </div>
+</div>
+
+{% endblock content %}

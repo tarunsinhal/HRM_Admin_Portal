@@ -49,7 +49,7 @@ def engagements_view(request):
 
 # view for the tshirt inventory module
 @login_required(login_url='/auth/login')
-def engagements_onboarding_view(request):
+def engagements_Tshirt_view(request):
 
     editTshirt = editTshirtForm(auto_id=True)
 
@@ -80,7 +80,7 @@ def engagements_onboarding_view(request):
 
     importForm = ImportForm()
 
-    return render(request, 'operations/onBoarding.html', {'addTshirtFormSet': tshirt_formset, 'tshirtData': serializer.data, 'editTshirtForm': editTshirt, 'importForm': importForm})
+    return render(request, 'operations/tshirt_inventory.html', {'addTshirtFormSet': tshirt_formset, 'tshirtData': serializer.data, 'editTshirtForm': editTshirt, 'importForm': importForm})
 
 # for adding tshirt data in tshirt inventory table
 @api_view(['POST'])
@@ -98,6 +98,7 @@ def addTshirt(request):
         request.POST[form_id+'-receiving_date'] = request.POST['form-0-receiving_date']
         request.POST[form_id+'-total_quantity'] = int(request.POST[form_id+'-previous_stock']) + int(request.POST[form_id+'-received_quantity'])
         request.POST[form_id+'-remaining'] = int(request.POST[form_id+'-total_quantity']) - int(request.POST[form_id+'-allotted'])
+        request.POST[form_id+'-amount'] = request.POST['form-0-amount']
         request.POST[form_id+'-paid_by'] = request.POST['form-0-paid_by']
         if request.POST['form-0-add_name']:
             request.POST[form_id+'-paid_by'] = request.POST['form-0-add_name']
@@ -142,6 +143,7 @@ def editTshirt(request):
         res['total_quantity'] = request.POST['form-' + i + '-total_quantity']
         res['allotted'] = request.POST['form-' + i + '-allotted']
         res['remaining'] = int(res['total_quantity']) - int(res['allotted'])
+        res['amount'] = request.POST['form-0-amount']
         res['paid_by'] = request.POST['form-0-paid_by']
         if request.POST['form-0-add_name']:
             res['paid_by'] = request.POST['form-0-add_name']
@@ -179,6 +181,7 @@ def load_tshirt_edit_data(request):
             'received_quantity': i['received_quantity'], 'allotted': i['allotted'], 'total_quantity': i['total_quantity'],
             'error_message': i['error_message']}
         res[i['size']] = d
+        res['amount'] = i['amount']
         res['paid_by'] = i['paid_by']
         res['additional'] = i['additional']
         res['order_date'] = i['order_date']
@@ -940,6 +943,17 @@ def office_events_view(request):
         serializer = EventSerializer(ev, many=True)
 
     return render(request, 'operations/office_events.html',{'officeEvents':serializer.data, 'addEventForm': addEventForm, 'editEventForm': editEventForm, 'importForm': importForm})
+
+# view for loading paid by users in Office-event module
+def load_officeEvents_users(request):
+    users = User.objects.all().values_list('username', flat=True)
+    paid_by_names = officeEvents.objects.all().values_list('paid_by', flat=True)
+    distinct_values = set(chain(users, paid_by_names))
+    PAID_BY = []
+    for value in distinct_values:
+        PAID_BY.append(value)
+    PAID_BY.append("Other")
+    return render(request, 'operations/paid_by.html', { 'paid_by': PAID_BY})
 
 @api_view(['POST'])
 def addOfficeEvents(request):

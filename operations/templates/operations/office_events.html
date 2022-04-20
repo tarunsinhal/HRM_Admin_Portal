@@ -42,7 +42,7 @@
                             +</button>
                     </div>
                     
-                    <form method="POST" action="{% url 'operations:addOfficeEvents' %}"  id="addEventForm" data-events-url="{% url 'operations:ajax_load_eventsName' %}" class="needs-validation">
+                    <form method="POST" action="{% url 'operations:addOfficeEvents' %}"  id="addEventForm" data-events-url="{% url 'operations:ajax_load_eventsName' %}" data-users-url="{% url 'operations:ajax_load_officeEvents_users' %}" class="needs-validation">
                         {% csrf_token %} 
 
                         <!-- Modal -->
@@ -77,7 +77,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="row" style="text-align: left; font-size: 15px;">
-                                                    <div  class="col-3 font-weight-bold" style="margin: 5px; text-align: left;">                                                           
+                                                    <div class="col-3 font-weight-bold" style="margin: 5px; text-align: left;">                                                           
                                                         {{ addEventForm.activity_planned.label }}</div>
                                                     <div class="col-8" style="margin: 5px">
                                                         {{ addEventForm.activity_planned }}
@@ -126,6 +126,20 @@
                                                     <input type='button' value='Add Field' id='addButtonF' style="margin: 1px; padding: 5px; border-radius: 3px; padding-left: 17px; padding-right: 17px; border: 1px solid #635e5e; font-size: 14px; margin-top: 6px;">
                                                 </div>
                                                 <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-3 font-weight-bold" style="margin: 5px; text-align: left;"> 
+                                                        {{ addEventForm.paid_by.label }}</div>
+                                                    <div class="col-8" style="margin: 5px;">
+                                                        {{ addEventForm.paid_by }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px; display: none;">
+                                                    <div  class="font-weight-bold" style="margin: 5px; margin-left: 30px; text-align: left;">                                                           
+                                                        {{ addEventForm.add_name.label }}</div>
+                                                    <div class="col-4" style="margin: 5px; margin-left: 20px;">
+                                                        {{ addEventForm.add_name }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
                                                     <div  class="col-3 font-weight-bold" style="margin: 5px; text-align: left;">                                                           
                                                         {{ addEventForm.remarks.label }}</div>
                                                     <div class="col-8" style="margin: 5px">
@@ -143,7 +157,7 @@
                         </div>   
                     </form>
 
-                    <form method="POST" id="editEventForm" data-events-url="{% url 'operations:ajax_load_eventsName' %}">
+                    <form method="POST" id="editEventForm" data-events-url="{% url 'operations:ajax_load_eventsName' %}" data-users-url="{% url 'operations:ajax_load_officeEvents_users' %}">
                         {% csrf_token %}
                         <div class="modal fade" id="editModal" data-bs-backdrop="static" data-bs-keyboard="false"
                             tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
@@ -225,6 +239,20 @@
                                                 </div>
                                                 <div style="margin-left: 8px; margin-bottom: 5px;">
                                                     <input type='button' value='Add Field' id='editAddButtonF' style="margin: 1px; padding: 5px; border-radius: 3px; padding-left: 17px; padding-right: 17px; border: 1px solid #635e5e; font-size: 14px; margin-top: 6px;">
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px;">
+                                                    <div class="col-3 font-weight-bold" style="margin: 5px; text-align: left;">                                                           
+                                                        {{ editEventForm.paid_by.label }}</div>
+                                                    <div class="col-8" style="margin: 5px;">
+                                                        {{ editEventForm.paid_by }}
+                                                    </div>
+                                                </div>
+                                                <div class="row" style="text-align: left; font-size: 15px; display: none;">
+                                                    <div  class="font-weight-bold" style="margin: 5px; margin-left: 30px; text-align: left;">                                                           
+                                                        {{ editEventForm.add_name.label }}</div>
+                                                    <div class="col-4" style="margin: 5px; margin-left: 20px;">
+                                                        {{ editEventForm.add_name }}
+                                                    </div>
                                                 </div>
                                                 <div class="row" style="text-align: left; font-size: 15px;">
                                                     <div  class="col-3 font-weight-bold" style="margin: 5px; text-align: left;">                                                           
@@ -321,7 +349,8 @@
                                                 <th width=30% style="display: none;">Item</th>
                                                 <th width=30% style="display: none;">Food</th>
                                                 <th width=10% style="padding: 12px; text-align:center;">User</th>
-                                                <th width=10% style="padding: 12px; text-align:center;">Action</th> 
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                                <th width=8% style="display: none;">paid By</th> 
                                                 <th width=8% style="display: none;">Remarks</th>                              
                                                 <th width=8% id="rowId" style="display: none;">Id</th>
                                                 <th width=8% id="rowHistoryId" style="display: none;">History Id</th>
@@ -386,6 +415,7 @@
                                         <th style="padding: 12px;" rowspan="2">Activity Planned</th>
                                         <th style="padding: 12px;" colspan="2">Item</th>
                                         <th style="padding: 12px;" colspan="2">Food</th>
+                                        <th style="display: none;" rowspan="2">Paid By</th>
                                         <th style="display: none;" rowspan="2">Remarks</th>
                                         <td class="name" style="display: none;" rowspan="2"> </td>
                                         <th style="padding: 12px; width: 4% !important;" rowspan="2">Action</th>
@@ -439,7 +469,7 @@
                                                 {% endif %}
                                             {% endfor %}
                                         </td>
-
+                                        <td class="name" style="display: none;">{{ rows.paid_by }}</td>
                                         <td class="name" style="display: none;">{{ rows.remarks }}</td>
                                         <td class="name" style="display: none;"> 1 </td>
                                         <td style="padding: 2px 5px;">

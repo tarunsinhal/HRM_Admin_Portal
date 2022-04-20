@@ -3,20 +3,21 @@ var minDate, maxDate, dataTableRes, dataTableRes1;
 function format ( d ) {
     return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
-	'<div class="row"><div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks</span><div>'+d[8]+'</div></div></div><br>'+
-        '</div></div>';
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div></div><br>'+
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Paid By: </span>'+d[8]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks: </span>'+d[9]+'</div></div><br>'+
+	'</div></div>';
 }
 
 function format_and_diff(d,res){
 
 	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
-	'<div class="row"><div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks</span><div>'+d[8]+'</div></div></div><br>'+
-        '</div>'+
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div></div><br>'+
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Paid By: </span>'+d[8]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks: </span>'+d[9]+'</div></div><br>'+
 		'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
 			'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
 	for (let key in res){
@@ -92,9 +93,10 @@ $(document).ready(function () {
 			)	
 		}		
 	});
-	var url = $("#addEventForm").attr("data-events-url");
 
-	$.ajax({                       // initialize an AJAX request
+	var url = $("#addEventForm").attr("data-events-url");
+	// ajax request for fetching event name values in add form 
+	$.ajax({                       
 	    type: "GET",
 		url: url,
 		dataType: "html",
@@ -103,15 +105,40 @@ $(document).ready(function () {
 			$("#id_event_name").html(response);
         }
     });
-	var url = $("#editEventForm").attr("data-events-url");
 
-	$.ajax({                       // initialize an AJAX request
+	var url = $("#editEventForm").attr("data-events-url");
+	// ajax request for fetching event name values in edit form 
+	$.ajax({                      
 	    type: "GET",
 		url: url,
 		dataType: "html",
 		success: function (response) {
 		debugger;
 			$("#event_name").html(response);
+        }
+    });
+
+	var url = $("#addEventForm").attr("data-users-url");
+	// ajax request for fetching paid by values in add form
+	$.ajax({                       
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+		debugger;
+			$("#id_paid_by").html(response);
+        }
+    });
+
+	var url = $("#editEventForm").attr("data-users-url");
+	// ajax request for fetching paid by values in edit form
+	$.ajax({                       
+	    type: "GET",
+		url: url,
+		dataType: "html",
+		success: function (response) {
+		debugger;
+			$("#paid_by").html(response);
         }
     });
 });
@@ -132,7 +159,6 @@ $('.daterefresh').on('click', function (e) {
 	$('.inventory_datepicker_'+selSecId).val('');
 	dataTableRes.draw();
 })
-
 
 
 $("#addButtonI").click(function () {
@@ -202,11 +228,9 @@ $('#addButton').click(function() {
     for (i = 0; i < x.length; i++) {
         obj[x[i].value] = y[i].value;
 	}
-	console.log(obj);
+	
 	jsonobj = JSON.stringify(obj);
-	console.log($('#id_food').val());
 	$('#id_food').val(jsonobj);
-	console.log($('#id_food').val());
 
 	x1 = document.getElementsByClassName('itemName');
 	y1 = document.getElementsByClassName('itemPrice');
@@ -238,6 +262,32 @@ $('#updateButton').click(function() {
     }
 	jsonobj1 = JSON.stringify(obj1);
 	$('#item').val(jsonobj1);
+});
+
+// Add Name field pops up when Other is selected in Add new Product form
+$('#id_paid_by').change(function(){
+	if ($(this).val() == "Other"){
+		debugger;
+		$("#id_add_name").prop({ 'type': 'text', 'required': true });
+		$("#id_add_name").parent().parent().css("display", "block");
+	}
+	else {
+		$("#id_add_name").prop({ 'required': false });
+		$("#id_add_name").parent().parent().css("display", "none");
+	}
+});
+
+// Add Name field pops up when Other is selected in Update Product form
+$('#paid_by').change(function(){
+    if ($(this).val() == "Other"){
+    	debugger;
+    	$("#add_name").prop({ 'type': 'text', 'required': true });
+		$("#add_name").parent().parent().css("display", "block");
+     }
+     else {
+		$("#add_name").prop({ 'required': false });
+		$("#add_name").parent().parent().css("display", "none");
+	}
 });
 
 //...called when save and add another button on addOfficeEvent form is clicked...//
@@ -291,6 +341,7 @@ $("#saveNew").click(function (e) {
 			}
 			document.getElementById('addEventForm').reset()
 			$("#id_new_event").parent().parent().css("display", "none");
+			$("#id_add_name").parent().parent().css("display", "none");
 			$(".addedField").parent().parent().remove();
 		},
 		error: function (request, status, error) {
@@ -397,7 +448,15 @@ function editfunction(obj, itemLen, foodLen) {
 		}
 	}
 
-	myText[2].value = x[7].textContent;
+	var paid_by = x[7].textContent;
+	for (var i, j = 0; i = mySelect[1].options[j]; j++) {
+		if (paid_by == i.value) {
+			mySelect[1].selectedIndex = j;
+			break;
+		}
+	}
+
+	myText[2].value = x[8].textContent;
 	document.getElementById('editEventForm').action = obj.id;
 }
 
@@ -440,9 +499,7 @@ function historyfunction(obj, obj2){
 		columnDefs: [
 			{ orderable: false, targets: 2 },
 			{ orderable: false, targets: 3 },
-			{ orderable: false, targets: 8 },
-			{ orderable: false, targets: 9 },
-			{ orderable: false, targets: 11 }
+			{ orderable: false, targets: 12 }
 		],
 
 		'pageLength': 6,
@@ -463,8 +520,8 @@ function historyfunction(obj, obj2){
 
 		var row = dataTableRes1.row( tr );
 
-		var id = tr[0].children[9].innerText;
-		var history_id = tr[0].children[10].innerText;
+		var id = tr[0].children[10].innerText;
+		var history_id = tr[0].children[11].innerText;
 		var url = $("#historyTableId").attr("data-previous-url");
 		$.ajax({
 			url: url,

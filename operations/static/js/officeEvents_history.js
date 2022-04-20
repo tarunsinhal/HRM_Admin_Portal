@@ -3,19 +3,21 @@ var dataTableRes, dataTableRes1;
 function format ( d ) {
     return '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
-	'<div class="row"><div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks</span><div>'+d[8]+'</div></div></div><br>'+
-        '</div></div>';
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div></div><br>'+
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Paid By: </span>'+d[8]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks: </span>'+d[9]+'</div></div><br>'+
+    '</div></div>';
 }
 
 function format_and_diff(d,res){
 
 	b = '<div style="background: rgba(0, 105, 255, .2)"><div style=" margin-bottom: 10px;">'+
 	'<div><p class="font-weight-bold"><u>Additional Parameters</u></p></div>'+
-	'<div class="row"><div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div><br>'+
-	'<div class="col-4" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks</span><div>'+d[8]+'</div></div></div><br>'+
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Item</span>'+d[4]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Food</span>'+d[5]+'</div></div><br>'+
+	'<div class="row"><div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Paid By: </span>'+d[8]+'</div><br>'+
+	'<div class="col-6" style="text-align: left; margin-bottom: 10px"><span class="font-weight-bold">Remarks: </span>'+d[9]+'</div></div><br>'+
         '</div>'+
 		'<div style=" background: #538ddc; margin-bottom: 10px; padding: 10px">'+
 			'<div><p class="font-weight-bold" style="color: #ffff">Changes:</p></div><table><thead><tr><td></td><td class="font-weight-bold">Previous</td><td class="font-weight-bold">Current</td></tr></thead><tbody>'
@@ -66,9 +68,7 @@ $(document).ready(function () {
 		columnDefs: [
 			{ orderable: false, targets: 2 },
 			{ orderable: false, targets: 3 },
-			{ orderable: false, targets: 8 },
-			{ orderable: false, targets: 9 },
-			{ orderable: false, targets: 11 }
+			{ orderable: false, targets: 12 }
 		],
 		
 		'pageLength': 8,
@@ -90,8 +90,8 @@ $(document).ready(function () {
 
 		var row = dataTableRes.row( tr );
  
-		var id = tr[0].children[9].innerText;
-		var history_id = tr[0].children[10].innerText;
+		var id = tr[0].children[10].innerText;
+		var history_id = tr[0].children[11].innerText;
 		var url = $("#productTable1").attr("data-previous-url");
 		$.ajax({
 			url: url,
@@ -175,9 +175,7 @@ function historyfunction(obj, obj2){
 		columnDefs: [
 			{ orderable: false, targets: 2 },
 			{ orderable: false, targets: 3 },
-			{ orderable: false, targets: 8 },
-			{ orderable: false, targets: 9 },
-			{ orderable: false, targets: 11 }
+			{ orderable: false, targets: 12 }
 		],
 
 		'pageLength': 6,
@@ -198,8 +196,8 @@ function historyfunction(obj, obj2){
 
 		var row = dataTableRes1.row( tr );
 
-		var id = tr[0].children[9].innerText;
-		var history_id = tr[0].children[10].innerText;
+		var id = tr[0].children[10].innerText;
+		var history_id = tr[0].children[11].innerText;
 		var url = $("#historyTableId").attr("data-previous-url");
 		$.ajax({
 			url: url,

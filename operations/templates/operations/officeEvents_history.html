@@ -61,7 +61,8 @@
                                                 <th width=30% style="display: none;">Item</th>
                                                 <th width=30% style="display: none;">Food</th>
                                                 <th width=10% style="padding: 12px; text-align:center;">User</th>
-                                                <th width=10% style="padding: 12px; text-align:center;">Action</th> 
+                                                <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                                <th width=8% style="display: none;">paid By</th> 
                                                 <th width=8% style="display: none;">Remarks</th>                              
                                                 <th width=8% id="rowId" style="display: none;">Id</th>
                                                 <th width=8% id="rowHistoryId" style="display: none;">History Id</th>
@@ -108,7 +109,8 @@
                                         <th width=30% style="display: none;">Item</th>
                                         <th width=30% style="display: none;">Food</th>
                                         <th width=10% style="padding: 12px; text-align:center;">User</th>
-                                        <th width=10% style="padding: 12px; text-align:center;">Action</th> 
+                                        <th width=10% style="padding: 12px; text-align:center;">Action</th>
+                                        <th width=8% style="display: none;">paid By</th> 
                                         <th width=8% style="display: none;">Remarks</th>                              
                                         <th width=8% id="rowId" style="display: none;">Id</th>
                                         <th width=8% id="rowHistoryId" style="display: none;">History Id</th>
@@ -172,6 +174,7 @@
                                             <td width="10%" style="vertical-align : middle;text-align:center; padding: 2px 5px;" class="name font-weight-bold">Deleted</td>   
                                             {% endif %}                                          
                                             
+                                            <td width="8%" class="name" style="display: none;">{{ data.paid_by }}</td>
                                             <td width="8%" class="name" style="display: none;">{{ data.remarks }}</td>
                                             <td width="8%" class="name" style="display: none;">{{ data.id }}</td>
                                             <td width="8%" class="name" style="display: none;">{{ data.history_id }}</td>

@@ -17,8 +17,9 @@ urlpatterns = [
     path('operations/', include('operations.urls')),
     path('IT_Infra/', include('IT_Infra.urls')),
     path("select2/", include("django_select2.urls")),
-    path("suggestions/", include("suggestions.urls"))
-]
+    path("suggestions/", include("suggestions.urls")),
+    path('bills_and_reimbursement/', include('bills_and_reimbursement.urls')),
+] 
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

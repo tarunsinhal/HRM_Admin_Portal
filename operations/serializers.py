@@ -41,18 +41,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def to_representation(self, instance):
         rep = super(ProductSerializer, self).to_representation(instance)
         rep['product'] = instance.product.product_name
-        # try:
-        #     rep['type'] = instance.type.type_name
-        # except Exception as e:
-        #     print(e)
-        # print(rep)
         return rep
-
-    # def validate(self, data):
-    #     if data['purchase_date'] and data['next_order_date'] :
-    #         if data['purchase_date'] > data['next_order_date']:
-    #             raise serializers.ValidationError("Next Order date should be greater than purchase date!!!")
-    #     return data
 
 
 class editProductSerializer(ProductSerializer):
@@ -90,9 +79,6 @@ class AdhocItemSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError({"quantity_1": "This field is required."})
         if data['amount'] == 0:
             raise serializers.ValidationError({"amount": "Amount should not be Zero."})  
-        # if data['purchase_date'] and data['received_date'] :
-        #     if data['purchase_date'] > data['received_date']:
-        #         raise serializers.ValidationError("Received date should be greater than purchase date!!!")
         return data
 
 
@@ -167,7 +153,6 @@ class repairServicesSerializer(serializers.ModelSerializer):
             data['service_type'] = data['service_type'].strip().title()
             data['paid_by'] = data['paid_by'].strip().title()
             data['aditional_info'] = data['aditional_info'].strip().capitalize()
-            # data['add_name'] = data['add_name'].strip().title()
             if data['add_name']:
                 data['paid_by'] = data['add_name'].strip().title()
             data._mutable = False
@@ -177,12 +162,6 @@ class repairServicesSerializer(serializers.ModelSerializer):
         rep = super(repairServicesSerializer, self).to_representation(instance)
         rep['service_of'] = instance.service_of.service
         return rep
-
-    # def validate(self, data):
-    #     if data['service_date'] and data['next_service_date'] :
-    #         if data['service_date'] > data['next_service_date'] :
-    #             raise serializers.ValidationError("Next Service date should be greater than  Service date!!!")
-    #         return data
 
 
 class editRepairServicesSerializer(repairServicesSerializer):
@@ -213,7 +192,7 @@ class tshirtSerializer(serializers.ModelSerializer):
 class editTshirtSerializer(serializers.ModelSerializer):
     class Meta:
         model = t_shirt_inventory
-        fields = ('size', 'order_date', 'receiving_date', 'previous_stock', 'ordered_quantity', 'received_quantity', 'total_quantity', 'allotted', 'remaining', 'paid_by', 'additional')
+        fields = ('size', 'order_date', 'receiving_date', 'previous_stock', 'ordered_quantity', 'received_quantity', 'total_quantity', 'allotted', 'remaining', 'amount', 'paid_by', 'additional')
 
     def __init__(self, *args, instance=None, data=None, **kwargs):
         self.orderDate = t_shirt_inventory.objects.filter(id=instance.pk).values('order_date')[0]['order_date']
@@ -241,28 +220,6 @@ class operations_history(serializers.ModelSerializer):
     class Meta:
         pass
 
-# class tshirtHistorySerializer(serializers.Serializer):
-#     class Meta:
-#         model = t_shirt_inventory
-#         fields = "__all__"
-
-#     history = serializers.SerializerMethodField()
-
-
-#     def get_history(self, obj):
-#         model = obj.history.__dict__['model']
-#         fields = ['history_date', 'history_user', ]
-#         serializer = operations_history(model, obj.history.all().order_by('history_date'), fields=fields, many=True)
-#         serializer.is_valid()
-#         return serializer.data
-
-
-# class Meta:
-#     fields = ['history_date', 'size', 'receving  date', 'allotted', 'remaining', 'paid_by', 'history_type']
-
-    # class Meta:
-    #     fields = ['history_date', 'size', 'receving date', 'allotted', 'remaining', 'paid_by', 'history_type']
-    
     
 class joiningSerializer(serializers.ModelSerializer):
     class Meta:
@@ -279,7 +236,7 @@ class joiningSerializer(serializers.ModelSerializer):
 
 class editJoiningSerializer(joiningSerializer):
     class Meta(joiningSerializer.Meta):
-        fields = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date']
+        fields = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_cliq_channels', 'add_to_whatsapp_group', 'remove_from_cliq_channels', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'cliq_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date']
 
     
 class EventSerializer(serializers.ModelSerializer):
@@ -291,8 +248,11 @@ class EventSerializer(serializers.ModelSerializer):
         if data:
             data._mutable = True
             data['event_name'] = data['event_name'].strip().title()
+            data['paid_by'] = data['paid_by'].strip().title()
             if data['new_event']:
                 data['event_name'] = data['new_event'].strip().title()
+            if data['add_name']:
+                data['paid_by'] = data['add_name'].strip().title()
             data._mutable = False
             super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
@@ -323,8 +283,11 @@ class EditEventSerializer(EventSerializer):
         if data:
             data._mutable = True
             data['event_name'] = data['event_name'].strip().title()
+            data['paid_by'] = data['paid_by'].strip().title()
             if data['new_event']:
                 data['event_name'] = data['new_event'].strip().title()
+            if data['add_name']:
+                data['paid_by'] = data['add_name'].strip().title()
             data._mutable = False
             super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
         super(EventSerializer, self).__init__(instance=instance, data=data, **kwargs)
@@ -346,11 +309,3 @@ class EditEventSerializer(EventSerializer):
             if k != '' and v == '':
                 raise serializers.ValidationError({"food_price" : "This field may not be blank."})
         return data
-        
-
-# class recurring_history_serializer(serializers.Serializer):
-    
-#     def to_representation(self, instance):
-#         rep = super(recurring_history_serializer, self).to_representation(instance)
-#         rep['product'] = instance.product_id.product_name
-#         return rep

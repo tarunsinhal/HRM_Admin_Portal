@@ -1,0 +1,52 @@
+{% if moduleName == 't-shirt' %}
+    {% for rows in data  %}
+    <tr>
+        {% for coldata in rows %}
+            <td class="name" width=15% style=" padding: 2px 5px;">{{ coldata }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr>
+        <td class="name font-weight-bold" width=15% style=" padding: 2px 5px;">Total Amount</td>
+        <td class="name font-weight-bold" width=15% style=" padding: 2px 5px;">{{ amountSum }}</td>
+    </tr>
+{% elif moduleName == 'office-events' %}
+    {% for rows in data  %}
+    <tr>
+        {% for coldata in rows %}
+            {% if coldata|date %}
+                <td class="name" width=15% style=" padding: 2px 5px;">{{ coldata }}</td>
+                <td class="name" width=15% style=" padding: 2px 5px;">
+            {% else %}
+                <table style="border: none;">
+                {% for key, value in coldata.items %}
+                    <tbody style="border: none;">
+                        <tr>
+                            <td style="border: none; padding: 0px 0px 0px 10px; margin: 0px;">{{ key }}</td>
+                            <td style="border: none; padding: 0px 0px 0px 50px; margin: 0px;">{{ value }}</td>
+                        </tr>
+                    </tbody>  
+                {% endfor %}
+                </table> 
+            {% endif %}
+        {% endfor %}
+              </td>
+    </tr>
+    {% endfor %}
+    <tr>
+        <td class="name font-weight-bold" width=15% style=" padding: 2px 5px;">Total Amount</td>
+        <td class="name font-weight-bold" width=15% style=" padding: 2px 20px; text-align: right;">{{ amountSum }}</td>
+    </tr>
+{% else %}
+    {% for rows in data  %}
+    <tr>
+        {% for coldata in rows %}
+            <td class="name" width=15% style=" padding: 2px 5px;">{{ coldata }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+    <tr>
+        <td class="name font-weight-bold" width=15% style=" padding: 2px 5px;" colspan="2">Total Amount</td>
+        <td class="name font-weight-bold" width=15% style=" padding: 2px 5px;">{{ amountSum }}</td>
+    </tr>
+{% endif %}

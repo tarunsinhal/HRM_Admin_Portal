@@ -2,7 +2,6 @@ from django.urls import path
 from . import views
 from django.contrib.auth.decorators import permission_required
 
-
 app_name = 'operations'
 urlpatterns = [
     path('', views.operations_view, name='operations_view'),
@@ -48,7 +47,7 @@ urlpatterns = [
     path('ajax/load-previous-service-data', permission_required('operations.view_mro', login_url='/home/access_denied')(views.load_previous_service_history), name="ajax_load_previous_service_history"),
     path('ajax/load-service-row-data', views.service_row_history, name='service_row_history'),
     path('engagements/',views.engagements_view, name='engagements_view'),
-    path('engagements/tshirt_inventory',permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.engagements_onboarding_view), name='tshirt_inventory'),
+    path('engagements/tshirt_inventory',permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.engagements_Tshirt_view), name='tshirt_inventory'),
     path('engagements/tshirt_inventory/addTshirt', permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.addTshirt), name='addTshirts'),
     path('engagements/tshirt_inventory/edit', permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.editTshirt), name='editTshirts'),
     path('engagements/tshirt_inventory/delete', permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.deleteTshirt), name='deleteTshirts'),
@@ -69,6 +68,7 @@ urlpatterns = [
     path('ajax/load-previous-engagements-data', views.load_previous_engagements_history, name="ajax_load_previous_engagements_history"),
     path('ajax/load-boarding-row-data', views.boarding_row_history, name='boarding_row_history'),
     path('engagements/officeEvents', permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.office_events_view), name="officeEvents"),
+    path('ajax/load-officeEvents-users/', views.load_officeEvents_users, name='ajax_load_officeEvents_users'),
     path('engagements/officeEvents/addOfficeEvents', permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.addOfficeEvents), name='addOfficeEvents'),
     path('engagements/officeEvents/edit/<str:pk>', permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.editOfficeEvents), name="editOfficeEvents"),
     path('engagements/officeEvents/delete/<str:pk>', permission_required('operations.add_t_shirt_inventory', login_url='/home/access_denied')(views.deleteOfficeEvents), name="deleteOfficeEvents"),
