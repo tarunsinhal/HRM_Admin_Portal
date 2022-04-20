@@ -1,11 +1,12 @@
 import webbrowser
 from operations.models import t_shirt_inventory, recurringItems, engagementJoining
+from IT_Infra.models import it_inventory, it_inventory_item
 from django.http.response import JsonResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
 from datetime import  timedelta, date
-from .models import notifications
+from .models import notification_templates, notifications
 from rest_framework.decorators import api_view
 from django.contrib.auth.models import User
 from .forms import UpdateUserForm
@@ -89,7 +90,7 @@ def get_noitications(request):
     
     # creating the list of notifications objects and if that notification is already in notification table or not
     notification_json = [notifications(product=i['product__product_name'], item_id=i['id'], notification_date=(i['next_order_date']-timedelta(days=1)).strftime('%Y-%m-%d'),
-                        is_visited=False, notification_type=1) for i in q if (i['id'], 1) not in item_ids]
+                        is_visited=False, notification_type=notification_templates.objects.get(id=1)) for i in q if (i['id'], 1) not in item_ids]
 
     try:
         # getting the latest record's receiving date from the tshirt inventory model
@@ -100,21 +101,17 @@ def get_noitications(request):
         for i in qs:
             if (i['id'], 2) not in item_ids:
                 notification_json.append(notifications(product='T-shirt'+'-'+ i['size'], item_id=i['id'], notification_date=date.today(),
-                is_visited=False, notification_type=2))
-    # except:
-    #     pass
+                is_visited=False, notification_type=notification_templates.objects.get(id=2)))
 
-    # try:
         time_threshold_2 = date.today() - timedelta(days=7)
-        # filering the records based on conditions from the tshirt inventory model
-        egmtjoin = engagementJoining.objects.filter(joining_date=time_threshold_2.strftime('%Y-%m-%d')).values('id', 'employee_name', 'details__detail_name')
+        egmtjoin = engagementJoining.objects.filter(joining_date__lte=time_threshold_2.strftime('%Y-%m-%d')).values('id', 'employee_name', 'details__detail_name')
         
         for i in range(len(egmtjoin)):
             empDataJoin = engagementJoining.objects.filter(Q(offer_letter='')|Q(joining_letter='')|Q(joining_documents='')|Q(joining_hamper='')|Q(id_card='')|Q(induction='')|Q(loi='')|Q(add_to_skype_group='')|Q(add_to_whatsapp_group='')|Q(system_configuration='')|Q(add_upwork_account_to_team='')|Q(add_upwork_account=''), id=egmtjoin[i]['id']).values('offer_letter', 'joining_letter', 'joining_documents', 'joining_hamper', 'id_card', 'induction', 'loi', 'add_to_skype_group', 'add_to_whatsapp_group', 'system_configuration', 'add_upwork_account_to_team', 'add_upwork_account')
             if empDataJoin:
                 if (egmtjoin[i]['id'], 3) not in item_ids:
                     notification_json.append(notifications(product=(egmtjoin[i]['details__detail_name'] +' of '+ egmtjoin[i]['employee_name']), item_id=egmtjoin[i]['id'], notification_date=(date.today()),
-                    is_visited=False, notification_type=3))
+                    is_visited=False, notification_type=notification_templates.objects.get(id=3)))
 
         egmtexit = engagementJoining.objects.filter(last_working_date=time_threshold_2.strftime('%Y-%m-%d')).values('id', 'employee_name', 'details__detail_name')
         
@@ -123,8 +120,26 @@ def get_noitications(request):
             if empDataExit:
                 if (egmtexit[i]['id'], 3) not in item_ids:
                     notification_json.append(notifications(product=(egmtexit[i]['details__detail_name'] +' of '+ egmtexit[i]['employee_name']), item_id=egmtexit[i]['id'], notification_date=(date.today()),
-                    is_visited=False, notification_type=3))
-  
+                    is_visited=False, notification_type=notification_templates.objects.get(id=3)))
+
+        item_list = it_inventory_item.objects.all()
+        for item in item_list:
+            if item.type_id == 1:
+                it_item = it_inventory.objects.filter(item_id=item, status_id=2).values().order_by('-id')
+
+                if len(it_item) <= 2 and it_item: 
+                    if (it_item[0]['id'], 4) not in item_ids:
+                        notification_json.append(notifications(product=item, item_id=it_item[0]['id'], notification_date=(date.today()),
+                            is_visited=False, notification_type=notification_templates.objects.get(id=4)))
+            elif item.type_id == 2:
+                it_item = it_inventory.objects.filter(item_id=item, validity_end_date__lte=date.today() + timedelta(days=2)).values().order_by('-id')
+                if it_item:
+                    if (it_item[0]['id'], 5) not in item_ids:
+                        try:
+                            notification_json.append(notifications(product=it_item[0]['name'], item_id=it_item[0]['id'], notification_date=(date.today()),
+                                is_visited=False, notification_type=notification_templates.objects.get(id=5)))
+                        except Exception as e:
+                            print(e)
     except:
         pass
     

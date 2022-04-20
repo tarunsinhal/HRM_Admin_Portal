@@ -218,7 +218,7 @@
                     <td style="padding: 2px 5px; font-size: 0.9rem;">{{ suggestion.created_at|date:'d-m-Y' }}</td>
                     <td  style="padding: 2px 5px; font-size: 0.9rem;">{{ suggestion.created_at|time:"g:i A" }}</td>
                     <td  style="padding: 2px 5px; font-size: 0.9rem;">{{ suggestion.name|default:"Anonymous"|capfirst }}</td>
-                    <td >  {{suggestion.suggestion|slice:"0:20"}} <a  data-bs-toggle="modal" data-bs-target="#meta-{{forloop.counter}}" style="color: blue; size: 10px;padding: 2px 5px; font-size: 0.9rem;">...more </a>  </td>
+                    <td  style="padding: 2px 5px; font-size: 0.9rem;">  {{suggestion.suggestion|slice:"0:20"}} <a  data-bs-toggle="modal" data-bs-target="#meta-{{forloop.counter}}" style="color: blue; size: 10px;padding: 2px 5px; font-size: 0.9rem;">...more </a>  </td>
                     <td style="padding: 2px 5px; font-size: 0.9rem;" width="20%">{{suggestion.suggestion_status}} 
                     </td>
                     <td style="padding: 2px 5px; font-size: 0.9rem;"> <a  data-toggle="modal" data-target="#exampleModal" onclick="formedit(this.id)" id="f{{suggestion.id}}" > <i class="fa fa-pencil" style="margin-left: 4px;"></i>

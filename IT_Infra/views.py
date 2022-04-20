@@ -69,8 +69,6 @@ def edit_inventory(request, pk):
     product = it_inventory.objects.get(id=pk)   
 
     request.POST._mutable = True
-    #request.POST['system_names'] = json.dumps(request.POST.getlist('system_names'))
-    print(request.POST)
     serializer = it_inventory_edit_serializer(instance=product, data=request.POST)
     if serializer.is_valid():
         serializer.save()
@@ -149,12 +147,12 @@ class ImportHardwareInventoryView(View):
     context = {}
 
     def get(self,request, id):
-        form = ImportForm()
+        form = hardwareImportForm()
         self.context['form'] =form
         return JsonResponse({}, status=201)
 
     def post(self, request):
-        form = ImportForm(request.POST , request.FILES)
+        form = hardwareImportForm(request.POST , request.FILES)
         data_set = Dataset()
         if form.is_valid():
             file = request.FILES['import_file']
@@ -171,7 +169,7 @@ class ImportHardwareInventoryView(View):
             except Exception:
                 return JsonResponse({"error": "Check imported file & try again."},status=400)
         else:
-            self.context['form'] = ImportForm()
+            self.context['form'] = hardwareImportForm()
             return JsonResponse({"error":"Invalid file format."},status=400)
 
 
@@ -180,12 +178,12 @@ class ImportSoftwareInventoryView(View):
     context = {}
 
     def get(self,request, id):
-        form = ImportForm()
+        form = softwareImportForm()
         self.context['form'] =form
         return JsonResponse({}, status=201)
 
     def post(self, request):
-        form = ImportForm(request.POST , request.FILES)
+        form = softwareImportForm(request.POST , request.FILES)
         data_set = Dataset()
         if form.is_valid():
             file = request.FILES['import_file']
@@ -202,7 +200,7 @@ class ImportSoftwareInventoryView(View):
             except Exception as e22:
                 return JsonResponse({"error": "Check imported file & try again."},status=400)
         else:
-            self.context['form'] = ImportForm()
+            self.context['form'] = softwareImportForm()
             return JsonResponse({"error":"Invalid file format."},status=400)
 
 
@@ -287,8 +285,6 @@ def it_allotment_add_view(request):
 
     # getting all the addded images in the add form
     images = request.FILES.getlist("file[]")
-    print(images)
-    print(request.POST)
 
     allotment = it_allotment()
 
@@ -365,7 +361,6 @@ def it_allotment_add_view(request):
 
         return Response(serializer.data, status=201)
 
-    print(serializer.errors)
     return Response({}, status=400)
 
 
@@ -426,18 +421,13 @@ def load_edit_allotment_details(request):
 def load_edit_images(request):
     allotment_id = request.GET.get('allotment_id')
     images = list(damage_images.objects.filter(allotment_id=allotment_id))
-    print(images)
-    image_formset_factory = modelformset_factory(damage_images, fields='__all__', max_num=len(images))
-    image_formset = image_formset_factory(initial=images)
-    return render(request, 'IT_Infra/edit_damage_images.html', {'image_list': images, 'image_formset': image_formset})
+    # image_formset_factory = modelformset_factory(damage_images, fields='__all__', max_num=len(images))
+    # image_formset = image_formset_factory(initial=images)
+    return render(request, 'IT_Infra/edit_damage_images.html', {'image_list': images})
 
 
 # function for loading details in the edit form in IT allotment
 def it_allotment_edit_view(request, pk):
-    print(request.POST)
-    # images = request.FILES["file1"]
-
-
     allotment = it_allotment.objects.get(id=pk)
     allotment_serializer = it_allotment_serializer(instance=allotment, data=request.POST)
 
@@ -463,7 +453,6 @@ def it_allotment_edit_view(request, pk):
         if res:
             if res['id']:
                 res['allotment'] = it_allotment.objects.get(id=request.POST['hardware-'+str(i)+'-allotment'])
-                # hardware_serializer = hardware_allotted_items.objects.filter(id=res['id']).update(**res)
                 hardware_serializer = hardware_allotted_items.objects.filter(id=res['id'])
     
                 for e in hardware_serializer:
@@ -483,7 +472,6 @@ def it_allotment_edit_view(request, pk):
                 res['allotment'] = it_allotment.objects.get(employee_id=res['employee_id'])
                 hardware_serializer = hardware_allotted_items.objects.create(**res)
             if allotment_serializer.is_valid():
-                # hardware_serializer.save()
                 inventory = it_inventory.objects.get(id=request.POST['hardware-'+str(i)+'-item_name'])
                 if int(request.POST['hardware-'+str(i)+'-status']) == 1:
                     inventory.allottee_id = res['employee_id']
@@ -545,7 +533,6 @@ def it_allotment_edit_view(request, pk):
     stored_images = damage_images.objects.filter(allotment_id=pk)
 
     for img in stored_images:
-        print(img.images_for_damage.path)
         if img.images_for_damage.path not in request.POST['images']:
             os.remove(img.images_for_damage.path)
             img.delete()

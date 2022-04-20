@@ -1,10 +1,7 @@
 {% load static %}
-<link
-  rel="stylesheet"
-  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
 <link href="{% static 'home/css/common.css' %}" rel="stylesheet" />
-<div class="sidenav nav-sidebar">
+<!-- <div class="sidenav nav-sidebar">
   <a class="nav home" href="{% url 'home:home_view' %}"><i class="fa fa-home"></i> Home</a>
 
   <button class="dropdown-btn">
@@ -12,38 +9,20 @@
     <i class="fa fa-caret-down"></i>
   </button>
   <div class="dropdown-container operation">
-    <a
-      class="nav pantry"
-      style="font-size: 14px"
-      href="{% url 'operations:inventory_view' %}"
-      >Inventory</a
-    >
-    <a
-      class="nav mro_supplies"
-      style="font-size: 14px"
-      href="{% url 'operations:mro_view' %}"
-      >MRO Supplies</a
-    >
-    <a
-      class="nav engagements"
-      style="font-size: 14px"
-      href="{% url 'operations:engagements_view' %}"
-      >Engagements</a
-    >
+    <a class="nav pantry" style="font-size: 14px" href="{% url 'operations:inventory_view' %}">Inventory</a>
+    <a class="nav mro_supplies" style="font-size: 14px" href="{% url 'operations:mro_view' %}">MRO Supplies</a>
+    <a class="nav engagements" style="font-size: 14px" href="{% url 'operations:engagements_view' %}">Engagements</a>
   </div>
 
-  <a class="nav it_infrastructure" href="{% url 'IT_Infra:it_infra' %}"
-    ><i class="fa fa-home"></i> IT Infrastructure</a>
+  <a class="nav it_infrastructure" href="{% url 'IT_Infra:it_infra' %}"><i class="fa fa-home"></i> IT Infrastructure</a>
 
-  <a class="nav report" href="{% url 'home:home_view' %}"
-    ><i class="fa fa-flag"></i> Report</a>
+  <a class="nav report" href="{% url 'home:home_view' %}"><i class="fa fa-flag"></i> Report</a>
 
-  <a class="nav bills_and_reimbursement" href="{% url 'bills_and_reimbursement:bills_and_reimbursement_view' %}">
-    <i class="fa fa-inr"></i> Bills and Reimbursement </a>
+  <a class="nav bills_and_reimbursement" href="{% url 'home:home_view' %}"><i class="fa fa-inr"></i> Bills and
+    Reimbursement</a>
 
-  <a class="nav suggestions" href="{% url 'suggestions:suggestion' %}">
-    <i class="fa fa-pencil-square-o"></i> Suggestions </a>
-
+  <a class="nav suggestions" href="{% url 'suggestions:suggestion' %}"><i class="fa fa-pencil-square-o"></i>
+    Suggestions</a>
   <a class="nav notifications" href="{% url 'home:notifications' %}">
     <div class="row">
       <div class="col-9"><i class="fa fa-bell"></i> Notifications </div>
@@ -51,9 +30,125 @@
     </div> 
 </a>
 
-  <a class="nav logout" href="{% url 'authentication:logout' %}">
-    <i class="fa fa-sign-out"></i> Logout </a>
+  <a class="nav logout" href="{% url 'authentication:logout' %}"><i class="fa fa-sign-out"></i> Logout</a>
+</div> -->
+
+
+
+
+
+
+
+
+
+
+<div class="custom-bg-sidebar d-flex flex-column flex-shrink-0 p-3 text-white custom-bg-sidebar" id="body-row" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()">
+  <div id="sidebar-container" class="sidebar-expanded d-none d-md-block row sidenav nav-sidebar ">
+    <a href="https://certaintyinfotech.com/"
+      class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" style="padding-left: 5px;">
+      <div class="col" style="text-align: center;">
+        <div class="row"><span class="fa fa-2x me-2"><img src="{% static 'home/media/logo.png' %}" alt="..." width="30%" height="auto"></span></div>
+        <div class="row" id="title_heading"><span class="menu-collapsed">Admin Portal</span></div>
+      </div>
+    </a>
+    <hr>
+
+    <ul class="list-group">
+
+      <a data-toggle="collapse" aria-expanded="false" class="nav home flex-column align-items-start dropdown-btn"
+        href="{% url 'home:home_view' %}">
+        <span><i class="fa fa-home me-2"></i></span>
+        <span class="menu-collapsed">Home</span>
+      </a>
+
+      <a href="#" data-toggle="collapse" aria-expanded="false" class="flex-column align-items-start dropdown-btn">
+        <span><i class="fa fa-server me-2"></i></span>
+        <span class="menu-collapsed">Operations</span>
+        <span class="submenu-icon ml-auto"><i class="fa fa-caret-down"></i></span>
+      </a>
+      <div class="dropdown-container collapse sidebar-submenu" style="background-color: #365f34 !important;">
+        <a class="nav pantry" style="font-size: 14px"
+          href="{% url 'operations:inventory_view' %}"><span class="menu-collapsed">Inventory</span></a>
+        <a class="nav mro_supplies" style="font-size: 14px"
+          href="{% url 'operations:mro_view' %}"><span class="menu-collapsed">MRO Supplies</span></a>
+        <a class="nav engagements" style="font-size: 14px"
+          href="{% url 'operations:engagements_view' %}"><span class="menu-collapsed">Engagements</span></a>
+      </div>
+
+      <a data-toggle="collapse" aria-expanded="false"
+        class="nav it_infrastructure flex-column align-items-start dropdown-btn" href="{% url 'IT_Infra:it_infra' %}">
+        <span><i class="fa fa-home me-2"></i></span>
+        <span class="menu-collapsed">IT Infrastructure</span>
+      </a>
+
+      <a data-toggle="collapse" aria-expanded="false" class="nav report flex-column align-items-start dropdown-btn"
+        href="{% url 'home:home_view' %}">
+        <span><i class="fa fa-flag me-2"></i></span>
+        <span class="menu-collapsed">Report</span>
+      </a>
+
+      <a data-toggle="collapse" aria-expanded="false"
+        class="nav bills_and_reimbursement flex-column align-items-start dropdown-btn"
+        href="{% url 'bills_and_reimbursement:bills_and_reimbursement_view' %}">
+        <span><i class="fa fa-inr me-2"></i></span>
+        <span class="menu-collapsed">Bills & Reimbursement</span>
+      </a>
+
+      <a data-toggle="collapse" aria-expanded="false" class="nav suggestions flex-column align-items-start dropdown-btn"
+        href="{% url 'suggestions:suggestion' %}">
+        <span><i class="fa fa-pencil-square-o me-2"></i></span>
+        <span class="menu-collapsed">Suggestions</span>
+      </a>
+
+      <a data-toggle="collapse" aria-expanded="false"
+        class="nav notifications flex-column align-items-start dropdown-btn" href="{% url 'home:notifications' %}">
+        <div class="row">
+          <div class="col-10">
+            <span><i class="fa fa-bell me-2"></i></span>
+            <span class="menu-collapsed">Notifications</span>
+          </div>
+          <div class="col-2 notification-circle" id="notification"></div>
+        </div>
+      </a>
+
+      <a data-toggle="collapse" aria-expanded="false" class="nav logout flex-column align-items-start dropdown-btn"
+        href="{% url 'authentication:logout' %}">
+        <span><i class="fa fa-sign-out me-2"></i></span>
+        <span class="menu-collapsed">Logout</span>
+      </a>
+
+      <hr>
+
+      <a href="#" data-toggle="sidebar-colapse"
+        class="nav flex-column align-items-start dropdown-btn">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span id="collapse-icon" class="fa fa-2x mr-3 me-2"></span>
+          <span id="collapse-text" class="menu-collapsed">Collapse</span>
+        </div>
+      </a>
+      <!-- <a href="#submenu1" data-toggle="collapse" aria-expanded="false"
+        class="list-group-item list-group-item-action flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-start align-items-center">
+          <span class="fa fa-dashboard fa-fw mr-3"></span>
+          <span class="menu-collapsed">Dashboard</span>
+          <span class="submenu-icon ml-auto"></span>
+        </div>
+      </a>
+      <div id='submenu1' class="collapse sidebar-submenu">
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+          <span class="menu-collapsed">Charts</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+          <span class="menu-collapsed">Reports</span>
+        </a>
+        <a href="#" class="list-group-item list-group-item-action bg-dark text-white">
+          <span class="menu-collapsed">Tables</span>
+        </a>
+      </div> -->
+    </ul>
+  </div>
 </div>
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 <script src="{% static 'home/js/common.js' %}"></script>

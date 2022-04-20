@@ -224,7 +224,7 @@ input:checked + .slider:before {
                     <h4 class="card-title">{{ user.username|title }}</h4>
                     <p class="text-center">
                       <span  title="View User" data-toggle="tooltip"  data-bs-toggle="modal" data-bs-target="#user-{{user.id}}"  ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE8F4;</i></span>
-                      <span   title="Delete User" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#delete-user-{{user.id}}" ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE872;</i></span>
+                      <!-- <span   title="Delete User" data-toggle="tooltip" data-bs-toggle="modal" data-bs-target="#delete-user-{{user.id}}"><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE872;</i></span> -->
                       <a href="{% url 'home:user_update' user.id %}" ><i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;" >&#xE254;</i></a>
                       <span onclick="fetchPermissions(this.id)" id="{{user.id}}" > <i class="material-icons" style="color:grey;margin: 2px;cursor: pointer;"  >&#xef3d;</i></span>
                     </p>

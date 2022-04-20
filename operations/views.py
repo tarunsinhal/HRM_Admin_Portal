@@ -157,6 +157,7 @@ def editTshirt(request):
         if serializer.is_valid():
             serializer.save()
         else:
+            print(serializer.errors)
             return Response(serializer.errors, status=400)
     return Response({}, status=201)
 

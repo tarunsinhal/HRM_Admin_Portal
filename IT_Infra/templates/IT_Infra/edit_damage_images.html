@@ -26,8 +26,8 @@
 <label class="fieldlabels">Images for damage: </label>
 <div>
     <input name="file[]" accept="image/*" type="file" onchange="loadFile(event)" style="margin-bottom: 5px;">
-    <p><img class="output" width="200" /></p>
-    <button onclick="getPreview()" id="previewImage" style="display: none;">Preview</a>
+    <p><a target="_blank"><img class="output" width="200" /></a></p>
+    <button onclick="return this.parentNode.remove()" style="border: 1px; float: right; margin-bottom: 5px">Remove</a>
 </div>
 
 {% endif %}

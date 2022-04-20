@@ -13,9 +13,9 @@
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
-<link href="{% static  'css/compiled-4.19.2.min.css' %}" rel="stylesheet">
+<link href="{% static  'IT_Infra/css/compiled-4.19.2.min.css' %}" rel="stylesheet">
 
-<link href="{% static 'css/it_allotment.css' %}" rel="stylesheet">
+<link href="{% static 'IT_Infra/css/it_allotment.css' %}" rel="stylesheet">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.css">
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 
@@ -37,7 +37,7 @@
             <div class="table-title">
                 <div class="row">
                     <div class="col-sm-1">
-                        <img src="{% static 'img/employee-2.svg' %}" height="100%" width="100%" alt="...">
+                        <img src="{% static 'IT_Infra/img/employee-2.svg' %}" height="100%" width="100%" alt="...">
                     </div>
                     <div class="col-sm-7" id="foodtitle">
                         <h2><b>IT-Allotment</b></h2>
@@ -322,7 +322,7 @@
                                                     <div class="col">
                                                         <input name="file[]" accept="image/*" type="file" onchange="loadFile(event)" style="margin-bottom: 5px;">
                                                         <p><a target="_blank"><img class="output" width="200" /></a></p>
-                                                        <button onclick="getPreview()" id="previewImage" style="display: none;">Preview</a>
+                                                        <!-- <button onclick="getPreview()" id="previewImage" style="display: none;">Preview</a> -->
                                                         <!-- <button onclick="return this.parentNode.remove()" style="border: none; float: right;">Remove</button> -->
                                                     </div>
                                                     <!-- <div id="preview"></div> -->
@@ -768,7 +768,7 @@
 {% block addextra %}
 
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-<script src="{% static 'js/it_allotment.js' %}"></script>
+<script src="{% static 'IT_Infra/js/it_allotment.js' %}"></script>
 
 <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.js"></script>
 
