@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+      MYSQL_DATABASE: admin_portal_db
+      # MYSQL_USER: root
+      # MYSQL_PASSWORD: root
+    ports:
+      - 13306:3306
+    volumes:
+      - myvolume:/var/lib/mysql
+  app:
+    build: .
+    volumes:
+      - ../:/app
+    ports:
+      - 9000:80
+    depends_on:
+      - db
+
+volumes:
+  myvolume:

@@ -3,11 +3,12 @@ from . import views
 from django.conf import settings
 from django.conf.urls.static import static
 from urllib.parse import quote
+from django.contrib.auth.decorators import permission_required
 
 app_name = 'bills_and_reimbursement'
 
 urlpatterns = [
-    path('', views.bills_and_reimbursement_view, name="bills_and_reimbursement_view"),
+    path('', permission_required('bills_and_reimbursement.view_bills_and_reimbursement', login_url='/home/access_denied/')(views.bills_and_reimbursement_view), name="bills_and_reimbursement_view"),
     path('user_bills_details/<str:user>', views.user_bills_details_view, name="user_bills_details_view"),
     path('ajax/load-data/', views.load_module_data, name='ajax_load_data'),
     path('ajax/images-data/', views.get_images, name='ajax_images_data'),

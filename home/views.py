@@ -17,7 +17,6 @@ from django.contrib.auth.models import Group
 from django.core import serializers
 import json
 import webbrowser
-from win10toast_click import ToastNotifier
 from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.template.loader import render_to_string
@@ -26,20 +25,20 @@ from django.core.mail import BadHeaderError, send_mail
 from django.conf import settings
 
 
-def open_notification():
-    webbrowser.open('http://localhost:8000/home/notifications/')
+# def open_notification():
+#     webbrowser.open('http://localhost:8000/home/notifications/')
 
-@login_required(login_url='/auth/login')
-def desktop_notification(request):
-    toaster = ToastNotifier()
-    n = list(notifications.objects.filter(is_visited=False))
-    if len(n) > 0:
-        toaster.show_toast('Notification for Adminto',
-            'Click and view that notification page of Adminto.',
-            icon_path = 'media/logo.svg',
-            duration=5,
-            threaded=True,
-            callback_on_click=open_notification)
+# @login_required(login_url='/auth/login')
+# def desktop_notification(request):
+#     toaster = ToastNotifier()
+#     n = list(notifications.objects.filter(is_visited=False))
+#     if len(n) > 0:
+#         toaster.show_toast('Notification for Adminto',
+#             'Click and view that notification page of Adminto.',
+#             icon_path = 'media/logo.svg',
+#             duration=5,
+#             threaded=True,
+#             callback_on_click=open_notification)
 
 
 @login_required(login_url='/auth/login')
@@ -145,7 +144,7 @@ def get_noitications(request):
     
     # bulk creating notifications from notification json in notifications table
     entries = notifications.objects.bulk_create(notification_json)
-    return JsonResponse(notification_json, safe=False)
+    return JsonResponse(entries, safe=False)
 
 
 # To get the active notifications count from notification table

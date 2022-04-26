@@ -35,7 +35,6 @@ def user_login(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             user = User.objects.filter(email=form.cleaned_data['email']).first()
-            print(user)
             user = authenticate(request, username=user, password=form.cleaned_data['password'])
             if user is not None and  user.is_authenticated: # pylint: disable=no-else-return
                 login(request, user)
