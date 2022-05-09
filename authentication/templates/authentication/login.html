@@ -66,13 +66,13 @@
 
 {% endblock content %}
 
-{% block scripts %}
+{% block script %}
 
 	{% comment %} clear all input field when page loads {% endcomment %}
 	<script>
 		$(document).ready(function(){
-			$('input').val('');
+			$('.input100').val('');
 		});
 	</script>
 
-{% endblock scripts %}
+{% endblock script %}

@@ -65,6 +65,6 @@
 
         $(thisAlert).removeClass('alert-validate');
     }
-    
+   
     
 })(jQuery);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load static %}
+{% csrf_token %}
 <html lang="en">
 <head>
 	<title>Admin Portal</title>
@@ -10,7 +11,9 @@
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'authentication/vendor/bootstrap/css/bootstrap.min.css' %}">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="{% static 'authentication/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}">
+	{% comment %} <link rel="stylesheet" type="text/css" href="{% static 'authentication/fonts/font-awesome-4.7.0/css/font-awesome.min.css' %}"> {% endcomment %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <!--===============================================================================================-->
 	<link rel="stylesheet" type="text/css" href="{% static 'authentication/fonts/iconic/css/material-design-iconic-font.min.css' %}">
 <!--===============================================================================================-->

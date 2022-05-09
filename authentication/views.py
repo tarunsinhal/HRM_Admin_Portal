@@ -19,13 +19,14 @@ from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import LoginForm
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
 
 
 # function for authenicating the user login and then redirecting it to the homepage
-@cache_control(no_cache=True, must_revalidate=True, no_store=True)
+# @cache_control(no_cache=True, must_revalidate=True, no_store=True)
 def user_login(request):
     """
     This function is used to authenticate the user login.
@@ -42,7 +43,6 @@ def user_login(request):
             else:
                 messages.error(request, 'Invalid email or password!')
                 return render(request, 'authentication/login.html', {'form': form})
-            
     return render(request, 'authentication/login.html', {'form': form})
 
 
