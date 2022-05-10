@@ -8,7 +8,7 @@ urlpatterns = [
     path('notifications/', views.notifications_view, name='notifications'),
     path('notifications/all', views.all_notifications, name='all_notifications'),
     path('ajax/get_notifications', views.get_noitications, name="get_notifications"),
-    # path('ajax/desktop_notification', views.desktop_notification, name="desktop_notification"),
+    path('ajax/desktop_notification', views.desktop_notification, name="desktop_notification"),
     path('ajax/get_notifications_count', views.get_active_notifications, name="active_notifications"),
 
     path('profile/', views.profile, name='profile'),

@@ -50,6 +50,8 @@ INSTALLED_APPS = [
     "import_export",
     "django_select2",
     "suggestions",
+    "bills_and_reimbursement",
+    "webpush",
 ]
 
 MIDDLEWARE = [
@@ -93,9 +95,9 @@ DATABASES = {
         # 'ENGINE': 'django.db.backends.sqlite3',
         # 'NAME': str(os.path.join(BASE_DIR, "db.sqlite3")),
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "admin_portal1",
+        "NAME": "adminto",
         "USER": "root",
-        "PASSWORD": "9826",
+        "PASSWORD": "root",
         "HOST": "localhost",
         "PORT": "3306",
     },
@@ -103,7 +105,7 @@ DATABASES = {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'NAME': 'hrm',
     #     'USER': 'root',
-    #     'PASSWORD': 'Certainty@1234',
+    #     'PASSWORD': 'root',
     #     'HOST': 'localhost',
     #     'PORT': '3306',
     # }
@@ -127,6 +129,12 @@ AUTH_PASSWORD_VALIDATORS = [
         "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
+
+WEBPUSH_SETTINGS = {
+   "VAPID_PUBLIC_KEY": "BMeXYh8SppZdWVlwrWlF7Grnd3-yEalH6b9Y16VaJSUperegyjz9c3FJhAlYycB2CJ6brPwcii6N263VfBXBDW8",
+   "VAPID_PRIVATE_KEY": "W6AukMyvoEgL7z1DWyeMoQ8KbIy0ujoursHDMtk8yrY",
+   "VAPID_ADMIN_EMAIL": "hr.certainty01@gmail.com"
+}
 
 
 # Internationalization

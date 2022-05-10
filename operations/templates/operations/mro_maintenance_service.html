@@ -230,9 +230,9 @@
             <div class="table-title">
                 {% regroup service|dictsort:'service_of' by service as service_list %}
                 
-                    <span style="float: left;">
-                        <span style="margin-left: 3px;">Service date:</span>
-                        <input style="margin-left: 38px;" type="date" class="inventory_datepicker_1" id="pur_min_1" name="pur_min_1" data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_1" id="pur_max_1" name="pur_max_1" data-attr-type="pur"/>
+                    <span style="margin-left: 2px;">
+                        <span>Service date:</span>
+                        <input style="margin-left: 50px;" type="date" class="inventory_datepicker_1" id="pur_min_1" name="pur_min_1" data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_1" id="pur_max_1" name="pur_max_1" data-attr-type="pur"/>
                     </span>
                     
                     <!-- <h2 class="font-weight-bold" style="color: black; text-align: center; font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; font-size: 30px;">Service/Repair List</h2> -->
@@ -242,12 +242,12 @@
                         </button>
                     </a>
                     <br>
-                    <span style="float: left;">
-                        <span style="margin-left: 3px;">Next Service date:</span>
-                        <input type="date" class="inventory_datepicker_1" id="next_min_1" name="next_min_1" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_1" id="next_max_1" name="next_max_1" data-attr-type="next"/>
+                    <span style="margin-left: 2px;">
+                        <span>Next Service date:</span>
+                        <input style="margin-left: 12px;" type="date" class="inventory_datepicker_1" id="next_min_1" name="next_min_1" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_1" id="next_max_1" name="next_max_1" data-attr-type="next"/>
                     </span>
                 
-                    <span style="float: left; margin-left: 5px;">
+                    <span style="margin-left: 5px;">
                         <i data-section-id="1" class="daterefresh fa fa-rotate-right" aria-hidden="true"></i>
                     </span>
 

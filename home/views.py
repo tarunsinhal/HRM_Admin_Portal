@@ -1,7 +1,7 @@
 import webbrowser
 from operations.models import t_shirt_inventory, recurringItems, engagementJoining
 from IT_Infra.models import it_inventory, it_inventory_item
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponse
 from django.shortcuts import render,redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import cache_control
@@ -23,22 +23,17 @@ from django.template.loader import render_to_string
 from django.utils.encoding import force_bytes
 from django.core.mail import BadHeaderError, send_mail
 from django.conf import settings
+from webpush import send_user_notification
 
 
-# def open_notification():
-#     webbrowser.open('http://localhost:8000/home/notifications/')
-
-# @login_required(login_url='/auth/login')
-# def desktop_notification(request):
-#     toaster = ToastNotifier()
-#     n = list(notifications.objects.filter(is_visited=False))
-#     if len(n) > 0:
-#         toaster.show_toast('Notification for Adminto',
-#             'Click and view that notification page of Adminto.',
-#             icon_path = 'media/logo.svg',
-#             duration=5,
-#             threaded=True,
-#             callback_on_click=open_notification)
+# function used for getting desktop notification using webpush library
+@login_required(login_url='/auth/login')
+def desktop_notification(request):
+    n = list(notifications.objects.filter(is_visited=False))
+    if len(n) > 0:
+        payload = {"head": "Notification for Adminto!", "body": "Click and view that notification page of Adminto.", "url": "http://localhost:8000/home/notifications/"}
+        send_user_notification(user=request.user, payload=payload,   ttl=100)
+    return HttpResponse(status=400)
 
 
 @login_required(login_url='/auth/login')

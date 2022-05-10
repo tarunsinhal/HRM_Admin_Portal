@@ -409,9 +409,9 @@
             <div class="table-title">
                 <div>
                 {% regroup tshirtData by receiving_date as groupedData %}
-                    <span style="float: left;">
-                        <span style="margin-left: 3px;">Order date:</span>
-                        <input style="margin-left: 30px;" type="date" class="inventory_datepicker_1" id="pur_min_1" name="pur_min_1" data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_1" id="pur_max_1" name="pur_max_1" data-attr-type="pur"/>
+                    <span style="margin-left: 3px;">
+                        <span>Order date:</span>
+                        <input style="margin-left: 40px;" type="date" class="inventory_datepicker_1" id="pur_min_1" name="pur_min_1" data-attr-type="pur"/> to <input type="date" class="inventory_datepicker_1" id="pur_max_1" name="pur_max_1" data-attr-type="pur"/>
                     </span>
                     <a type="button" href="{% url 'operations:tshirt_history' %}"><button style="background-color: #5f4266; color: white; float: right;margin: 6px; padding: 8px; border-radius: 3px; padding-left: 14px; padding-right: 14px; border: 1px solid #635e5e; font-size: 14px;">
                         <span><i class="fa fa-history" aria-hidden="true"></i></span></i><span style="margin-left: 5px;">History</span>
@@ -422,12 +422,12 @@
                         <span>Import</span>
                     </button>
                     <br>
-                    <span style="float: left;">
-                        <span style="margin-left: 3px;">Receiving date:</span>
-                        <input type="date" class="inventory_datepicker_1" id="next_min_1" name="next_min_1" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_1" id="next_max_1" name="next_max_1" data-attr-type="next"/>
+                    <span style="margin-left: 3px;">
+                        <span>Receiving date:</span>
+                        <input style="margin-left: 10px;" type="date" class="inventory_datepicker_1" id="next_min_1" name="next_min_1" data-attr-type="next"/> to <input type="date" class="inventory_datepicker_1" id="next_max_1" name="next_max_1" data-attr-type="next"/>
                     </span>
                 
-                    <span style="float: left; margin-left: 5px;">
+                    <span style="margin-left: 5px;">
                         <i data-section-id="1" class="daterefresh fa fa-rotate-right" aria-hidden="true"></i>
                     </span>
                     <br>

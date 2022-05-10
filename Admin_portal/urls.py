@@ -3,13 +3,14 @@ This is the urls.py file for the Admin_portal app.
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, re_path
 from django.urls.conf import include
 from django.conf import settings
 from django.conf.urls.static import static
 from django.http import HttpResponseRedirect
 
 urlpatterns = [
+    re_path(r'^webpush/', include('webpush.urls')),
     path('admin/', admin.site.urls),
     path("",lambda request:HttpResponseRedirect('/home/')),
     path('auth/', include('authentication.urls')),
