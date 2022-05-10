@@ -27,7 +27,7 @@ function fetchPermissions(id) {
           let assigned = assigned_groups.includes(headingGroupObject[i].name+'@'+group);
           let checkbox = `<input type="checkbox" name="group-${id}" value="${headingGroupObject[i].name+'@'+group}" ${ assigned ? "checked" : ""}>`;
           let innerHTML = `
-            ${j==0?`<br> <h6 class='fw-bold' >${heading.split(" ").map(el=>el.slice(0,1).toUpperCase()+el.slice(1)).join(" ")}:</h6>`:''}
+            ${j==0?`<br> <h6 class='fw-bold' >${heading.replace('_'," ").split(" ").map(el=>el.slice(0,1).toUpperCase()+el.slice(1)).join(" ")}:</h6>`:''}
                   <div class='row'>
                       <div class = 'col-2'>
                       </div>

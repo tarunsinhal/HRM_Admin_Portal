@@ -1,11 +1,12 @@
 from django.urls import path
 from . import views
+from django.contrib.auth.decorators import permission_required
 
 app_name = 'home'
 urlpatterns = [
     path('', views.home_view, name='home_view'),
     path("access_denied/", views.access_denied, name="access_denied"),
-    path('notifications/', views.notifications_view, name='notifications'),
+    path('notifications/', permission_required('home.view_notifications',login_url='/home/access_denied/')(views.notifications_view), name='notifications'),
     path('notifications/all', views.all_notifications, name='all_notifications'),
     path('ajax/get_notifications', views.get_noitications, name="get_notifications"),
     path('ajax/desktop_notification', views.desktop_notification, name="desktop_notification"),

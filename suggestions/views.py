@@ -16,7 +16,7 @@ def suggestion(request):
     """
     This function is used to render the suggestion page.
     """
-    if request.user.is_staff:
+    if request.user.is_authenticated:
         all_suggestions = SuggestionModel.objects.all()[::-1][:7] # pylint : disable=C0301
         form = SuggestionForm()
         return render(

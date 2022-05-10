@@ -1,0 +1,7 @@
+bills_and_reimbursement@bills_and_reimbursement- can view bills_reimburse
+IT_infra@IT_allotment - can view it_allotment
+IT_infra@IT_inventory - can view it_inventory
+notifications@notifications - can view notifications
+operations@engagement - Can add t_shirt_inventory
+operations@mro - can veiw vendor contact list
+suggestions@suggestions - can view suggestion model

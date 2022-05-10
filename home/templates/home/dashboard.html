@@ -51,7 +51,11 @@
               {% if field.name == 'password1' or field.name == 'password2' %}
               {% else %}
                 <span class='lab'>
+                  {% if field.name == 'username' %}
+                  {{ field.label_tag }} (No Spaces Allowed)
+                  {% else %}  
                   {{ field.label_tag }}
+                  {% endif %}
                 </span>
                 {{field}}
               {% endif %}
