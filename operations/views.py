@@ -111,14 +111,12 @@ def addTshirt(request):
     # checking if the formset is valid or not and then saving that form
     if formset.is_valid():
         for form in formset:
-            # print(form.cleaned_data)
             serializer = tshirtSerializer(data=form.cleaned_data) 
             if serializer.is_valid():
                 serializer.save()
             else:
                 return Response(serializer.errors, status=400)
         return Response({}, status=201)
-    print(formset.errors)
     return Response({'error':formset.errors}, status=201)
 
 
@@ -157,7 +155,6 @@ def editTshirt(request):
         if serializer.is_valid():
             serializer.save()
         else:
-            print(serializer.errors)
             return Response(serializer.errors, status=400)
     return Response({}, status=201)
 
@@ -315,12 +312,9 @@ def editProducts(request, pk):
         if notification:
             notification.delete()
     
-    print(request.POST)
-
     serializer = editProductSerializer(instance=product, data=request.POST)
     
     if serializer.is_valid():
-        print(serializer.validated_data)
         serializer.save()
         return Response(serializer.data, status=201)
     return Response(serializer.errors, status=400)
@@ -802,8 +796,8 @@ def addJoining(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
+
 
 # view for editing the joining details of an employee
 @api_view(['POST'])
@@ -814,7 +808,6 @@ def editJoining(request, pk):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201) 
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 # view for deleting the joining details of an employee
@@ -965,7 +958,6 @@ def addOfficeEvents(request):
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
-    print(serializer.errors)
     return Response(serializer.errors, status=400)
 
 @api_view(['POST'])

@@ -42,7 +42,7 @@
 
 
 
-<div class="custom-bg-sidebar d-flex flex-column flex-shrink-0 p-3 text-white custom-bg-sidebar" id="body-row" onmouseover="toggleSidebar()" onmouseout="toggleSidebar()">
+<div class="custom-bg-sidebar d-flex flex-column flex-shrink-0 p-3 text-white custom-bg-sidebar" id="body-row">
   <div id="sidebar-container" class="sidebar-expanded d-none d-md-block row sidenav nav-sidebar ">
     <a href="https://certaintyinfotech.com/"
       class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none" style="padding-left: 5px;">
@@ -55,7 +55,7 @@
 
     <ul class="list-group">
 
-      <a data-toggle="collapse" aria-expanded="false" class="nav home flex-column align-items-start dropdown-btn"
+      <a data-toggle="collapse" aria-expanded="false" class="nav home flex-column align-items-start"
         href="{% url 'home:home_view' %}">
         <span><i class="fa fa-home me-2"></i></span>
         <span class="menu-collapsed">Home</span>
@@ -76,32 +76,32 @@
       </div>
 
       <a data-toggle="collapse" aria-expanded="false"
-        class="nav it_infrastructure flex-column align-items-start dropdown-btn" href="{% url 'IT_Infra:it_infra' %}">
+        class="nav it_infrastructure flex-column align-items-start" href="{% url 'IT_Infra:it_infra' %}">
         <span><i class="fa fa-home me-2"></i></span>
         <span class="menu-collapsed">IT Infrastructure</span>
       </a>
 
-      <a data-toggle="collapse" aria-expanded="false" class="nav report flex-column align-items-start dropdown-btn"
+      <a data-toggle="collapse" aria-expanded="false" class="nav report flex-column align-items-start"
         href="{% url 'home:home_view' %}">
         <span><i class="fa fa-flag me-2"></i></span>
         <span class="menu-collapsed">Report</span>
       </a>
 
       <a data-toggle="collapse" aria-expanded="false"
-        class="nav bills_and_reimbursement flex-column align-items-start dropdown-btn"
+        class="nav bills_and_reimbursement flex-column align-items-start"
         href="{% url 'bills_and_reimbursement:bills_and_reimbursement_view' %}">
         <span><i class="fa fa-inr me-2"></i></span>
         <span class="menu-collapsed">Bills & Reimbursement</span>
       </a>
 
-      <a data-toggle="collapse" aria-expanded="false" class="nav suggestions flex-column align-items-start dropdown-btn"
+      <a data-toggle="collapse" aria-expanded="false" class="nav suggestions flex-column align-items-start"
         href="{% url 'suggestions:suggestion' %}">
         <span><i class="fa fa-pencil-square-o me-2"></i></span>
         <span class="menu-collapsed">Suggestions</span>
       </a>
 
       <a data-toggle="collapse" aria-expanded="false"
-        class="nav notifications flex-column align-items-start dropdown-btn" href="{% url 'home:notifications' %}">
+        class="nav notifications flex-column align-items-start" href="{% url 'home:notifications' %}">
         <div class="row">
           <div class="col-10">
             <span><i class="fa fa-bell me-2"></i></span>
@@ -111,7 +111,7 @@
         </div>
       </a>
 
-      <a data-toggle="collapse" aria-expanded="false" class="nav logout flex-column align-items-start dropdown-btn"
+      <a data-toggle="collapse" aria-expanded="false" class="nav logout flex-column align-items-start"
         href="{% url 'authentication:logout' %}">
         <span><i class="fa fa-sign-out me-2"></i></span>
         <span class="menu-collapsed">Logout</span>
