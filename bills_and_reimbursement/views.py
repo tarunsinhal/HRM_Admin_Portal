@@ -10,6 +10,7 @@ from .models import bills_reimburse, bills_images
 from django.contrib.auth.models import User
 from itertools import chain
 from operations.models import recurringItems, AdhocItems, t_shirt_inventory, officeEvents, repairServices
+from IT_Infra.models import it_inventory
 from datetime import datetime, date, timedelta
 from django.http import JsonResponse, HttpResponse
 from django.db.models import Sum
@@ -24,6 +25,7 @@ def bills_and_reimbursement_view(request):
     paid_by_tshirt = t_shirt_inventory.objects.all().values_list('paid_by', flat=True)
     paid_by_event = officeEvents.objects.all().values_list('paid_by', flat=True)
     paid_by_repair = repairServices.objects.all().values_list('paid_by', flat=True)
+    # paid_by_repair = it_inventory.objects.all().values_list('paid_by', flat=True)
     distinct_values = set(chain(users, paid_by_recurring, paid_by_adhoc, paid_by_tshirt,paid_by_event, paid_by_repair))
     PAID_BY = []
     for value in distinct_values:
@@ -94,6 +96,14 @@ def user_bills_details_view(request, user):
             newdate = data[0].strftime("%B, %Y")
             statusdict[newdate] = data[1]
 
+        # itInventoryRes = it_inventory.objects.filter(purchase_date__gte=newStartDate, purchase_date__lte=newEndDate, paid_by=user).values_list('purchase_date', 'amount')  
+        # for data in  itInventoryRes:
+        #     datadict = {}
+        #     newdate = data[0].strftime("%B, %Y")
+        #     datadict["date"] = newdate
+        #     datadict["amount"] = data[1]
+        #     resList.append(datadict)
+
         fromDate = newStartDate.strftime("%Y-%m")
         toDate = newDate.strftime("%Y-%m")
         return render(request, 'bills_and_reimbursement/user_bills_details.html', {'resList': resList, 'user': user, 'statusdict': statusdict, 'startDate': startDate, 'endDate': endDate, 'billsReimburseForm': bills_reimburse_form, 'fromDate': fromDate, 'toDate': toDate})
@@ -144,6 +154,12 @@ def load_module_data(request):
                 if type(Val) == dict:
                     for dictVal in Val.values():
                         amountSum += int(dictVal)
+
+    # else:
+    #     data = it_inventory.objects.filter(purchase_date__month=m, purchase_date__year=y, paid_by=userName).values_list('purchase_date', 'item__item', 'amount')
+    #     amountSum = 0
+    #     for val in data:
+    #         amountSum += val[2]
     
     return render(request, 'bills_and_reimbursement/moduleData.html' , {'data': data, 'amountSum': amountSum, 'moduleName': moduleName})
 
@@ -159,6 +175,7 @@ def add_images_form(request, user, dateVal, startDate, endDate):
     newDate = datetime.strptime(dateVal, "%B, %Y")
     stored_images = bills_images.objects.filter(image_date=newDate, image_user=user)
 
+    print(request.POST.getlist('images'))
     for img in stored_images:
         if img.bills_images not in request.POST.getlist('images'):
             os.remove(img.bills_images.path)
@@ -175,5 +192,6 @@ def get_images(request):
     dateVal = request.GET.get('dateVal')
     newDate = datetime.strptime(dateVal, "%B, %Y")
     imagesRes =list(bills_images.objects.filter(image_date=newDate, image_user=user).values_list('bills_images'))
+    print(imagesRes)
     return render(request, 'bills_and_reimbursement/bills_images.html', {'image_list': imagesRes})
     # return JsonResponse({'imagelist': imagesRes})

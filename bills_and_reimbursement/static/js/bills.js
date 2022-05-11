@@ -26,13 +26,25 @@ $(document).ready(function(){
 
 var loadFile = function(event) {
     debugger
+	var extname = event.target.value.split('.')[1]
 	// var image = document.getElementById('output');
     
     var image_anchor = event.target.nextElementSibling.children[0];
     var image = event.target.nextElementSibling.children[0].children[0]
     // event.target.nextElementSibling.style.display = "block";
-    image_anchor.href = URL.createObjectURL(event.target.files[0]);
-	image.src = URL.createObjectURL(event.target.files[0]);
+
+	if (extname == "pdf"){
+		image_anchor.href = URL.createObjectURL(event.target.files[0]);
+		image.src = '/static/img/pdf.png';
+	}
+	else if (extname == "docx"){
+		image_anchor.href = URL.createObjectURL(event.target.files[0]);
+		image.src = '/static/img/word.webp';
+	}
+	else{
+		image_anchor.href = URL.createObjectURL(event.target.files[0]);
+		image.src = URL.createObjectURL(event.target.files[0]);
+	}
 };
 
 
@@ -49,7 +61,6 @@ function addImageInput(evt) {
     var newInput = document.createElement('input')
     newInput.type = 'file'
     newInput.name = 'file[]'
-    newInput.accept = 'image/*'
     newInput.onchange = loadFile
     newInput.style.cssText = 'margin-bottom: 2px;'
 

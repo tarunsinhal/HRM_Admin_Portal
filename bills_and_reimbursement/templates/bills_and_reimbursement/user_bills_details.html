@@ -90,16 +90,10 @@
                             aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-
-                        <!-- <div class="row g-3">
-                            <div class="container"> -->
-                                <div class="row" id="edit_images">
-                                </div>
-                                <a onclick="addImageInput(this)" style="color: blue;">
-                                    <i class="fa fa-plus edit_images"></i> Add more images</a>
-                            <!-- </div>
-                        </div> -->
-
+                        <div class="row" id="edit_images">
+                        </div>
+                        <a onclick="addImageInput(this)" style="color: blue;">
+                            <i class="fa fa-plus edit_images"></i> Add more images</a>
                     </div>
                     <div class="modal-footer">
                         <input type="submit" value="Update" class="btnStyle" id="image-btn">
@@ -263,11 +257,12 @@
                                                         <i class="fa fa-caret-down fa-lg" style="margin: 3px 0px 0px 3px; padding: 0px;"></i>
                                                     </button>
                                                     <div id="details" style="display: none;">
+                                                        <button id="mro-repair/service" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">MRO</button>
                                                         <button id="adhoc" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">Adhoc</button>
                                                         <button id="t-shirt" data-bs-toggle="modal" data-bs-target="#detailsModal1" onclick=detailfunction1(this) style="margin-bottom: 4px;">T-Shirt</button>
                                                         <button id="recurring" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">Recurring</button>
+                                                        <button id="it-inventory" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">IT Inventory</button>
                                                         <button id="office-events" data-bs-toggle="modal" data-bs-target="#detailsModal2" onclick=detailfunction2(this) style="margin-bottom: 4px;">Office Events</button>
-                                                        <button id="mro-repair/service" data-bs-toggle="modal" data-bs-target="#detailsModal" onclick=detailfunction(this) style="margin-bottom: 4px;">MRO Repair/Service</button>
                                                     </div>
                                                 </div>
                                             </td>
