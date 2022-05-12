@@ -4,10 +4,10 @@ from django.http import request
 from rest_framework import serializers
 from .models import hardware_allotted_items, it_inventory, it_allotment, it_inventory_type, it_inventory_item, software_allotted_items, it_inventory_status
 import json
-from django.db import connection
+# from django.db import connection
 
 
-cursor = connection.cursor()
+# cursor = connection.cursor()
 
 
 class it_inventory_serializer(serializers.ModelSerializer):
@@ -94,11 +94,11 @@ class it_allotment_serializer(serializers.ModelSerializer):
         if data:
             if data['employee_name'] and instance == None:
                 data._mutable = True
-                cursor.execute("SELECT full_name, employee_code FROM hrm.employee WHERE rid=%s", [data['employee_name']])
-                res = cursor.fetchall()
-                print(res)
-                data['employee_name'] = res[0][0]
-                data['employee_id'] = res[0][1]
+                # cursor.execute("SELECT full_name, employee_code FROM hrm.employee WHERE rid=%s", [data['employee_name']])
+                # res = cursor.fetchall()
+                # print(res)
+                # data['employee_name'] = res[0][0]
+                # data['employee_id'] = res[0][1]
 
             super(it_allotment_serializer, self).__init__(instance=instance, data=data, **kwargs)
         super(it_allotment_serializer, self).__init__(instance=instance, data=data, **kwargs)

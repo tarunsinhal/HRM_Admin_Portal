@@ -204,13 +204,14 @@ class ImportSoftwareInventoryView(View):
             return JsonResponse({"error":"Invalid file format."},status=400)
 
 
-cursor = connection.cursor()
+# cursor = connection.cursor()
 
 def load_data(request):
     emp_code = request.GET.get('code')
     try:
-        cursor.execute("SELECT full_name FROM hrm.employee WHERE employee_code=%s ORDER BY created_on DESC", [emp_code])
-        name = cursor.fetchone()[0]
+        # cursor.execute("SELECT full_name FROM hrm.employee WHERE employee_code=%s ORDER BY created_on DESC", [emp_code])
+        # name = cursor.fetchone()[0]
+        name = 'test'
         return JsonResponse({'name': name})
     except:
         return None
@@ -230,14 +231,15 @@ def load_data(request):
 
 
 def load_employee_names(request):
-    emp_code = [i['employee_id'] for i in list(it_allotment.objects.all().values('employee_id'))]
-    hrm_data = list(Employee.objects.using('hrm_db').exclude(employee_code__in=emp_code).values('rid', 'full_name', 'employee_code'))
-    final_row = []
-    for i in hrm_data:
-        name = i['full_name'] + '-' + '(' + i['employee_code'] + ')' 
-        val = i['rid']
-        final_row.append((val, name))
-    return render(request, 'IT_Infra/employee_code.html', {'data': final_row})
+    # emp_code = [i['employee_id'] for i in list(it_allotment.objects.all().values('employee_id'))]
+    # hrm_data = list(Employee.objects.using('hrm_db').exclude(employee_code__in=emp_code).values('rid', 'full_name', 'employee_code'))
+    # final_row = []
+    # for i in hrm_data:
+    #     name = i['full_name'] + '-' + '(' + i['employee_code'] + ')' 
+    #     val = i['rid']
+    #     final_row.append((val, name))
+    # return render(request, 'IT_Infra/employee_code.html', {'data': final_row})
+    return render(request, 'IT_Infra/employee_code.html', {'data': []})
 
 
 @login_required(login_url='/auth/login')

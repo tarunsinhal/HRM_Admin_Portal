@@ -29,11 +29,11 @@ from webpush import send_user_notification
 # function used for getting desktop notification using webpush library
 @login_required(login_url='/auth/login')
 def desktop_notification(request):
-    n = list(notifications.objects.filter(is_visited=False))
-    if len(n) > 0:
-        payload = {"head": "Notification for Adminto!", "body": "Click and view that notification page of Adminto.", "url": "http://localhost:8000/home/notifications/"}
-        send_user_notification(user=request.user, payload=payload,   ttl=100)
-    return HttpResponse(status=400)
+    # n = list(notifications.objects.filter(is_visited=False))
+    # if len(n) > 0:
+    #     payload = {"head": "Notification for Adminto!", "body": "Click and view that notification page of Adminto.", "url": "http://localhost:8000/home/notifications/"}
+    #     send_user_notification(user=request.user, payload=payload,   ttl=100)
+    return HttpResponse(status=200)
 
 
 @login_required(login_url='/auth/login')
@@ -43,12 +43,15 @@ def home_view(request):
         fm = RegistrationForm(request.POST)
         # email of the user 
         if fm.is_valid():
-            user = fm.save()
+            # user = fm.save()
+            user_email = fm.cleaned_data["email"]
+            username = fm.cleaned_data["username"].title()
+            user = User.objects.create(username=username, email=user_email)
             subject = "Password Reset Request"
             
             email_template_name = 'authentication/password_reset_subject.txt'
             c = {
-                "email": user.email,
+                "email": user_email,
                 'domain': request.headers['host'],
                 'site_name': 'admin_portal',
                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
@@ -64,7 +67,8 @@ def home_view(request):
                 messages.error(request, 'Email not sent!')
 
         else:
-            messages.error(request,'User not added')
+            print(fm.errors)
+            messages.error(request,fm.errors)
     form = RegistrationForm()
     return render(request, 'home/dashboard.html', {'form': form})
 
