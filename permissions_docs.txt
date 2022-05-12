@@ -4,4 +4,5 @@ IT_infra@IT_inventory - can view it_inventory
 notifications@notifications - can view notifications
 operations@engagement - Can add t_shirt_inventory
 operations@mro - can veiw vendor contact list
+operations@inventory - can view item_types
 suggestions@suggestions - can view suggestion model
