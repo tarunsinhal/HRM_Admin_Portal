@@ -2,13 +2,11 @@
 This file contains the views for the authentication app.
 """
 from django.contrib.auth import authenticate
-from django.forms import ValidationError
 from django.http import HttpResponseRedirect
 from django.contrib.auth import login
 from django.contrib.auth.forms import PasswordResetForm
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.views.decorators.cache import cache_control
 from django.db.models import Q
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
@@ -19,7 +17,6 @@ from django.core.mail import BadHeaderError, send_mail
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .forms import LoginForm
-from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
