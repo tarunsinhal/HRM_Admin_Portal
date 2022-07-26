@@ -1,3 +1,6 @@
+"""
+admin.py file for the home app
+"""
 from django.contrib import admin
 from .models import notifications, notification_templates
 
