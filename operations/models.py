@@ -1,17 +1,46 @@
-from email.policy import default
-from datetime import datetime
+"""
+This file contains the models for the operations app.
+"""
+# from email.policy import default
 from django.db import models
 from django.core.validators import RegexValidator
 from simple_history.models import HistoricalRecords
 
-freq_choices = [('Daily', 'Daily'), ('Weekly', 'Weekly'), ('Bimonthly', 'Bimonthly'), ('Monthly', 'Monthly')]
-unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter')]
-payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
-t_shirt_sizes = [('XS', 'Extra-Small'), ('S', 'Small'), ('M', 'Medium'), ('L', 'Large'), ('XL', 'Extra-Large'), ('XXL', 'XXL')]
+freq_choices = [
+                    ('Daily', 'Daily'),
+                    ('Weekly', 'Weekly'),
+                    ('Bimonthly', 'Bimonthly'),
+                    ('Monthly', 'Monthly')
+                ]
+unit_choices = [
+                    ('Gm', 'gram'),
+                    ('Kg', 'kilogram'),
+                    ('No.s', 'number'),
+                    ('Dozen', 'dozen'),
+                    ('Liter', 'liter'),
+                    ('Ml', 'mililiter')
+                ]
+payment_mode_choices = [
+                            ('cash', 'Cash'),
+                            ('digital', 'Digital'),
+                            ('company_account', 'Company_Account'),
+                            ('others', 'Others')
+                        ]
+t_shirt_sizes = [
+                    ('XS', 'Extra-Small'),
+                    ('S', 'Small'),
+                    ('M', 'Medium'),
+                    ('L', 'Large'),
+                    ('XL', 'Extra-Large'),
+                    ('XXL', 'XXL')
+                ]
 adhoc_product_types = [('1', 'Pantry'), ('2', 'Non-Pantry')]
 
 # Create models for item_types
 class Item_types(models.Model):
+    """
+    This class is used to create a model for the item type.
+    """
     type_name = models.CharField(max_length=50)
     type_id = models.IntegerField(primary_key=True)
 
@@ -20,28 +49,19 @@ class Item_types(models.Model):
 
 # Create models for product_types
 class Product_type(models.Model):
+    """
+    This class is used to create a model for the product type.
+    """
     product_type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
     product_name = models.CharField(max_length=50)
 
     def __str__(self):
         return str(self.product_name)
 
-
-# class FoodInventory(models.Model):
-#     type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
-#     product = models.ForeignKey(Product_type, on_delete=models.CASCADE)
-#     quantity = models.PositiveIntegerField()
-#     price = models.PositiveIntegerField()
-#     amount = models.PositiveIntegerField(null=True)
-#     last_order_date = models.DateField()
-#     expected_order_date = models.DateField()
-#     history = HistoricalRecords()
-
-#     def __str__(self):
-#         return str(self.product)
-
-
 class recurringItems(models.Model):
+    """
+    This class is used to create a model for the recurring items.
+    """
     frequency = models.CharField(max_length=10, choices=freq_choices, default='Daily')
     type = models.ForeignKey(Item_types, on_delete=models.CASCADE)
     product = models.ForeignKey(Product_type, on_delete=models.CASCADE)
@@ -60,14 +80,19 @@ class recurringItems(models.Model):
         return str(self.product)
 
 class Adhoc_types(models.Model):
+    """
+    This class is used to create a model for the adhoc types.
+    """
     item_name = models.CharField(max_length=50)
     item_id = models.IntegerField(primary_key=True)
 
     def __str__(self):
         return str(self.item_name)
 
-
 class AdhocItems(models.Model):
+    """
+    This class is used to create a model for the adhoc items.
+    """
     type = models.ForeignKey(Adhoc_types, on_delete=models.CASCADE)
     product = models.CharField(max_length=50)
     quantity = models.CharField(max_length=50)
@@ -80,19 +105,28 @@ class AdhocItems(models.Model):
     received_date = models.DateField(blank=True, null=True)
     additional_info = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
-    
+
     def __str__(self):
         return str(self.product)
 
-
 class vendorContactList(models.Model):
-    phone_regex = RegexValidator(regex=r'^\d{10}$', message="Phone number must be positive intergers.Up to 10 digits allowed.")
+    """
+    This class is used to create a model for the vendor contact list.
+    """
+    phone_regex = RegexValidator(
+                    regex=r'^\d{10}$',
+                    message="Phone number must be positive intergers.Up to 10 digits allowed."
+                )
     service = models.CharField(max_length=50)
     vendor_name = models.CharField(max_length=100)
     contact_no = models.CharField(validators=[phone_regex], max_length=10)
-    alternate_no = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True, )
+    alternate_no = models.CharField(validators=[phone_regex],
+                                    max_length=10,
+                                    blank=True,
+                                    null=True
+                                    )
     nominal_charges = models.PositiveIntegerField(null=True, blank=True)
-    aditional_info = models.CharField(max_length=200, blank=True, null=True, )
+    aditional_info = models.CharField(max_length=200, blank=True, null=True)
     history = HistoricalRecords()
 
     def __str__(self):
@@ -100,6 +134,9 @@ class vendorContactList(models.Model):
 
 
 class repairServices(models.Model):
+    """
+    This class is used to create a model for the repair service.
+    """
     service_date = models.DateField()
     service_of = models.ForeignKey(vendorContactList, on_delete=models.CASCADE)
     service_type = models.CharField(max_length=50)
@@ -111,12 +148,15 @@ class repairServices(models.Model):
     next_service_date = models.DateField()
     aditional_info = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
-    
+
     def __str__(self):
         return str(self.service_of)
 
 
 class t_shirt_inventory(models.Model):
+    """
+    This class is used to create a model for the t-short inventory.
+    """
     order_date = models.DateField()
     receiving_date = models.DateField(blank=True, null=True)
     size = models.CharField(max_length=50, choices=t_shirt_sizes)
@@ -132,11 +172,17 @@ class t_shirt_inventory(models.Model):
     additional = models.CharField(max_length=500, blank=True, null=True)
     user_name = models.CharField(max_length=50, default="Admin")
     history = HistoricalRecords()
-   
+
     class Meta:
+        """
+        This class is used to create a meta class for the model..
+        """
         ordering = ['-receiving_date']
 
 class Detail_types(models.Model):
+    """
+    This class is used to create a model for the detail types.
+    """
     detail_name = models.CharField(max_length=50)
     detail_id = models.IntegerField(primary_key=True)
 
@@ -144,6 +190,9 @@ class Detail_types(models.Model):
         return str(self.detail_name)
 
 class engagementJoining(models.Model):
+    """
+    This class is used to create a model for the engagement joining.
+    """
     employee_name = models.CharField(max_length=50)
     details = models.ForeignKey(Detail_types, on_delete=models.CASCADE)
     joining_date = models.DateField(blank=True, null=True)
@@ -179,12 +228,15 @@ class engagementJoining(models.Model):
     close_upwork_account = models.CharField(max_length=100, blank=True)
     fnf = models.CharField(max_length=100, blank=True)
     history = HistoricalRecords()
-   
+
     def __str__(self):
         return str(self.employee_name)
 
 
 class officeEvents(models.Model):
+    """
+    This class is used to create a model for the office events.
+    """
     date = models.DateField()
     event_name = models.CharField(max_length=100)
     activity_planned = models.CharField(max_length=100, blank=True)
@@ -193,6 +245,6 @@ class officeEvents(models.Model):
     paid_by = models.CharField(max_length=50)
     remarks = models.CharField(max_length=200, blank=True)
     history = HistoricalRecords()
- 
+
     def __str__(self):
         return str(self.event_name)

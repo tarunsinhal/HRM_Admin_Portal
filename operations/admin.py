@@ -1,108 +1,154 @@
+"""
+This file contains the Administration configuration for the operations app.
+"""
 from django.contrib import admin
 from import_export.admin import ImportExportModelAdmin
 from import_export.widgets import ForeignKeyWidget
 from import_export import resources, fields
-from .models import Item_types, Product_type, recurringItems, Adhoc_types, AdhocItems, vendorContactList, repairServices, t_shirt_inventory, Detail_types, engagementJoining, officeEvents
+from .models import Item_types, Product_type, recurringItems, Adhoc_types, AdhocItems
+from .models import vendorContactList, repairServices, t_shirt_inventory
+from .models import Detail_types, engagementJoining, officeEvents
 from .serializers import ProductSerializer
 
 class recurringResource(resources.ModelResource):
-    type = fields.Field(column_name='type', attribute='type', widget=ForeignKeyWidget(Item_types, 'type_name'))
-    product = fields.Field(column_name='product', attribute='product', widget=ForeignKeyWidget(Product_type, 'product_name'))
-    # def clean(self, value):
-    #     val = super(ForeignKeyWidget, self).clean(value)
-    #     object, created = Product_type.objects.get_or_create(product_name='')
-    # product = fields.Field(column_name='new_product', attribute='new_product')
+    """
+    This class is used to create resource of recurringItems.
+    """
+    type = fields.Field(column_name='type', attribute='type',
+           widget=ForeignKeyWidget(Item_types, 'type_name'))
+    product = fields.Field(column_name='product', attribute='product',
+              widget=ForeignKeyWidget(Product_type, 'product_name'))
     class Meta:
+        """This class is used to create a meta class for the recurringResource"""
         model = recurringItems
-        
 
 class recurringAdmin(ImportExportModelAdmin):
+    """
+    This class used to implementing Import & Export functionality for recurringResource
+    in the admin panel.
+    """
     resource_class = recurringResource
     serializer_class = ProductSerializer
 
-
+# register the recurringItems and recurringAdmin functionality in the admin panel
 admin.site.register(recurringItems, recurringAdmin)
 
-
 class adhocResource(resources.ModelResource):
-    # type = fields.Field()
-    # # below code used for displaying value of key in export csv file
-    # type = fields.Field(
-    #     attribute='get_type_display',
-    #     column_name='Type'
-    # )
-    type = fields.Field(column_name='type', attribute='type', widget=ForeignKeyWidget(Adhoc_types, 'item_name'))
+    """
+    This class is used to create resource of AdhocItems.
+    """
+    type = fields.Field(column_name='type', attribute='type',
+           widget=ForeignKeyWidget(Adhoc_types, 'item_name'))
     class Meta:
+        """This class is used to create a meta class for the adhocResource"""
         model = AdhocItems
 
-
 class adhocAdmin(ImportExportModelAdmin):
+    """
+    This class used to implementing Import & Export functionality for adhocResource
+    in the admin panel.
+    """
     resource_class = adhocResource
 
+# register the AdhocItems and adhocAdmin functionality in the admin panel
 admin.site.register(AdhocItems, adhocAdmin)
 
-
 class joiningResource(resources.ModelResource):
-    details = fields.Field(column_name='details', attribute='details', widget=ForeignKeyWidget(Detail_types, 'detail_name'))
+    """
+    This class is used to create resource of engagementJoining.
+    """
+    details = fields.Field(column_name='details', attribute='details',
+              widget=ForeignKeyWidget(Detail_types, 'detail_name'))
     class Meta:
+        """This class is used to create a meta class for the joiningResource"""
         model = engagementJoining
 
 class joiningAdmin(ImportExportModelAdmin):
+    """
+    This class used to implementing Import & Export functionality for joiningResource
+    in the admin panel.
+    """
     resource_class = joiningResource
 
+# register the engagementJoining and joiningAdmin functionality in the admin panel
 admin.site.register(engagementJoining, joiningAdmin)
 
 class vendorResource(resources.ModelResource):
+    """
+    This class is used to create resource of vendorContactList.
+    """
     class Meta:
+        """This class is used to create a meta class for the vendorResource"""
         model = vendorContactList
 
 class vendorAdmin(ImportExportModelAdmin):
+    """
+    This class used to implementing Import & Export functionality for vendorResource
+    in the admin panel.
+    """
     resource_class = vendorResource
 
+# register the vendorContactList and vendorAdmin functionality in the admin panel
 admin.site.register(vendorContactList, vendorAdmin)
 
 class repairServiceResource(resources.ModelResource):
-    service_of = fields.Field(column_name='service_of', attribute='service_of', widget=ForeignKeyWidget(vendorContactList, 'service'))
+    """
+    This class is used to create resource of repairServices.
+    """
+    service_of = fields.Field(column_name='service_of', attribute='service_of',
+                 widget=ForeignKeyWidget(vendorContactList, 'service'))
     class Meta:
+        """This class is used to create a meta class for the repairServiceResource"""
         model = repairServices
 
 class repairServiceAdmin(ImportExportModelAdmin):
+    """
+    This class used to implementing Import & Export functionality for repairServiceResource
+    in the admin panel.
+    """
     resource_class = repairServiceResource
 
+# register the repairServices and repairServiceAdmin functionality in the admin panel
 admin.site.register(repairServices, repairServiceAdmin)
 
-
 class TshirtResource(resources.ModelResource):
+    """
+    This class is used to create resource of t_shirt_inventory.
+    """
     class Meta:
+        """This class is used to create a meta class for the TshirtResource"""
         model = t_shirt_inventory
 
 class TshirtAdmin(ImportExportModelAdmin):
+    """
+    This class used to implementing Import & Export functionality for TshirtResource
+    in the admin panel.
+    """
     resource_class = TshirtResource
 
+# register the t_shirt_inventory and TshirtAdmin functionality in the admin panel
 admin.site.register(t_shirt_inventory, TshirtAdmin)
 
-
 class officeEventsResource(resources.ModelResource):
+    """
+    This class is used to create resource of officeEvents.
+    """
     class Meta:
+        """This class is used to create a meta class for the officeEventsResource"""
         model = officeEvents
 
 class officeEventsAdmin(ImportExportModelAdmin):
+    """
+    This class used to implementing Import & Export functionality for officeEventsResource
+    in the admin panel.
+    """
     resource_class = officeEventsResource
 
+# register the officeEvents and officeEventsAdmin functionality in the admin panel
 admin.site.register(officeEvents, officeEventsAdmin)
 
-
-# @admin.register(engagementJoining)
-# class joiningAdmin(ImportExportModelAdmin):
-#     list_display = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousePad', 'bag', 'id_card', 'induction', 'add_to_skype_group', 'add_to_whatsapp_group', 'remove_from_skype_group', 'remove_from_whatsapp_group', 'grant_onedrive_access', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'skype_id', 'system_configration', 'system_format', 'email_account', 'upwork_account_Add_to_team', 'upwork_account_Add_account', 'upwork_account_Remove_from_team', 'upwork_account_Close_account')
-
-
+# register the Item_types, Product_type, Adhoc_types and Deatils_types in the admin panel
 admin.site.register(Item_types)
 admin.site.register(Product_type)
 admin.site.register(Adhoc_types)
 admin.site.register(Detail_types)
-# admin.site.register(recurringItems)
-# admin.site.register(AdhocItems)
-# admin.site.register(vendorContactList)
-# admin.site.register(repairServices)
-

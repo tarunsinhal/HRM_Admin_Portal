@@ -1,62 +1,216 @@
-from datetime import date
-from itertools import chain
-from django.db.models import fields
-from django.forms import forms, ModelForm, TextInput, MultiWidget,  CharField, IntegerField, ChoiceField, MultiValueField, RegexField, ComboField
-from django.forms.widgets import DateInput, HiddenInput, NumberInput, Select, SelectMultiple, Widget, Textarea, RadioSelect
-from rest_framework import serializers
-from .models import Product_type, recurringItems, t_shirt_inventory, AdhocItems, vendorContactList, repairServices, engagementJoining, officeEvents
-from django.contrib.auth.models import User
+"""
+This file contains the forms for the operations app.
+"""
 from django import forms
 from django.core.validators import FileExtensionValidator
+from django.forms import (
+                            ModelForm,
+                            TextInput,
+                            MultiWidget,
+                            CharField,
+                            IntegerField,
+                            ChoiceField,
+                            MultiValueField
+                        )
+from django.forms.widgets import (
+                                    DateInput,
+                                    HiddenInput,
+                                    NumberInput,
+                                    Select,
+                                    Textarea
+                                )
+from .models import (
+                        Product_type,
+                        recurringItems,
+                        t_shirt_inventory,
+                        AdhocItems,
+                        vendorContactList,
+                        repairServices,
+                        engagementJoining,
+                        officeEvents
+                    )
 
 choices = [(True, 'Yes'), (False, 'No')]
-payment_mode_choices = [('cash', 'Cash'), ('digital', 'Digital'), ('company_account', 'Company_Account'), ('others', 'Others')]
-unit_choices = [('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
-quantity_adhoc_choices = [('Set', 'set'),('Gm', 'gram'), ('Kg', 'kilogram'), ('No.s', 'number'), ('Dozen', 'dozen'), ('Liter', 'liter'), ('Ml', 'mililiter'), ('Cm', 'centimeter'), ('M', 'meter')]
-
+payment_mode_choices = [
+                            ('cash', 'Cash'),
+                            ('digital', 'Digital'),
+                            ('company_account','Company_Account'),
+                            ('others', 'Others')
+                        ]
+unit_choices = [
+                    ('Gm', 'gram'),
+                    ('Kg', 'kilogram'),
+                    ('No.s', 'number'),
+                    ('Dozen', 'dozen'),
+                    ('Liter', 'liter'),
+                    ('Ml', 'mililiter'),
+                    ('Cm', 'centimeter'),
+                    ('M', 'meter')
+                ]
+quantity_adhoc_choices = [
+                            ('Set', 'set'),
+                            ('Gm', 'gram'),
+                            ('Kg', 'kilogram'),
+                            ('No.s', 'number'),
+                            ('Dozen', 'dozen'),
+                            ('Liter', 'liter'),
+                            ('Ml', 'mililiter'),
+                            ('Cm', 'centimeter'),
+                            ('M', 'meter')
+                        ]
 
 class UnitWidget(MultiWidget):
+    """
+    This class is used to create a unit widget for class UnitField.
+    """
     def __init__(self, *args, **kwargs):
-        self.widgets = [NumberInput({'type': 'number', 'class': "required form-control"}), Select(choices=unit_choices, attrs={'type': 'select', 'class': "form-select"})]
-        super(UnitWidget, self).__init__(self.widgets, *args, **kwargs)
+        self.widgets = [
+                            NumberInput(
+                                {
+                                    'type': 'number',
+                                    'class': "required form-control"
+                                }
+                            ),
+                            Select(
+                                choices=unit_choices,
+                                attrs={
+                                    'type': 'select',
+                                    'class': "form-select"
+                                }
+                            )
+                        ]
+        # super(UnitWidget, self).__init__(self.widgets, *args, **kwargs)
+        super().__init__(self.widgets, *args, **kwargs)
+
 
     def decompress(self, value):
         if value:
             return value.split(' ')
         return [None, None]
 
-
 class UnitField(MultiValueField):
+    """
+    This class is used to create a unit field for the class AddProducts.
+    """
     widget = UnitWidget
 
     def __init__(self, *args, **kwargs):
         fields = (IntegerField(), ChoiceField(choices=unit_choices))
-        super(UnitField, self).__init__(fields, *args, **kwargs)
+        # super(UnitField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
+
 
     def compress(self, data_list):
         return ' '.join(data_list)
 
-
 class AddProducts(ModelForm):
-    new_product = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter product"}))
-    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
+    """
+    This class is used to create a form for the AddProducts.
+    """
+    new_product = CharField(
+                        max_length=50,
+                        widget=HiddenInput(
+                                    attrs={
+                                        'type': 'hidden',
+                                        'class': "required form-control",
+                                        "placeholder": "Enter product"
+                                    }
+                                )
+                    )
+    add_name = CharField(
+                    max_length=50,
+                    widget=HiddenInput(
+                                attrs={
+                                    'type': 'hidden',
+                                    'class': "required form-control",
+                                    "placeholder": "Enter name"
+                                }
+                            )
+                )
     unit = UnitField()
 
     class Meta:
+        """
+        This class is used to create a meta class for the form.
+        """
         model = recurringItems
-        fields = ('frequency', 'type', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'add_name', 'purchase_date', 'next_order_date', 'additional_info')
+        fields = (
+                    'frequency', 'type', 'product',
+                    'new_product', 'quantity', 'unit',
+                    'price', 'discount', 'amount',
+                    'paid_by', 'add_name', 'purchase_date',
+                    'next_order_date', 'additional_info'
+                )
         widgets = {
-            'frequency': Select(attrs={'type':'text', 'class':"required form-select"}),
-            'type': Select(attrs={'type':'text', 'class':"required form-select"}),
-            'product': Select(attrs={'type':'text', 'class':"required form-select"}),
-            'quantity': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
-            'price': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
-            'discount': NumberInput(attrs={'type':'number', 'class':"form-control", "aria-describedby":"inputGroupPrepend"}),
-            'amount': NumberInput(attrs={'type':'number', 'class':"required form-control"}),
-            'paid_by': Select(attrs={'type':'select', 'class':"required form-select", 'required':True}),
-            'purchase_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
-            'next_order_date': DateInput(attrs={'type':'date', 'class':"form-control"}),
-            'additional_info': Textarea(attrs={'type':'textarea', 'class':"form-control"})
+            'frequency': Select(
+                            attrs={
+                                'type':'text',
+                                'class':"required form-select"
+                            }
+                        ),
+            'type': Select(
+                        attrs={
+                            'type':'text',
+                            'class':"required form-select"
+                        }
+                    ),
+            'product': Select(
+                            attrs={
+                                'type':'text',
+                                'class':"required form-select"
+                            }
+                        ),
+            'quantity': NumberInput(
+                            attrs={
+                                'type':'number',
+                                'class':"required form-control"
+                            }
+                        ),
+            'price': NumberInput(
+                        attrs={
+                            'type':'number',
+                            'class':"form-control",
+                            "aria-describedby":"inputGroupPrepend"
+                        }
+                    ),
+            'discount': NumberInput(
+                            attrs={
+                                'type':'number',
+                                'class':"form-control",
+                                "aria-describedby":"inputGroupPrepend"
+                            }
+                        ),
+            'amount': NumberInput(
+                            attrs={
+                                'type':'number',
+                                'class':"required form-control"
+                            }
+                        ),
+            'paid_by': Select(
+                            attrs={
+                                'type':'select',
+                                'class':"required form-select",
+                                'required':True
+                            }
+                        ),
+            'purchase_date': DateInput(
+                                attrs={
+                                    'type':'date',
+                                    'class':"required form-control"
+                                }
+                            ),
+            'next_order_date': DateInput(
+                                    attrs={
+                                        'type':'date',
+                                        'class':"form-control"
+                                    }
+                                ),
+            'additional_info': Textarea(
+                                    attrs={
+                                        'type':'textarea',
+                                        'class':"form-control"
+                                    }
+                                )
         }
 
     def __init__(self, *args, **kwargs):
@@ -64,166 +218,544 @@ class AddProducts(ModelForm):
         self.fields['product'].queryset = Product_type.objects.none()
 
     def clean_content(self):
+        """
+        This function is used to clean content of recurringItems.
+        Raise error based on date
+        """
         last_order_date = self.cleaned_data.get("purchase_date")
         expected_order_date = self.cleaned_data.get("next_order_date")
         if expected_order_date < last_order_date:
             raise forms.ValidationError("Expected Date is less than last Order date")
         return last_order_date, expected_order_date
 
-
 class EditProducts(AddProducts, ModelForm):
-    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
+    """
+    This class is used to create a form for the EditProducts.
+    """
+    add_name = CharField(
+                    max_length=50,
+                    widget=HiddenInput(
+                                attrs={
+                                    'type': 'hidden',
+                                    'class': "required form-control",
+                                    "placeholder": "Enter name"
+                                }
+                            )
+                )
     class Meta(AddProducts.Meta):
-        fields = ['frequency', 'product', 'new_product', 'quantity', 'unit', 'price', 'discount', 'amount', 'paid_by', 'add_name', 'purchase_date', 'next_order_date', 'additional_info']
+        """
+        This class is used to create a meta class for the form.
+        """
+        fields = [
+                    'frequency', 'product', 'new_product',
+                    'quantity', 'unit', 'price', 'discount',
+                    'amount', 'paid_by', 'add_name',
+                    'purchase_date', 'next_order_date',
+                    'additional_info'
+                ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['product'].queryset = Product_type.objects.none()
 
-
 class QuantityWidgetAdhoc(MultiWidget):
+    """
+    This class is used to create a quantity widget for the class QuantityFieldAdhoc.
+    """
     def __init__(self, *args, **kwargs):
-        self.widgets = [NumberInput({'type': 'number', 'class': "required form-control chk"}), Select(choices=quantity_adhoc_choices, attrs={'type': 'select', 'class': "form-select chk"})]
-        super(QuantityWidgetAdhoc, self).__init__(self.widgets, *args, **kwargs)
+        self.widgets = [
+                            NumberInput(
+                                {
+                                    'type': 'number',
+                                    'class': "required form-control chk"
+                                }
+                            ),
+                            Select(
+                                choices=quantity_adhoc_choices,
+                                attrs={
+                                    'type': 'select',
+                                    'class': "form-select chk"
+                                }
+                            )
+                        ]
+        # super(QuantityWidgetAdhoc, self).__init__(self.widgets, *args, **kwargs)
+        super().__init__(self.widgets, *args, **kwargs)
+
 
     def decompress(self, value):
         if value:
             return value.split(' ')
         return [None, None]
 
-
 class QuantityFieldAdhoc(MultiValueField):
+    """
+    This class is used to create a quantity field for the class AddAdhocItemsForm.
+    """
     widget = QuantityWidgetAdhoc
 
     def __init__(self, *args, **kwargs):
-        fields = (IntegerField(), ChoiceField(choices=quantity_adhoc_choices))
-        super(QuantityFieldAdhoc, self).__init__(fields, *args, **kwargs)
+        fields = (
+                    IntegerField(),
+                    ChoiceField(choices=quantity_adhoc_choices)
+                )
+        # super(QuantityFieldAdhoc, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
+
 
     def compress(self, data_list):
         return ' '.join(data_list)
 
-
 class AddAdhocItemsForm(ModelForm):
-    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
+    """
+    This class is used to create a form for the AddAdhicItemsForm.
+    """
+    add_name = CharField(
+                    max_length=50,
+                    widget=HiddenInput(
+                                attrs={
+                                    'type': 'hidden',
+                                    'class': "required form-control",
+                                    "placeholder": "Enter name"
+                                }
+                            )
+                )
     quantity = QuantityFieldAdhoc()
 
     class Meta:
+        """
+        This class is used to create a meta class for the form.
+        """
         model = AdhocItems
-        fields = ('type', 'product', 'quantity', 'price', 'amount', 'advance_pay', 'balance_amount', 'paid_by', 'add_name', 'purchase_date', 'received_date', 'additional_info')
-    
+        fields = (
+                    'type', 'product','quantity',
+                    'price', 'amount', 'advance_pay',
+                    'balance_amount', 'paid_by', 'add_name',
+                    'purchase_date', 'received_date',
+                    'additional_info'
+                )
+
         widgets = {
-            'type': Select(attrs={'type': 'text', 'class': "required form-select chk"}),
-            'product': TextInput(attrs={'type': 'text', 'class': "required form-control chk"}),
-            'price': NumberInput(attrs={'type': 'number', 'class': "required form-control chk", "aria-describedby": "inputGroupPrepend"}),
-            'amount': NumberInput(attrs={'type': 'number', 'class': "required form-control chk"}),
-            'advance_pay': NumberInput(attrs={'type': 'number', 'class': "required form-control chk"}),
-            'balance_amount': NumberInput(attrs={'type': 'number', 'class': "required form-control chk"}),
-            'paid_by': Select(attrs={'type': 'text', 'class': "required form-select chk"}),
-            'purchase_date': DateInput(attrs={'type': 'date', 'class': "required form-control chk"}),
-            'received_date': DateInput(attrs={'type': 'date', 'class': "form-control chk"}),
-            'additional_info': Textarea(attrs={'type': 'text', 'class': "form-control chk"}), }
-
-    # def __init__(self, *args, **kwargs):
-    #     super().__init__(*args, **kwargs)
-    #     paid_by_dropdown = self.fields['paid_by']
-    #     # paid_by.choices = list(paid_by.choices)
-    #     paid_by_dropdown.append(tuple(('Other', 'Other')))
-
+            'type': Select(
+                        attrs={
+                            'type': 'text',
+                            'class': "required form-select chk"
+                        }
+                    ),
+            'product': TextInput(
+                            attrs={
+                                'type': 'text',
+                                'class': "required form-control chk"
+                            }
+                        ),
+            'price': NumberInput(
+                            attrs={
+                                'type': 'number',
+                                'class': "required form-control chk",
+                                "aria-describedby": "inputGroupPrepend"
+                            }
+                        ),
+            'amount': NumberInput(
+                            attrs={
+                                'type': 'number',
+                                'class': "required form-control chk"
+                            }
+                        ),
+            'advance_pay': NumberInput(
+                                attrs={
+                                    'type': 'number',
+                                    'class': "required form-control chk"
+                                }
+                            ),
+            'balance_amount': NumberInput(
+                                attrs={
+                                    'type': 'number',
+                                    'class': "required form-control chk"
+                                }
+                            ),
+            'paid_by': Select(
+                            attrs={
+                                'type': 'text',
+                                'class': "required form-select chk"
+                            }
+                        ),
+            'purchase_date': DateInput(
+                                attrs={
+                                    'type': 'date',
+                                    'class': "required form-control chk"
+                                }
+                            ),
+            'received_date': DateInput(
+                                attrs={
+                                    'type': 'date',
+                                    'class': "form-control chk"
+                                }
+                            ),
+            'additional_info': Textarea(
+                                    attrs={
+                                        'type': 'text',
+                                        'class': "form-control chk"
+                                    }
+                                ),
+        }
 
 class EditAdhocItemsForm(AddAdhocItemsForm, ModelForm):
-   
+    """
+    This class is used to create a form for the EditAdhocItemsForm.
+    """
     class Meta(AddAdhocItemsForm.Meta):
-        fields = ['purchase_date', 'received_date', 'product', 'quantity', 'price', 'amount', 'advance_pay', 'balance_amount', 'paid_by', 'add_name', 'additional_info']
+        """
+        This class is used to create a meta class for the form.
+        """
+        fields = [
+                    'purchase_date', 'received_date', 'product',
+                    'quantity', 'price', 'amount', 'advance_pay',
+                    'balance_amount', 'paid_by', 'add_name',
+                    'additional_info'
+                ]
 
     def __init__(self, *args, **kwargs):
-        super(EditAdhocItemsForm, self).__init__(*args, **kwargs)
-        super().__init__()
+        # super(EditAdhocItemsForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['advance_pay'].widget.attrs['readonly'] = True
 
-
 class AddVendorForm(ModelForm):
+    """
+    This class is used to create a form for the AddVendorForm.
+    """
     class Meta:
+        """
+        This class is used to create a meta class for the form.
+        """
         model = vendorContactList
         fields = '__all__'
         widgets = {
-            'service': TextInput(attrs={'type': 'text', 'class': "required form-control chk"}),
-            'vendor_name': TextInput(attrs={'type': 'text', 'class': "required form-control chk"}),
-            'contact_no': TextInput(attrs={'type': 'text', 'class': "required form-control chk"}),
-            'alternate_no': TextInput(attrs={'type': 'text', 'class': "form-control chk"}),
-            'nominal_charges': NumberInput(attrs={'type': 'number', 'class': "form-control chk", "aria-describedby": "inputGroupPrepend"}),
-            'aditional_info': Textarea(attrs={'type': 'textarea', 'class': "form-control chk"})
+            'service': TextInput(
+                            attrs={
+                                'type': 'text',
+                                'class': "required form-control chk"
+                            }
+                        ),
+            'vendor_name': TextInput(
+                                attrs={
+                                    'type': 'text',
+                                    'class': "required form-control chk"
+                                }
+                             ),
+            'contact_no': TextInput(
+                                attrs={
+                                    'type': 'text',
+                                    'class': "required form-control chk"
+                                }
+                            ),
+            'alternate_no': TextInput(
+                                attrs={
+                                    'type': 'text',
+                                    'class': "form-control chk"
+                                }
+                            ),
+            'nominal_charges': NumberInput(
+                                    attrs={
+                                        'type': 'number',
+                                        'class': "form-control chk",
+                                        "aria-describedby": "inputGroupPrepend"
+                                    }
+                                ),
+            'aditional_info': Textarea(
+                                attrs={
+                                    'type': 'textarea',
+                                    'class': "form-control chk"
+                                }
+                            )
         }
 
-
 class EditVendorForm(AddVendorForm, ModelForm):
+    """
+    This class is used to create a form for the EditVendorForm.
+    """
     class Meta(AddVendorForm.Meta):
+        """
+        This class is used to create a meta class for the form.
+        """
         fields = '__all__'
 
 
 class AddRepairServicesForm(ModelForm):
-    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
+    """
+    This class is used to create a form for the AddRepairServicesForm.
+    """
+    add_name = CharField(
+                    max_length=50,
+                    widget=HiddenInput(
+                                attrs={
+                                    'type': 'hidden',
+                                    'class': "required form-control",
+                                    "placeholder": "Enter name"
+                                }
+                            )
+                )
     class Meta:
+        """
+        This class is used to create a meta class for the form.
+        """
         model = repairServices
-        fields = ('service_date', 'service_of', 'service_type', 'charges', 'vendor_name', 'contact_no', 'paid_by', 'add_name', 'payment_mode', 'next_service_date', 'aditional_info')
+        fields = (
+                    'service_date', 'service_of', 'service_type',
+                    'charges', 'vendor_name', 'contact_no',
+                    'paid_by', 'add_name', 'payment_mode',
+                    'next_service_date', 'aditional_info'
+                )
         widgets = {
-            'service_date': TextInput(attrs={'type': 'date', 'class': "required form-control"}),
-            'service_of': Select(attrs={'type': 'text', 'class': "required form-select", 'options_value': ''}),
-            'service_type': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            'charges': NumberInput(attrs={'type': 'number', 'class': "required form-control", "aria-describedby": "inputGroupPrepend"}),
-            'vendor_name': Select(attrs={'type': 'text', 'class': "required form-select"}),
-            'contact_no': TextInput(attrs={'type': 'text', 'class': "required form-control"}),
-            'paid_by': Select(attrs={'type': 'select', 'class': "required form-select"}),
-            'payment_mode': Select(choices=payment_mode_choices, attrs={'type': 'select', 'class': "required form-select"}),
-            'next_service_date': TextInput(attrs={'type': 'date', 'class': "required form-control"}),
-            'aditional_info': Textarea(attrs={'type': 'textarea', 'class': "form-control"})
+            'service_date': TextInput(
+                                attrs={
+                                    'type': 'date',
+                                    'class': "required form-control"
+                                }
+                            ),
+            'service_of': Select(
+                            attrs={
+                                'type': 'text',
+                                'class': "required form-select",
+                                'options_value': ''
+                            }
+                        ),
+            'service_type': TextInput(
+                                attrs={
+                                        'type': 'text',
+                                        'class': "required form-control"
+                                    }
+                            ),
+            'charges': NumberInput(
+                            attrs={
+                                'type': 'number',
+                                'class': "required form-control",
+                                "aria-describedby": "inputGroupPrepend"
+                            }
+                        ),
+            'vendor_name': Select(
+                                attrs={
+                                    'type': 'text',
+                                    'class': "required form-select"
+                                }
+                        ),
+            'contact_no': TextInput(
+                            attrs={
+                                'type': 'text',
+                                'class': "required form-control"
+                            }
+                        ),
+            'paid_by': Select(
+                        attrs={
+                            'type': 'select',
+                            'class': "required form-select"
+                        }
+                    ),
+            'payment_mode': Select(
+                                choices=payment_mode_choices,
+                                attrs={
+                                    'type': 'select',
+                                    'class': "required form-select"
+                                }
+                            ),
+            'next_service_date': TextInput(
+                                    attrs={
+                                        'type': 'date',
+                                        'class': "required form-control"
+                                    }
+                                ),
+            'aditional_info': Textarea(
+                                attrs={
+                                    'type': 'textarea',
+                                    'class': "form-control"
+                                }
+                            )
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # self.fields['service_of'].queryset = vendorContactList.objects.values('service').distinct()
-        self.fields['service_of'].queryset = vendorContactList.objects.values_list('service', flat=True).distinct()
+        # self.fields['service_of'].queryset = vendorContactList.objects.values(
+        #                                           'service').distinct()
+        self.fields['service_of'].queryset = vendorContactList.objects.values_list(
+                                                'service', flat=True).distinct()
         self.fields['vendor_name'].queryset = vendorContactList.objects.none()
 
-
 class EditRepairServicesForm(AddRepairServicesForm, ModelForm):
+    """
+    This class is used to create a form for the EditRepairServicesForm.
+    """
     class Meta(AddRepairServicesForm.Meta):
-        fields = ['service_date', 'service_of', 'service_type', 'charges', 'vendor_name', 'contact_no', 'paid_by', 'add_name', 'payment_mode', 'next_service_date', 'aditional_info']
-
+        """
+        This class is used to create a meta class for the form.
+        """
+        fields = [
+                    'service_date', 'service_of',
+                    'service_type', 'charges',
+                    'vendor_name', 'contact_no',
+                    'paid_by', 'add_name', 'payment_mode',
+                    'next_service_date', 'aditional_info'
+                ]
 
 class addTshirtForm(ModelForm):
-    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
+    """
+    This class is used to create a form for the addTshirtForm.
+    """
+    add_name = CharField(
+                max_length=50,
+                widget=HiddenInput(
+                            attrs={
+                                'type': 'hidden',
+                                'class': "required form-control",
+                                "placeholder": "Enter name"
+                            }
+                        )
+                )
     class Meta:
+        """
+        This class is used to create a meta class for the form.
+        """
         model = t_shirt_inventory
-        fields = ('id', 'order_date', 'receiving_date', 'size', 'previous_stock', 'ordered_quantity', 'received_quantity', 'error_message', 'allotted', 'amount', 'paid_by', 'add_name', 'additional')
+        fields = (
+                    'id', 'order_date', 'receiving_date',
+                    'size', 'previous_stock', 'ordered_quantity',
+                    'received_quantity', 'error_message', 'allotted',
+                    'amount', 'paid_by', 'add_name', 'additional'
+                )
         widgets = {
-            'order_date': DateInput(attrs={'type':'date', 'required':True,  'class':"required form-control"}),
-            'receiving_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
-            'size': Select(attrs={'type':'text', 'required':True, 'class':"form-control"}),
-            'previous_stock': NumberInput(attrs={'type':'number', 'required':True, 'readOnly': True, 'class':"required form-control"}),
-            'ordered_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
-            'received_quantity': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
-            'allotted': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
-            'amount': NumberInput(attrs={'type':'number', 'required':True, 'class':"required form-control"}),
-            'paid_by': Select(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-select"}),
-            'additional': Textarea(attrs={'type':'text', 'class':"required form-control"}),
-            'error_message': Textarea(attrs={'type':'text', 'class':"required form-control", "rows": 1, "cols": 1}),
-            'total_quantity': NumberInput(attrs={'type':'number', 'readOnly': True, 'required':True, 'class':"required form-control"}),
-            'remaining': HiddenInput(attrs={'type':'hidden', 'required':True, 'class':"required form-control"})
+            'order_date': DateInput(
+                            attrs={
+                                'type':'date',
+                                'required':True,
+                                'class':"required form-control"
+                            }
+                        ),
+            'receiving_date': DateInput(
+                                attrs={
+                                    'type':'date',
+                                    'class':"required form-control"
+                                }
+                            ),
+            'size': Select(
+                        attrs={
+                            'type':'text',
+                            'required':True,
+                            'class':"form-control"
+                        }
+                    ),
+            'previous_stock': NumberInput(
+                                attrs={
+                                    'type':'number',
+                                    'required':True,
+                                    'readOnly': True,
+                                    'class':"required form-control"
+                                }
+                            ),
+            'ordered_quantity': NumberInput(
+                                    attrs={
+                                        'type':'number',
+                                        'required':True,
+                                        'class':"required form-control"
+                                    }
+                                ),
+            'received_quantity': NumberInput(
+                                    attrs={
+                                            'type':'number',
+                                            'required':True,
+                                            'class':"required form-control"
+                                    }
+                                ),
+            'allotted': NumberInput(
+                            attrs={
+                                'type':'number',
+                                'required':True,
+                                'class':"required form-control"
+                            }
+                        ),
+            'amount': NumberInput(
+                        attrs={
+                            'type':'number',
+                            'required':True,
+                            'class':"required form-control"
+                        }
+                    ),
+            'paid_by': Select(
+                            attrs={
+                                'type':'text',
+                                'required':True,
+                                'spellcheck': 'true',
+                                'class':"required form-select"
+                            }
+                        ),
+            'additional': Textarea(
+                                attrs={
+                                    'type':'text',
+                                    'class':"required form-control"
+                                }
+                            ),
+            'error_message': Textarea(
+                                attrs={
+                                    'type':'text',
+                                    'class':"required form-control",
+                                    "rows": 1,
+                                    "cols": 1
+                                }
+                            ),
+            'total_quantity': NumberInput(
+                                attrs={
+                                    'type':'number',
+                                    'readOnly': True,
+                                    'required':True,
+                                    'class':"required form-control"
+                                }
+                            ),
+            'remaining': HiddenInput(
+                            attrs={
+                                'type':'hidden',
+                                'required':True,
+                                'class':"required form-control"
+                            }
+                        )
         }
 
-
 class editTshirtForm(addTshirtForm, ModelForm):
+    """
+    This class is used to create a form for the editTshirtForm.
+    """
     class Meta(addTshirtForm.Meta):
-        fields = ('size', 'order_date', 'receiving_date', 'previous_stock', 'ordered_quantity', 'received_quantity', 'total_quantity', 'allotted', 'remaining', 'amount', 'paid_by', 'add_name', 'additional')
+        """
+        This class is used to create a meta class for the form.
+        """
+        fields = (
+                    'size', 'order_date', 'receiving_date',
+                    'previous_stock', 'ordered_quantity',
+                    'received_quantity', 'total_quantity',
+                    'allotted', 'remaining', 'amount',
+                    'paid_by', 'add_name', 'additional'
+                )
 
-    
 class AddJoiningForm(ModelForm):
+    """
+    This class is used to create a form for the AddJoiningForm.
+    """
     class Meta:
+        """
+        This class is used to create a meta class for the form.
+        """
         model = engagementJoining
-        fields = ('employee_name', 'details', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_cliq_channels', 'add_to_whatsapp_group', 'remove_from_cliq_channels', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'cliq_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date')
+        fields = (
+                    'employee_name', 'details', 'loi', 'offer_letter', 'nda_signed',
+                    'joining_letter', 'joining_documents','joining_hamper',
+                    'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad',
+                    'bag', 'id_card', 'induction', 'add_to_cliq_channels',
+                    'add_to_whatsapp_group', 'remove_from_cliq_channels',
+                    'remove_from_whatsapp_group', 'onedrive_access',
+                    'microsoft_account_created', 'microsoft_account_deleted',
+                    'gmail_account', 'cliq_id', 'system_configuration',
+                    'system_format', 'email_account', 'add_upwork_account_to_team',
+                    'add_upwork_account', 'remove_upwork_account_from_team',
+                    'close_upwork_account', 'fnf','joining_date', 'last_working_date'
+                )
         widgets = {
             'employee_name': TextInput(attrs={'type':'text', 'class':"required form-control"}),
-            'details': Select(attrs={'type': 'select', 'class': "form-select"}), 
+            'details': Select(attrs={'type': 'select', 'class': "form-select"}),
             'joining_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
             'last_working_date': DateInput(attrs={'type':'date', 'class':"required form-control"}),
             'loi': TextInput(attrs={'type':'text', 'class':"form-control"}),
@@ -253,41 +785,136 @@ class AddJoiningForm(ModelForm):
             'email_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'add_upwork_account_to_team': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'add_upwork_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'remove_upwork_account_from_team': TextInput(attrs={'type':'text', 'class':"form-control"}),
+            'remove_upwork_account_from_team': TextInput(attrs={'type':'text',
+                                                                'class':"form-control"}),
             'close_upwork_account': TextInput(attrs={'type':'text', 'class':"form-control"}),
             'fnf': TextInput(attrs={'type':'text', 'class':"form-control"})
         }
 
 class EditJoiningForm(AddJoiningForm, ModelForm):
+    """
+    This class is used to create a form for the EditJoiningForm.
+    """
     class Meta(AddJoiningForm.Meta):
-        fields = ['employee_name', 'loi', 'offer_letter', 'nda_signed', 'joining_letter', 'joining_documents', 'joining_hamper', 'relieving_letter', 'experience_letter', 'laptop_charger', 'mouse_mousepad', 'bag', 'id_card', 'induction', 'add_to_cliq_channels', 'add_to_whatsapp_group', 'remove_from_cliq_channels', 'remove_from_whatsapp_group', 'onedrive_access', 'microsoft_account_created', 'microsoft_account_deleted', 'gmail_account', 'cliq_id', 'system_configuration', 'system_format', 'email_account', 'add_upwork_account_to_team', 'add_upwork_account', 'remove_upwork_account_from_team', 'close_upwork_account', 'fnf', 'joining_date', 'last_working_date'  ]
-
+        """
+        This class is used to create a meta class for the form.
+        """
+        fields = [
+                    'employee_name', 'loi', 'offer_letter', 'nda_signed',
+                    'joining_letter', 'joining_documents', 'joining_hamper',
+                    'relieving_letter', 'experience_letter', 'laptop_charger',
+                    'mouse_mousepad', 'bag', 'id_card', 'induction',
+                    'add_to_cliq_channels', 'add_to_whatsapp_group',
+                    'remove_from_cliq_channels', 'remove_from_whatsapp_group',
+                    'onedrive_access', 'microsoft_account_created',
+                    'microsoft_account_deleted', 'gmail_account', 'cliq_id',
+                    'system_configuration', 'system_format', 'email_account',
+                    'add_upwork_account_to_team', 'add_upwork_account',
+                    'remove_upwork_account_from_team', 'close_upwork_account',
+                    'fnf', 'joining_date', 'last_working_date'
+                ]
 
 # import form
 class ImportForm(forms.Form):
-    import_file = forms.FileField(allow_empty_file=False,validators=[FileExtensionValidator(allowed_extensions=['csv', 'xls', 'xlsx'])], label="")
-
+    """
+    This class is used to create a form for the ImportForm.
+    """
+    import_file = forms.FileField(
+                        allow_empty_file=False,
+                        validators=[
+                            FileExtensionValidator(
+                                allowed_extensions=[
+                                    'csv', 'xls', 'xlsx'
+                                ]
+                            )
+                        ],
+                        label=""
+                    )
 
 class AddEventForm(ModelForm):
-    new_event = CharField(max_length=50, widget=TextInput(attrs={'type': 'text', 'class': "form-control", "placeholder": "Enter event"}))
-    add_name = CharField(max_length=50, widget=HiddenInput(attrs={'type': 'hidden', 'class': "required form-control", "placeholder": "Enter name"}))
-    date = forms.DateField(widget=forms.DateInput(format='%d-%m-%Y', attrs={'type':'date', 'class': "required form-select datepicker"}), input_formats=('%d-%m-%Y', ))
+    """
+    This class is used to create a form for the AddEventForm.
+    """
+    new_event = CharField(
+                    max_length=50,
+                    widget=TextInput(
+                                attrs={
+                                    'type': 'text',
+                                    'class': "form-control",
+                                    "placeholder": "Enter event"
+                                }
+                            )
+                )
+    add_name = CharField(
+                    max_length=50,
+                    widget=HiddenInput(
+                                attrs={
+                                    'type': 'hidden',
+                                    'class': "required form-control",
+                                    "placeholder": "Enter name"
+                                }
+                            )
+                )
+    date = forms.DateField(
+                widget=forms.DateInput(
+                            format='%d-%m-%Y',
+                            attrs={'type':'date', 'class': "required form-select datepicker"}
+                        ),
+                input_formats=('%d-%m-%Y', )
+            )
     class Meta:
+        """
+        This class is used to create a meta class for the form.
+        """
         model = officeEvents
-        fields = ('date', 'event_name', 'new_event', 'activity_planned', 'item', 'food', 'paid_by', 'add_name', 'remarks')
-        
-        widgets = {
-            # 'date': DateInput(format='%m-%d-%Y', attrs={'type':'date', 'class': "required form-select"}),
-            'event_name': Select(attrs={'type':'select', 'class': "required form-select"}),
-            'activity_planned': TextInput(attrs={'type':'text', 'class':"form-control"}),
-            'item': Textarea(attrs={'type':'textarea', 'class':"required form-control", 'placeholder':'Enter Item'}),
-            'food': Textarea(attrs={'type':'textarea', 'class':"required form-control", 'placeholder':'Enter Food Item'}),
-            'paid_by': Select(attrs={'type':'text', 'required':True, 'spellcheck': 'true', 'class':"required form-select"}), 
-            'remarks': Textarea(attrs={'type':'textarea', 'class':"form-control"})
-        }
-    
+        fields = (
+                    'date', 'event_name', 'new_event', 'activity_planned',
+                    'item', 'food', 'paid_by', 'add_name', 'remarks'
+                )
 
+        widgets = {
+            'event_name': Select(attrs={
+                                    'type':'select',
+                                    'class': "required form-select"
+                                }
+                            ),
+            'activity_planned': TextInput(attrs={
+                                            'type':'text',
+                                            'class':"form-control"
+                                        }
+                                ),
+            'item': Textarea(attrs={
+                                'type':'textarea',
+                                'class':"required form-control",
+                                'placeholder':'Enter Item'
+                            }
+                    ),
+            'food': Textarea(attrs={
+                                'type':'textarea',
+                                'class':"required form-control",
+                                'placeholder':'Enter Food Item'
+                            }
+                    ),
+            'paid_by': Select(attrs={
+                                'type':'text',
+                                'required':True,
+                                'spellcheck': 'true',
+                                'class':"required form-select"
+                            }
+                        ),
+            'remarks': Textarea(attrs={
+                                    'type':'textarea',
+                                    'class':"form-control"
+                                }
+                        )
+        }
 
 class EditEventForm(AddEventForm, ModelForm):
+    """
+    This class is used to create a form for the EditEventForm.
+    """
     class Meta(AddEventForm.Meta):
+        """
+        This class is used to create a meta class for the form.
+        """
         fields = '__all__'
