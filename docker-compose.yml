@@ -15,10 +15,23 @@ services:
     build: .
     volumes:
       - ../:/app
+      - static:/static
     ports:
-      - 9000:80
+      - 9000:9000
+    env_file:
+      - .env
     depends_on:
       - db
+  
+  nginx:
+    build: ./nginx
+    volumes:
+      - static:/static
+    ports:
+      - 80:80
+    depends_on:
+      - app
 
 volumes:
   myvolume:
+  static:
